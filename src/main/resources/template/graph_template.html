@@ -12,6 +12,7 @@
 <style>
 h4 {
     margin: 1px;
+    font-family: Courier;
 }
 #parent {
     position:absolute;
@@ -202,6 +203,11 @@ $graph
 		return;
 	}
 
+	var gas = trace.gas;
+	var gasCost = trace.gasCost;
+	var gasDiv = document.getElementById("gas");
+	gasDiv.innerHTML = "gas: " + gas + " - gasCost: " + gasCost;
+
 	var stack = trace.stack;
         var stackTable = document.createElement("table");
 	for(var i = stack.length-1; i >= 0; i--) {
@@ -316,6 +322,7 @@ $graph
     <div id="editor">
         <div id="aceEditor">$source</div>
         <div id="statemachine">
+            <div id="gas"></div>
             <h3>Stack</h3>
             <div id="stack"></div>
             <h3>Memory</h3>
