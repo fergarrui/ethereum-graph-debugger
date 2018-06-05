@@ -45,7 +45,7 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 For now there are many limitations since this is a very early release of the debugger
 
-* It does not debugs the code executed to an external contract call
+* It does not debug the code executed to an external contract call
 * The control flow graph is drawn from the static bytecode, so there can be nodes without edges, a symbolic execution would be needed. Maybe added in future releases
 * Transactions executed in the runtime bytecode are supported (for example, the constructor execution of a contract cannot be debugged right now)
 * You must provide a node URL that supports `debug_traceTransaction`, like Geth or Ganache, therefore, Infura is not supported
