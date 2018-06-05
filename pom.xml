@@ -14,6 +14,8 @@
         <apache.http.client.version>4.5.5</apache.http.client.version>
         <junit.version>4.12</junit.version>
         <velocity.version>1.7</velocity.version>
+        <mvn.assembly.plugin.version>3.1.0</mvn.assembly.plugin.version>
+        <jar.cli>edebugger-${version}</jar.cli>
     </properties>
 
     <dependencies>
@@ -55,6 +57,32 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${mvn.assembly.plugin.version}</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <finalName>${jar.cli}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <archive>
+                        <manifest>
+                            <mainClass>net.nandgr.debugger.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

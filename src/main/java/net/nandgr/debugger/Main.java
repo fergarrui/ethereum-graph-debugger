@@ -17,7 +17,6 @@ import net.nandgr.debugger.solc.solcjson.Contract;
 import net.nandgr.debugger.solc.solcjson.SolcOutput;
 import net.nandgr.debugger.trace.TraceService;
 import net.nandgr.debugger.trace.response.json.DebugTraceTransactionLog;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,10 +28,20 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args){
-        // Will be parameters
-        String nodeUrl = "http://127.0.0.1:8545";
-        String txHash = "0xc296ffe00b37d7740f22f2227f39b210a4928756f9472a37cab61951cf9fbffa";
-        String solidityFile = "/home/nando/ethereum/temp/Impl.sol";
+
+        if(args.length < 3) {
+            String execName = new File(Main.class.getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath())
+                    .getName();
+            System.out.println("Help: " + execName + " <solidity source file> <node URL> <transaction hash>");
+            System.exit(0);
+        }
+
+        String solidityFile = args[0];
+        String nodeUrl = args[1];
+        String txHash = args[2];
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -103,13 +112,15 @@ public class Main {
         GraphVizCreator graphVizCreator = new GraphVizCreator(runtimeChunks, traceData);
         String graph = graphVizCreator.buildStringGraph();
 
-        Report report = new Report(sourceCode, traceMapJson, graph);
+        Report report = new Report(sourceCode, traceMapJson, graph, solidityFile, txHash);
+        String reportName = null;
         try {
-            report.createReport();
+            reportName = report.createReport();
         } catch (ReportException e) {
             System.out.println("Failed when creating report");
             e.printStackTrace();
             System.exit(0);
         }
+        System.out.println("Debug file created at: " + reportName);
     }
 }

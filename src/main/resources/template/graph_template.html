@@ -10,6 +10,9 @@
 <script src="https://unpkg.com/d3-graphviz@0.1.2/build/d3-graphviz.js"></script>
 
 <style>
+h4 {
+    margin: 1px;
+}
 #parent {
     position:absolute;
     height:100%;
@@ -306,8 +309,9 @@ $graph
     }
 
 }
-</script>
 
+</script>
+<h4>Source: $fileName - Tx Hash: $txHash</h4>
 <div id="parent">
     <div id="editor">
         <div id="aceEditor">$source</div>

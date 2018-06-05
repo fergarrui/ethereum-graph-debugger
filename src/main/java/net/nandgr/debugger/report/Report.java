@@ -7,25 +7,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
+import java.security.SecureRandom;
 import java.util.Properties;
 
 public class Report {
 
-    private static final String REPORT_FILE_NAME = "debug.html";
     private static final String TEMPLATE_FILE = "template/graph_template.html";
+    private static final String CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static SecureRandom random = new SecureRandom();
+
 
     private final String source;
     private final String trace;
     private final String graph;
+    private final String fileName;
+    private final String txHash;
 
-    public Report(String source, String trace, String graph) {
+    public Report(String source, String trace, String graph, String fileName, String txHash) {
         this.source = source;
         this.trace = trace;
         this.graph = graph;
+        this.fileName = fileName;
+        this.txHash = txHash;
     }
 
-    public void createReport() throws ReportException {
-        File debugFile = new File(REPORT_FILE_NAME);
+    public String createReport() throws ReportException {
+        String reportFileName = "debug-" + randomSuffix(6) + ".html";
+        File debugFile = new File(reportFileName);
         try {
             if (!debugFile.createNewFile()) {
                 throw new ReportException("Report file cannot be created");
@@ -44,6 +52,8 @@ public class Report {
         velocityContext.put("trace", trace);
         velocityContext.put("graph", graph);
         velocityContext.put("source", source);
+        velocityContext.put("fileName", fileName);
+        velocityContext.put("txHash", txHash);
         StringWriter stringWriter = new StringWriter();
         template.merge(velocityContext, stringWriter);
         try {
@@ -51,5 +61,13 @@ public class Report {
         } catch (IOException e) {
             throw new ReportException("Failed when writing into report file", e);
         }
+        return reportFileName;
+    }
+
+    private static String randomSuffix(int len) {
+        StringBuilder sb = new StringBuilder( len );
+        for( int i = 0; i < len; i++ )
+            sb.append( CHARS.charAt( random.nextInt(CHARS.length()) ) );
+        return sb.toString();
     }
 }

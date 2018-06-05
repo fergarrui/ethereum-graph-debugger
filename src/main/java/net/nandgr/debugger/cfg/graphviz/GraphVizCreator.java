@@ -43,11 +43,15 @@ public class GraphVizCreator {
         StringBuilder sb= new StringBuilder("< <TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">").append(System.lineSeparator());
         for (OpcodeSource opcodeSource : bytecodeChunk.getOpcodes()) {
             String id = opcodeSource.getOffset() + "#" + opcodeSource.getBegin() + "#" + opcodeSource.getEnd();
-            sb.append("<TR><TD ID=\"").append(id).append("#offset\" HREF=\" \">")
-                    .append(opcodeSource.getOffset())
-                    .append("</TD><TD ID=\"").append(id).append("#instr\" HREF=\" \">")
-                    .append(opcodeSource.getOpcode())
-                    .append("</TD></TR>").append(System.lineSeparator());
+            sb.append("<TR><TD ID=\"").append(id).append("#offset\" HREF=\" \">0x")
+            .append(String.format("%04X", opcodeSource.getOffset()))
+            .append("</TD><TD ID=\"").append(id).append("#instr\" HREF=\" \">")
+            .append(opcodeSource.getOpcode())
+            .append("</TD>");
+            if (opcodeSource.getParameter() != null) {
+                sb.append("<TD>0x").append(opcodeSource.getParameter().toString(16)).append("</TD>");
+            }
+            sb.append("</TR>").append(System.lineSeparator());
         }
         sb.append("</TABLE> >").append(System.lineSeparator());
         return sb.toString();
