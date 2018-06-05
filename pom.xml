@@ -13,6 +13,7 @@
         <jackson.version>2.9.5</jackson.version>
         <apache.http.client.version>4.5.5</apache.http.client.version>
         <junit.version>4.12</junit.version>
+        <velocity.version>1.7</velocity.version>
     </properties>
 
     <dependencies>
@@ -32,13 +33,16 @@
             <version>${apache.http.client.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>${velocity.version}</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
-
 
     </dependencies>
 

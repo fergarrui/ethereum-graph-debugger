@@ -1,4 +1,4 @@
-package net.nandgr.debugger.asm.json;
+package net.nandgr.debugger.solc.solcjson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

@@ -43,9 +43,9 @@ public class GraphVizCreator {
         StringBuilder sb= new StringBuilder("< <TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">").append(System.lineSeparator());
         for (OpcodeSource opcodeSource : bytecodeChunk.getOpcodes()) {
             String id = opcodeSource.getOffset() + "#" + opcodeSource.getBegin() + "#" + opcodeSource.getEnd();
-            sb.append("<TR><TD ID=\"" + id +"\" HREF=\" \">")
+            sb.append("<TR><TD ID=\"").append(id).append("#offset\" HREF=\" \">")
                     .append(opcodeSource.getOffset())
-                    .append("</TD><TD ID=\"" + id + "\" HREF=\" \">")
+                    .append("</TD><TD ID=\"").append(id).append("#instr\" HREF=\" \">")
                     .append(opcodeSource.getOpcode())
                     .append("</TD></TR>").append(System.lineSeparator());
         }

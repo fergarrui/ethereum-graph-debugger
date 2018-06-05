@@ -1,11 +1,11 @@
-package net.nandgr.debugger.asm.json;
+package net.nandgr.debugger.solc.solcjson;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Map;
 
 @JsonIgnoreProperties
-public class Asm {
+public class SolcOutput {
 
     private Map<String, Contract> contracts;
     private String version;

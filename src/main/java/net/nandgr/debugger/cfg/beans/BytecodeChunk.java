@@ -53,7 +53,7 @@ public class BytecodeChunk {
                 "id=" + id +
                 ", branchA=" + branchA +
                 ", branchB=" + branchB +
-                ", opcodes=" + opcodes +
+                ", disassembler=" + opcodes +
                 '}';
     }
 }

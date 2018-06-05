@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://unpkg.com/viz.js@1.8.0/viz.js"></script>
+<script src="https://unpkg.com/d3-graphviz@0.1.2/build/d3-graphviz.js"></script>
+
+<style>
+#parent {
+    position:absolute;
+    height:100%;
+    margin:0;
+    padding:0;
+    width:100%;
+}
+
+#editor {
+    position:relative;
+    float:left;
+    height:100%;
+    width:35%;
+    background-color: #272822;
+}
+
+#graph a:hover {
+    cursor: pointer;
+}
+
+#graph svg {
+    height: 100%;
+    width: 100%;
+}
+
+#graph {
+    position:relative;
+    float:left;
+    height:100%;
+    width:65%;
+    background-color:#4A4A4A;
+
+}
+
+#parent {
+    position:absolute;
+    height:100%;
+    margin:0;
+    padding:0;
+    width:100%;
+}
+
+#aceEditor {
+    height: 350px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+#statemachine {
+	margin-top: 400px;
+	font-size:14px;
+	color:white;
+	font-family: courier;
+	padding: 10px;
+}
+
+#stack table {
+	border-collapse: collapse;
+	background-color: #646954;
+	border-radius: 10px;
+}
+
+#stack table,th,td {
+	border: 1px solid black;
+	padding: 5px;
+}
+
+#memory table {
+	border-collapse: collapse;
+	background-color: #646954;
+	border-radius: 10px;
+}
+
+#memory table,th,td {
+	border: 1px solid black;
+	padding: 5px;
+}
+
+#storage table {
+	border-collapse: collapse;
+	background-color: #646954;
+	border-radius: 10px;
+}
+
+#storage table,th,td {
+	border: 1px solid black;
+	padding: 5px;
+}
+
+.selectedPolygon {
+	fill: white;
+}
+</style>
+
+<script>
+
+window.onload = function() {
+    $("#editor").resizable();
+    $('#editor').resize(function(){
+       $('#graph').width($("#parent").width()-$("#editor").width());
+    });
+    $(window).resize(function(){
+       $('#graph').width($("#parent").width()-$("#editor").width());
+       $('#editor').height($("#parent").height());
+    });
+
+var mapTrace=
+$trace
+;
+
+var dotSrc = `
+$graph
+`;
+    var Range = require("ace/range").Range
+    var graphviz = d3.select("#graph").graphviz();
+
+    var dotSrcLines;
+
+    function render(dotSrc) {
+        transition1 = d3.transition();
+        graphviz
+            .transition(transition1)
+            .renderDot(dotSrc);
+
+        transition1
+          .transition()
+            .duration(0)
+            .on("end", function () {
+                nodes = d3.selectAll('.node,.edge');
+                nodes
+                  .selectAll("g")
+                    .on("click", fieldClickHandler)
+                  .selectAll("a")
+                    // Remove the workaround attributes to avoid consuming the click events
+                    .attr("href", null)
+                    .attr("title", null);
+            });
+    }
+
+    var previousPolygons = [];
+
+    function fieldClickHandler () {
+        var node = d3.select(this);
+
+        var text = node.selectAll('text').text();
+        var id = node.attr('id').replace(/^a_/, '');
+        var idArr = id.split("#");
+        var offset = idArr[0];
+        var begin = idArr[1];
+        var end = idArr[2];
+
+	var idOffset = "a_" + offset + "#" + begin + "#" + end + "#offset";
+	var idInstr = "a_" + offset + "#" + begin + "#" + end + "#instr";
+	var nodeOffset = document.getElementById(idOffset);
+	var nodeInstr = document.getElementById(idInstr);
+	var polygonOffset = nodeOffset.getElementsByTagName("polygon");
+	var polygonInstr = nodeInstr.getElementsByTagName("polygon");
+
+	for(var i=0; i<previousPolygons.length; i++){
+		previousPolygons[i].classList.remove("selectedPolygon");
+	}
+
+	var pol1 = polygonOffset[0];
+	var pol2 = polygonInstr[0];
+	previousPolygons.length = 0;
+	previousPolygons.push(pol1);
+	previousPolygons.push(pol2);
+	pol1.classList.add("selectedPolygon");
+	pol2.classList.add("selectedPolygon");
+
+        editorSelect(begin, end);
+	var trace = mapTrace[offset];
+
+	var stackElement = document.getElementById("stack");
+	stackElement.innerHTML = "";
+	var memoryElement = document.getElementById("memory");
+	memoryElement.innerHTML = "";
+	var storageElement = document.getElementById("storage");
+	storageElement.innerHTML = "";
+
+	if(trace == undefined) {
+		stackElement.innerHTML = "Only executed instructions will show stack";
+		memoryElement.innerHTML = "Only executed instructions will show memory";
+		storageElement.innerHTML = "Only executed instructions will show storage";
+		return;
+	}
+
+	var stack = trace.stack;
+        var stackTable = document.createElement("table");
+	for(var i = stack.length-1; i >= 0; i--) {
+		var tr = document.createElement("tr");
+		var td = document.createElement("td");
+		td.innerHTML = stack[i];
+		tr.appendChild(td);
+		stackTable.appendChild(tr);
+	}
+
+	stackElement.appendChild(stackTable);
+
+	var memory = trace.memory;
+
+        var memoryTable = document.createElement("table");
+	for(var i = 0; i < memory.length; i++) {
+		var tr = document.createElement("tr");
+		var td = document.createElement("td");
+		td.innerHTML = memory[i];
+		tr.appendChild(td);
+		memoryTable.appendChild(tr);
+	}
+
+
+	memoryElement.appendChild(memoryTable);
+
+	var storage = trace.storage;
+	var keys = Object.keys(storage);
+
+	var storageTable = document.createElement("table");
+	for(var i = 0; i < keys.length; i++) {
+		var key = keys[i];
+		var trKey = document.createElement("tr");
+		var tdKey1 = document.createElement("td");
+		tdKey1.innerHTML = "key: ";
+		var tdKey2 = document.createElement("td");
+		tdKey2.innerHTML = key;
+		trKey.appendChild(tdKey1);
+		trKey.appendChild(tdKey2);
+		var trValue = document.createElement("tr");
+		var tdValue1 = document.createElement("td");
+		tdValue1.innerHTML = "value: ";
+		var tdValue2 = document.createElement("td");
+		tdValue2.innerHTML = storage[key];
+		trValue.appendChild(tdValue1);
+		trValue.appendChild(tdValue2);
+		storageTable.appendChild(trKey);
+		storageTable.appendChild(trValue);
+	}
+
+	storageElement.appendChild(storageTable);
+
+    }
+
+    render(dotSrc);
+
+    var editor = ace.edit("aceEditor");
+    editor.setTheme("ace/theme/monokai");
+    editor.setReadOnly(true);
+    editor.session.setMode("ace/mode/javascript");
+    editor.session.setOptions({useSoftTabs: false });
+    editor.getSession().setUseWorker(false);
+
+    function editorSelect(begin, end) {
+        var s = begin;
+        var e = end;
+        var startRow = 0;
+        var startCol = 0;
+        var endRow = 0;
+        var endCol = 0;
+        var startFound = false;
+        var endFound = false;
+        if (begin >= end) {
+            console.log("ERROR! : Start : " + begin + "is higher or equals than end: " + end);
+            editor.session.selection.setSelectionRange(new Range(0, 0, 0, 0), false);
+            return;
+        }
+        var lines = editor.session.doc.getAllLines();
+        for(var i = 0; i < lines.length; i++) {
+            line = lines[i];
+            if (s > line.length && !startFound) {
+                startRow++;
+                // +1 because of new line
+                s -= line.length + 1;
+            } else {
+                startCol = s;
+                startFound = true;
+            }
+            if (e > line.length && !endFound) {
+                endRow++;
+                // + 1 because of new line
+                e -= line.length + 1;
+            } else {
+                endCol = e;
+                endFound = true;
+            }
+            if (startFound && endFound) {
+                break;
+            }
+        }
+        var range = new Range(startRow, startCol, endRow, endCol);
+
+        editor.session.selection.setSelectionRange(range, false);
+
+    }
+
+}
+</script>
+
+<div id="parent">
+    <div id="editor">
+        <div id="aceEditor">$source</div>
+        <div id="statemachine">
+            <h3>Stack</h3>
+            <div id="stack"></div>
+            <h3>Memory</h3>
+            <div id="memory"></div>
+            <h3>Storage</h3>
+            <div id="storage"></div>
+        </div>
+    </div>
+    <div id="graph"></div>
+</div>
+
+
+</body>
