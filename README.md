@@ -39,7 +39,8 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 * It compiles the provided source code and draws a control flow graph
 * From the provided transaction hash (using `debug_traceTransaction`) it gets the trace of the transaction
 * Combines the control flow graph with the execution trace, highlighting the executed instructions in red
-* Instructions opcodes can be clicked in the graph, and the Solidity source code in the left panel involving that instruction is highlighted. Also the EVM state is shown (stack, memory, storage)
+* Instructions opcodes can be clicked in the graph, and the Solidity source code in the left panel involving that instruction is highlighted.
+* For the selected opcode, The EVM state is shown (stack, memory, storage, gas, gasCost)
 
 # Limitations
 

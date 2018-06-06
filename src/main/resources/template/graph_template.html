@@ -195,6 +195,9 @@ $graph
 	memoryElement.innerHTML = "";
 	var storageElement = document.getElementById("storage");
 	storageElement.innerHTML = "";
+    var gasDiv = document.getElementById("gas");
+
+	gasDiv.innerHTML = "";
 
 	if(trace == undefined) {
 		stackElement.innerHTML = "Only executed instructions will show stack";
@@ -205,7 +208,6 @@ $graph
 
 	var gas = trace.gas;
 	var gasCost = trace.gasCost;
-	var gasDiv = document.getElementById("gas");
 	gasDiv.innerHTML = "gas: " + gas + " - gasCost: " + gasCost;
 
 	var stack = trace.stack;
@@ -270,6 +272,7 @@ $graph
     editor.session.setMode("ace/mode/javascript");
     editor.session.setOptions({useSoftTabs: false });
     editor.getSession().setUseWorker(false);
+    editor.resize(true);
 
     function editorSelect(begin, end) {
         var s = begin;
@@ -309,7 +312,7 @@ $graph
             }
         }
         var range = new Range(startRow, startCol, endRow, endCol);
-
+        editor.gotoLine(startRow, 0, true);
         editor.session.selection.setSelectionRange(range, false);
 
     }
