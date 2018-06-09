@@ -1,6 +1,6 @@
 package net.nandgr.debugger.report;
 
-import net.nandgr.debugger.cfg.ContractObject;
+import net.nandgr.debugger.transformers.ContractObject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
