@@ -2,7 +2,7 @@ package net.nandgr.debugger.cfg.graphviz;
 
 import net.nandgr.debugger.cfg.beans.BytecodeChunk;
 import net.nandgr.debugger.cfg.beans.OpcodeSource;
-import net.nandgr.debugger.trace.response.json.DebugTraceTransactionLog;
+import net.nandgr.debugger.node.response.json.DebugTraceTransactionLog;
 import java.util.Map;
 
 // Not the most elegant way to create the graph, but it works for now
@@ -10,10 +10,12 @@ public class GraphVizCreator {
 
     private final Map<Integer, BytecodeChunk> chunks;
     private final Map<Integer, DebugTraceTransactionLog> trace;
+    private final String contractName;
 
-    public GraphVizCreator(Map<Integer, BytecodeChunk> chunks, Map<Integer, DebugTraceTransactionLog> trace) {
+    public GraphVizCreator(Map<Integer, BytecodeChunk> chunks, Map<Integer, DebugTraceTransactionLog> trace, String contractName) {
         this.chunks = chunks;
         this.trace = trace;
+        this.contractName = contractName;
     }
 
     public String buildStringGraph() {
@@ -43,9 +45,9 @@ public class GraphVizCreator {
         StringBuilder sb= new StringBuilder("< <TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">").append(System.lineSeparator());
         for (OpcodeSource opcodeSource : bytecodeChunk.getOpcodes()) {
             String id = opcodeSource.getOffset() + "#" + opcodeSource.getBegin() + "#" + opcodeSource.getEnd();
-            sb.append("<TR><TD ID=\"").append(id).append("#offset\" HREF=\" \">0x")
+            sb.append("<TR><TD ID=\"").append(id).append("#offset#").append(contractName).append("\" HREF=\" \">0x")
             .append(String.format("%04X", opcodeSource.getOffset()))
-            .append("</TD><TD ID=\"").append(id).append("#instr\" HREF=\" \">")
+            .append("</TD><TD ID=\"").append(id).append("#instr#").append(contractName).append("\" HREF=\" \">")
             .append(opcodeSource.getOpcode())
             .append("</TD>");
             if (opcodeSource.getParameter() != null) {

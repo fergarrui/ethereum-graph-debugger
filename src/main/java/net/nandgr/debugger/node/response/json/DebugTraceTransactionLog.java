@@ -1,8 +1,9 @@
-package net.nandgr.debugger.trace.response.json;
+package net.nandgr.debugger.node.response.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @JsonIgnoreProperties
 public class DebugTraceTransactionLog {
@@ -102,5 +103,27 @@ public class DebugTraceTransactionLog {
                 ", stack=" + stack +
                 ", storage=" + storage +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DebugTraceTransactionLog that = (DebugTraceTransactionLog) o;
+        return depth == that.depth &&
+                gas == that.gas &&
+                gasCost == that.gasCost &&
+                pc == that.pc &&
+                Objects.equals(error, that.error) &&
+                Objects.equals(memory, that.memory) &&
+                Objects.equals(op, that.op) &&
+                Objects.equals(stack, that.stack) &&
+                Objects.equals(storage, that.storage);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(depth, error, gas, gasCost, memory, op, pc, stack, storage);
     }
 }

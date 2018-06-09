@@ -1,5 +1,6 @@
 package net.nandgr.debugger.report;
 
+import net.nandgr.debugger.cfg.ContractObject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Properties;
 
 public class Report {
@@ -16,18 +18,11 @@ public class Report {
     private static final String CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static SecureRandom random = new SecureRandom();
 
-
-    private final String source;
-    private final String trace;
-    private final String graph;
-    private final String fileName;
+    private List<ContractObject> contracts;
     private final String txHash;
 
-    public Report(String source, String trace, String graph, String fileName, String txHash) {
-        this.source = source;
-        this.trace = trace;
-        this.graph = graph;
-        this.fileName = fileName;
+    public Report(List<ContractObject> contracts, String txHash) {
+        this.contracts = contracts;
         this.txHash = txHash;
     }
 
@@ -49,10 +44,7 @@ public class Report {
         velocityEngine.init(p);
         Template template = velocityEngine.getTemplate(TEMPLATE_FILE);
         VelocityContext velocityContext = new VelocityContext();
-        velocityContext.put("trace", trace);
-        velocityContext.put("graph", graph);
-        velocityContext.put("source", source);
-        velocityContext.put("fileName", fileName);
+        velocityContext.put("contracts", contracts);
         velocityContext.put("txHash", txHash);
         StringWriter stringWriter = new StringWriter();
         template.merge(velocityContext, stringWriter);

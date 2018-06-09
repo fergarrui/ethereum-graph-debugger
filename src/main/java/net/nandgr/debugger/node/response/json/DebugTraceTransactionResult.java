@@ -1,4 +1,4 @@
-package net.nandgr.debugger.trace.response.json;
+package net.nandgr.debugger.node.response.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

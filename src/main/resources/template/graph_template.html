@@ -10,19 +10,22 @@
 <script src="https://unpkg.com/d3-graphviz@0.1.2/build/d3-graphviz.js"></script>
 
 <style>
+html{
+    min-height:100%;
+    position:relative;
+}
+
+body{
+    height:100%;
+    position:relative;
+}
+
 h4 {
     margin: 1px;
     font-family: Courier;
 }
-#parent {
-    position:absolute;
-    height:100%;
-    margin:0;
-    padding:0;
-    width:100%;
-}
 
-#editor {
+.editor {
     position:relative;
     float:left;
     height:100%;
@@ -30,16 +33,16 @@ h4 {
     background-color: #272822;
 }
 
-#graph a:hover {
+.graph a:hover {
     cursor: pointer;
 }
 
-#graph svg {
+.graph svg {
     height: 100%;
     width: 100%;
 }
 
-#graph {
+.graph {
     position:relative;
     float:left;
     height:100%;
@@ -48,7 +51,19 @@ h4 {
 
 }
 
-#parent {
+li a:link, li a:visited, li a:focus, li a:active {
+    outline:none !important;
+
+}
+
+.tab {
+    height:100vh;
+    margin:0;
+    padding:0;
+    width:100%;
+}
+
+.parent {
     position:absolute;
     height:100%;
     margin:0;
@@ -56,7 +71,7 @@ h4 {
     width:100%;
 }
 
-#aceEditor {
+.aceEditor {
     height: 350px;
     position: absolute;
     top: 0;
@@ -64,7 +79,8 @@ h4 {
     bottom: 0;
     left: 0;
 }
-#statemachine {
+
+.statemachine {
 	margin-top: 400px;
 	font-size:14px;
 	color:white;
@@ -72,35 +88,35 @@ h4 {
 	padding: 10px;
 }
 
-#stack table {
+.stack table {
 	border-collapse: collapse;
 	background-color: #646954;
 	border-radius: 10px;
 }
 
-#stack table,th,td {
+.stack table,th,td {
 	border: 1px solid black;
 	padding: 5px;
 }
 
-#memory table {
+.memory table {
 	border-collapse: collapse;
 	background-color: #646954;
 	border-radius: 10px;
 }
 
-#memory table,th,td {
+.memory table,th,td {
 	border: 1px solid black;
 	padding: 5px;
 }
 
-#storage table {
+.storage table {
 	border-collapse: collapse;
 	background-color: #646954;
 	border-radius: 10px;
 }
 
-#storage table,th,td {
+.storage table,th,td {
 	border: 1px solid black;
 	padding: 5px;
 }
@@ -111,8 +127,12 @@ h4 {
 </style>
 
 <script>
-
+  $( function() {
+    $( "#tabs" ).tabs();
+  } );
 window.onload = function() {
+
+/*
     $("#editor").resizable();
     $('#editor').resize(function(){
        $('#graph').width($("#parent").width()-$("#editor").width());
@@ -121,160 +141,160 @@ window.onload = function() {
        $('#graph').width($("#parent").width()-$("#editor").width());
        $('#editor').height($("#parent").height());
     });
+*/
 
-var mapTrace=
-$trace
-;
+var Range = require("ace/range").Range
 
-var dotSrc = `
-$graph
-`;
-    var Range = require("ace/range").Range
-    var graphviz = d3.select("#graph").graphviz();
+#foreach ($contract in $contracts)
+    window["mapTrace-$contract.contractName"] =
+    $contract.traceMapJson
+    ;
 
-    var dotSrcLines;
+    var dotSrc$contract.contractName = `
+        $contract.graph
+    `;
 
-    function render(dotSrc) {
+    window["graphviz-$contract.contractName"] = d3.select("#graph-$contract.contractName").graphviz();
+#end
+
+    function render(dotSrc, gViz, contractName) {
         transition1 = d3.transition();
-        graphviz
-            .transition(transition1)
-            .renderDot(dotSrc);
+        gViz.renderDot(dotSrc);
+        onTransition();
+    }
 
-        transition1
-          .transition()
-            .duration(0)
-            .on("end", function () {
-                nodes = d3.selectAll('.node,.edge');
-                nodes
-                  .selectAll("g")
-                    .on("click", fieldClickHandler)
-                  .selectAll("a")
-                    // Remove the workaround attributes to avoid consuming the click events
-                    .attr("href", null)
-                    .attr("title", null);
-            });
+    function onTransition() {
+        nodes = d3.selectAll('.node,.edge');
+        nodes
+          .selectAll("g")
+           .on("click", fieldClickHandler)
+          .selectAll("a")
+            // Remove the workaround attributes to avoid consuming the click events
+            .attr("href", null)
+            .attr("title", null);
     }
 
     var previousPolygons = [];
 
     function fieldClickHandler () {
         var node = d3.select(this);
-
         var text = node.selectAll('text').text();
         var id = node.attr('id').replace(/^a_/, '');
         var idArr = id.split("#");
         var offset = idArr[0];
         var begin = idArr[1];
         var end = idArr[2];
+        var contractName = idArr[4];
 
-	var idOffset = "a_" + offset + "#" + begin + "#" + end + "#offset";
-	var idInstr = "a_" + offset + "#" + begin + "#" + end + "#instr";
-	var nodeOffset = document.getElementById(idOffset);
-	var nodeInstr = document.getElementById(idInstr);
-	var polygonOffset = nodeOffset.getElementsByTagName("polygon");
-	var polygonInstr = nodeInstr.getElementsByTagName("polygon");
+        var idOffset = "a_" + offset + "#" + begin + "#" + end + "#offset#" + contractName;
+        var idInstr = "a_" + offset + "#" + begin + "#" + end + "#instr#" + contractName;
+        var nodeOffset = document.getElementById(idOffset);
+        var nodeInstr = document.getElementById(idInstr);
+        var polygonOffset = nodeOffset.getElementsByTagName("polygon");
+        var polygonInstr = nodeInstr.getElementsByTagName("polygon");
 
-	for(var i=0; i<previousPolygons.length; i++){
-		previousPolygons[i].classList.remove("selectedPolygon");
-	}
+        for(var i=0; i<previousPolygons.length; i++){
+            previousPolygons[i].classList.remove("selectedPolygon");
+        }
 
-	var pol1 = polygonOffset[0];
-	var pol2 = polygonInstr[0];
-	previousPolygons.length = 0;
-	previousPolygons.push(pol1);
-	previousPolygons.push(pol2);
-	pol1.classList.add("selectedPolygon");
-	pol2.classList.add("selectedPolygon");
+        var pol1 = polygonOffset[0];
+        var pol2 = polygonInstr[0];
+        previousPolygons.length = 0;
+        previousPolygons.push(pol1);
+        previousPolygons.push(pol2);
+        pol1.classList.add("selectedPolygon");
+        pol2.classList.add("selectedPolygon");
 
-        editorSelect(begin, end);
-	var trace = mapTrace[offset];
+        editorSelect(begin, end, contractName);
+        var trace = window["mapTrace-" + contractName][offset];
 
-	var stackElement = document.getElementById("stack");
-	stackElement.innerHTML = "";
-	var memoryElement = document.getElementById("memory");
-	memoryElement.innerHTML = "";
-	var storageElement = document.getElementById("storage");
-	storageElement.innerHTML = "";
-    var gasDiv = document.getElementById("gas");
+        var stackElement = document.getElementById("stack-" + contractName);
+        stackElement.innerHTML = "";
+        var memoryElement = document.getElementById("memory-" + contractName);
+        memoryElement.innerHTML = "";
+        var storageElement = document.getElementById("storage-" + contractName);
+        storageElement.innerHTML = "";
+        var gasDiv = document.getElementById("gas-" + contractName);
 
-	gasDiv.innerHTML = "";
+        gasDiv.innerHTML = "";
 
-	if(trace == undefined) {
-		stackElement.innerHTML = "Only executed instructions will show stack";
-		memoryElement.innerHTML = "Only executed instructions will show memory";
-		storageElement.innerHTML = "Only executed instructions will show storage";
-		return;
-	}
+        if(trace == undefined) {
+            stackElement.innerHTML = "Only executed instructions will show stack";
+            memoryElement.innerHTML = "Only executed instructions will show memory";
+            storageElement.innerHTML = "Only executed instructions will show storage";
+            return;
+        }
 
-	var gas = trace.gas;
-	var gasCost = trace.gasCost;
-	gasDiv.innerHTML = "gas: " + gas + " - gasCost: " + gasCost;
+        var gas = trace.gas;
+        var gasCost = trace.gasCost;
+        gasDiv.innerHTML = "gas: " + gas + " - gasCost: " + gasCost;
 
-	var stack = trace.stack;
-        var stackTable = document.createElement("table");
-	for(var i = stack.length-1; i >= 0; i--) {
-		var tr = document.createElement("tr");
-		var td = document.createElement("td");
-		td.innerHTML = stack[i];
-		tr.appendChild(td);
-		stackTable.appendChild(tr);
-	}
+        var stack = trace.stack;
+            var stackTable = document.createElement("table");
+        for(var i = stack.length-1; i >= 0; i--) {
+            var tr = document.createElement("tr");
+            var td = document.createElement("td");
+            td.innerHTML = stack[i];
+            tr.appendChild(td);
+            stackTable.appendChild(tr);
+        }
 
-	stackElement.appendChild(stackTable);
+        stackElement.appendChild(stackTable);
 
-	var memory = trace.memory;
+        var memory = trace.memory;
 
-        var memoryTable = document.createElement("table");
-	for(var i = 0; i < memory.length; i++) {
-		var tr = document.createElement("tr");
-		var td = document.createElement("td");
-		td.innerHTML = memory[i];
-		tr.appendChild(td);
-		memoryTable.appendChild(tr);
-	}
+            var memoryTable = document.createElement("table");
+        for(var i = 0; i < memory.length; i++) {
+            var tr = document.createElement("tr");
+            var td = document.createElement("td");
+            td.innerHTML = memory[i];
+            tr.appendChild(td);
+            memoryTable.appendChild(tr);
+        }
 
 
-	memoryElement.appendChild(memoryTable);
+        memoryElement.appendChild(memoryTable);
 
-	var storage = trace.storage;
-	var keys = Object.keys(storage);
+        var storage = trace.storage;
+        var keys = Object.keys(storage);
 
-	var storageTable = document.createElement("table");
-	for(var i = 0; i < keys.length; i++) {
-		var key = keys[i];
-		var trKey = document.createElement("tr");
-		var tdKey1 = document.createElement("td");
-		tdKey1.innerHTML = "key: ";
-		var tdKey2 = document.createElement("td");
-		tdKey2.innerHTML = key;
-		trKey.appendChild(tdKey1);
-		trKey.appendChild(tdKey2);
-		var trValue = document.createElement("tr");
-		var tdValue1 = document.createElement("td");
-		tdValue1.innerHTML = "value: ";
-		var tdValue2 = document.createElement("td");
-		tdValue2.innerHTML = storage[key];
-		trValue.appendChild(tdValue1);
-		trValue.appendChild(tdValue2);
-		storageTable.appendChild(trKey);
-		storageTable.appendChild(trValue);
-	}
+        var storageTable = document.createElement("table");
+        for(var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var trKey = document.createElement("tr");
+            var tdKey1 = document.createElement("td");
+            tdKey1.innerHTML = "key: ";
+            var tdKey2 = document.createElement("td");
+            tdKey2.innerHTML = key;
+            trKey.appendChild(tdKey1);
+            trKey.appendChild(tdKey2);
+            var trValue = document.createElement("tr");
+            var tdValue1 = document.createElement("td");
+            tdValue1.innerHTML = "value: ";
+            var tdValue2 = document.createElement("td");
+            tdValue2.innerHTML = storage[key];
+            trValue.appendChild(tdValue1);
+            trValue.appendChild(tdValue2);
+            storageTable.appendChild(trKey);
+            storageTable.appendChild(trValue);
+        }
 
-	storageElement.appendChild(storageTable);
-
+        storageElement.appendChild(storageTable);
     }
 
-    render(dotSrc);
+    #foreach ($contract in $contracts)
+        render(dotSrc$contract.contractName, window["graphviz-$contract.contractName"], "$contract.contractName");
+        window["editor-$contract.contractName"] = ace.edit("aceEditor-$contract.contractName");
+        window["editor-$contract.contractName"].setTheme("ace/theme/monokai");
+        window["editor-$contract.contractName"].setReadOnly(true);
+        window["editor-$contract.contractName"].session.setMode("ace/mode/javascript");
+        window["editor-$contract.contractName"].session.setOptions({useSoftTabs: false });
+        window["editor-$contract.contractName"].getSession().setUseWorker(false);
+        window["editor-$contract.contractName"].resize(true);
+    #end
 
-    var editor = ace.edit("aceEditor");
-    editor.setTheme("ace/theme/monokai");
-    editor.setReadOnly(true);
-    editor.session.setMode("ace/mode/javascript");
-    editor.session.setOptions({useSoftTabs: false });
-    editor.getSession().setUseWorker(false);
-    editor.resize(true);
-
-    function editorSelect(begin, end) {
+    function editorSelect(begin, end, contractName) {
+        var editor = window["editor-" + contractName]
         var s = begin;
         var e = end;
         var startRow = 0;
@@ -320,21 +340,35 @@ $graph
 }
 
 </script>
-<h4>Source: $fileName - Tx Hash: $txHash</h4>
-<div id="parent">
-    <div id="editor">
-        <div id="aceEditor">$source</div>
-        <div id="statemachine">
-            <div id="gas"></div>
-            <h3>Stack</h3>
-            <div id="stack"></div>
-            <h3>Memory</h3>
-            <div id="memory"></div>
-            <h3>Storage</h3>
-            <div id="storage"></div>
+<h4>Debug for transaction: $txHash</h4>
+
+<div id="tabs">
+    <ul>
+        #foreach ( $contract in $contracts )
+            <li><a href="#tabs-$contract.contractName">$contract.contractName</a> </li>
+        #end
+    </ul>
+
+    #foreach ( $contract in $contracts )
+        <div id="tabs-$contract.contractName" class="tab">
+            <div id="parent-$contract.contractName" class="parent">
+                <div id="editor-$contract.contractName" class="editor">
+                    <div id="aceEditor-$contract.contractName" class="aceEditor">$contract.sourceCode</div>
+                    <div id="statemachine-$contract.contractName" class="statemachine">
+                        <div id="gas-$contract.contractName" class="gas"></div>
+                        <h3>Stack</h3>
+                        <div id="stack-$contract.contractName" class="stack"></div>
+                        <h3>Memory</h3>
+                        <div id="memory-$contract.contractName" class="memory"></div>
+                        <h3>Storage</h3>
+                        <div id="storage-$contract.contractName" class="storage"></div>
+                    </div>
+                </div>
+                <div id="graph-$contract.contractName" class="graph"></div>
+            </div>
         </div>
-    </div>
-    <div id="graph"></div>
+    #end
+
 </div>
 
 

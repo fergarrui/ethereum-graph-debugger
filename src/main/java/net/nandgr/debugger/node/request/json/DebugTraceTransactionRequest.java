@@ -1,4 +1,4 @@
-package net.nandgr.debugger.trace.request.json;
+package net.nandgr.debugger.node.request.json;
 
 import java.util.ArrayList;
 import java.util.Arrays;

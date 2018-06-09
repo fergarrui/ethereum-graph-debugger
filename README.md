@@ -36,9 +36,10 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 # Features
 
-* It compiles the provided source code and draws a control flow graph
+* It compiles the provided source code and draws a control flow graph (also imported contracts)
 * From the provided transaction hash (using `debug_traceTransaction`) it gets the trace of the transaction
 * Combines the control flow graph with the execution trace, highlighting the executed instructions in red
+* Supports contracts calls. All contracts involved in the transaction can be debugged
 * Instructions opcodes can be clicked in the graph, and the Solidity source code in the left panel involving that instruction is highlighted.
 * For the selected opcode, The EVM state is shown (stack, memory, storage, gas, gasCost)
 
@@ -46,11 +47,12 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 For now there are many limitations since this is a very early release of the debugger
 
-* It does not debug the code executed to an external contract call
 * The control flow graph is drawn from the static bytecode, so there can be nodes without edges, a symbolic execution would be needed. Maybe added in future releases
 * Transactions executed in the runtime bytecode are supported (for example, the constructor execution of a contract cannot be debugged right now)
 * You must provide a node URL that supports `debug_traceTransaction`, like Geth or Ganache, therefore, Infura is not supported
+* It only supports Solidity for now, but planning to make it more modular to support different languages (if the compiler gives source mappings)
 * The interface is quite ugly, but usable
+* Not really a limitation, but the editor syntax highlighting is set to Javascript at the moment
 * Probably many more
 
 # Build the project
