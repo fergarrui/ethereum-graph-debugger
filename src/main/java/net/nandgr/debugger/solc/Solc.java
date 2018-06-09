@@ -28,7 +28,7 @@ public class Solc {
     }
 
     private String compileSource() throws InterruptedException, IOException {
-        ProcessBuilder builder = new ProcessBuilder("solc", "--pretty-json", "--combined-json","asm,bin-runtime", fileName);
+        ProcessBuilder builder = new ProcessBuilder("solc", "--allow-paths", "../,./,.", "--pretty-json", "--combined-json","asm,bin-runtime", fileName);
 
         builder.inheritIO().redirectOutput(ProcessBuilder.Redirect.PIPE);
         Process p = builder.start();

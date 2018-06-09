@@ -21,7 +21,7 @@ import java.util.*;
 
 public class NodeService {
 
-    private static final List<String> callingOps = new ArrayList<>(Arrays.asList(Opcodes.CALL.toString()));
+    private static final List<String> callingOps = new ArrayList<>(Arrays.asList(Opcodes.CALL.toString(), Opcodes.DELEGATECALL.toString()));
     public static final String EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
     private final String nodeUrl;

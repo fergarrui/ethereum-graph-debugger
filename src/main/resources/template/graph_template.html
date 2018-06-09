@@ -155,6 +155,7 @@ var Range = require("ace/range").Range
     `;
 
     window["graphviz-$contract.contractName"] = d3.select("#graph-$contract.contractName").graphviz();
+    window["graphviz-$contract.contractName"].totalMemory(537395200);
 #end
 
     function render(dotSrc, gViz, contractName) {
@@ -304,9 +305,10 @@ var Range = require("ace/range").Range
         var startFound = false;
         var endFound = false;
         if (begin >= end) {
-            console.log("ERROR! : Start : " + begin + "is higher or equals than end: " + end);
-            editor.session.selection.setSelectionRange(new Range(0, 0, 0, 0), false);
-            return;
+            console.log("Swapping begin and end");
+            var temp = begin;
+            begin = end;
+            end = temp;
         }
         var lines = editor.session.doc.getAllLines();
         for(var i = 0; i < lines.length; i++) {
