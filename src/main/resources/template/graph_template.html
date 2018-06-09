@@ -55,10 +55,10 @@ li a:link, li a:visited, li a:focus, li a:active {
 }
 
 .tab {
-    height:100vh;
-    margin:0;
-    padding:0;
-    width:100%;
+    height: 85vh;
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 
 .parent {
@@ -159,8 +159,9 @@ var Range = require("ace/range").Range
 #end
 
     function render(dotSrc, gViz, contractName) {
-        transition1 = d3.transition();
         gViz.renderDot(dotSrc);
+        // Allowing a very high zoom
+        gViz._zoomBehavior.scaleExtent([1/10, 10000]);
         onTransition();
     }
 
@@ -179,7 +180,6 @@ var Range = require("ace/range").Range
 
     function fieldClickHandler () {
         var node = d3.select(this);
-        var text = node.selectAll('text').text();
         var id = node.attr('id').replace(/^a_/, '');
         var idArr = id.split("#");
         var offset = idArr[0];
@@ -252,7 +252,6 @@ var Range = require("ace/range").Range
             tr.appendChild(td);
             memoryTable.appendChild(tr);
         }
-
 
         memoryElement.appendChild(memoryTable);
 

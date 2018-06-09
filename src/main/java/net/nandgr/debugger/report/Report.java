@@ -27,7 +27,7 @@ public class Report {
     }
 
     public String createReport() throws ReportException {
-        String reportFileName = "debug-" + randomSuffix(6) + ".html";
+        String reportFileName = "debug-" + randomSuffix(10) + ".html";
         File debugFile = new File(reportFileName);
         try {
             if (!debugFile.createNewFile()) {
