@@ -4,6 +4,7 @@ import net.nandgr.debugger.cfg.beans.BytecodeChunk;
 import net.nandgr.debugger.cfg.beans.BytecodeSection;
 import net.nandgr.debugger.cfg.beans.ContractBytecode;
 import net.nandgr.debugger.cfg.beans.OpcodeSource;
+import net.nandgr.debugger.node.response.json.DebugTraceTransactionLog;
 import net.nandgr.eth.Opcode;
 import net.nandgr.eth.Opcodes;
 import java.math.BigInteger;
@@ -20,10 +21,11 @@ public class CFGCreatorDefault {
             Opcodes.JUMP,
             Opcodes.STOP,
             Opcodes.REVERT,
-            Opcodes.RETURN
+            Opcodes.RETURN,
+            Opcodes.INVALID
     ).collect(Collectors.toList());
 
-    public ContractBytecode createContractBytecode(List<OpcodeSource> contractOpcodes) {
+    public ContractBytecode createContractBytecode(List<OpcodeSource> contractOpcodes, Map<Integer, DebugTraceTransactionLog> trace) {
         BigInteger codeOffset = BigInteger.valueOf(0);
         BytecodeSection constructorSection = null;
         boolean constructorFound = false;
@@ -52,9 +54,49 @@ public class CFGCreatorDefault {
 
         Map<Integer, BytecodeChunk> functionsChunks = splitInChunks(functionsOpcodes);
         createRelations(functionsChunks);
+        checkChunksWithTrace(functionsChunks, trace);
         BytecodeSection functionsSection = new BytecodeSection(functionsChunks);
 
         return new ContractBytecode(constructorSection, functionsSection);
+    }
+
+    private void checkChunksWithTrace(Map<Integer, BytecodeChunk> functionsChunks, Map<Integer, DebugTraceTransactionLog> trace) {
+        for (Map.Entry<Integer, BytecodeChunk> entry : functionsChunks.entrySet()) {
+            BytecodeChunk chunk = entry.getValue();
+            OpcodeSource lastOpcode = chunk.getOpcodes().get(chunk.getOpcodes().size() - 1);
+
+            if (trace.containsKey(lastOpcode.getOffset()) && chunk.hasEmptyRelations() && isJumpOpcode(lastOpcode)) {
+                DebugTraceTransactionLog jumpTrace = trace.get(lastOpcode.getOffset());
+                Integer jumpDestination = Integer.valueOf(jumpTrace.getStack().get(jumpTrace.getStack().size() - 1), 16);
+                BytecodeChunk destChunk;
+                if (functionsChunks.containsKey(jumpDestination)) {
+                    destChunk = functionsChunks.get(jumpDestination);
+                } else {
+                    destChunk = searchDestinationChunk(functionsChunks, jumpDestination);
+                }
+                chunk.setBranchA(destChunk);
+            }
+        }
+    }
+
+    private boolean isJumpOpcode(OpcodeSource lastOpcode) {
+        return isJump(lastOpcode) || lastOpcode.getOpcode().equals(Opcodes.JUMPI);
+    }
+
+    private boolean isJump(OpcodeSource lastOpcode) {
+        return lastOpcode.getOpcode().equals(Opcodes.JUMP);
+    }
+
+    private BytecodeChunk searchDestinationChunk(Map<Integer, BytecodeChunk> functionsChunks, Integer jumpDestination) {
+        for (Map.Entry<Integer, BytecodeChunk> entry : functionsChunks.entrySet()) {
+            BytecodeChunk chunk = entry.getValue();
+            for (OpcodeSource opcodeSource : chunk.getOpcodes()) {
+                if (opcodeSource.getOffset() == jumpDestination) {
+                    return chunk;
+                }
+            }
+        }
+        return null;
     }
 
     private static void adjustOffsets(List<OpcodeSource> functionsOpcodes, int offset) {

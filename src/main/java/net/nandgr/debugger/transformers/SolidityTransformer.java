@@ -124,7 +124,7 @@ public class SolidityTransformer implements Transformer {
 
             CFGCreatorDefault cfgCreatorDefault = new CFGCreatorDefault();
 
-            ContractBytecode contractBytecode = cfgCreatorDefault.createContractBytecode(opcodeSources);
+            ContractBytecode contractBytecode = cfgCreatorDefault.createContractBytecode(opcodeSources, traceDataContract);
             Map<Integer, BytecodeChunk> runtimeChunks = contractBytecode.getRuntime().getChunks();
 
             GraphVizCreator graphVizCreator = new GraphVizCreator(runtimeChunks, traceDataContract, cName);
