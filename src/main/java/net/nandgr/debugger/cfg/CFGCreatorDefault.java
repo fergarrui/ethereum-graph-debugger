@@ -65,7 +65,7 @@ public class CFGCreatorDefault {
             BytecodeChunk chunk = entry.getValue();
             OpcodeSource lastOpcode = chunk.getOpcodes().get(chunk.getOpcodes().size() - 1);
 
-            if (trace.containsKey(lastOpcode.getOffset()) && chunk.hasEmptyRelations() && isJumpOpcode(lastOpcode)) {
+            if (trace.containsKey(lastOpcode.getOffset()) && hasAnyEmptyRelation(chunk) && isJumpOpcode(lastOpcode)) {
                 DebugTraceTransactionLog jumpTrace = trace.get(lastOpcode.getOffset());
                 Integer jumpDestination = Integer.valueOf(jumpTrace.getStack().get(jumpTrace.getStack().size() - 1), 16);
                 BytecodeChunk destChunk;
@@ -74,9 +74,28 @@ public class CFGCreatorDefault {
                 } else {
                     destChunk = searchDestinationChunk(functionsChunks, jumpDestination);
                 }
-                chunk.setBranchA(destChunk);
+                setBranch(chunk, destChunk);
             }
         }
+    }
+
+    private static void setBranch(BytecodeChunk parent, BytecodeChunk child) {
+        if (parent.getBranchA() == null && parent.getBranchB() == null) {
+            parent.setBranchA(child);
+            return;
+        }
+        if (parent.getBranchA() == null && parent.getBranchB().getId() != child.getId()) {
+            parent.setBranchA(child);
+            return;
+        }
+        if (parent.getBranchB() == null && parent.getBranchA().getId() != child.getId()) {
+            parent.setBranchB(child);
+            return;
+        }
+    }
+
+    private static boolean hasAnyEmptyRelation(BytecodeChunk chunk) {
+        return chunk.getBranchA() == null || chunk.getBranchB() == null;
     }
 
     private boolean isJumpOpcode(OpcodeSource lastOpcode) {

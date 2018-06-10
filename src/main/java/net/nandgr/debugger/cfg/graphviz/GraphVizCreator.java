@@ -26,12 +26,8 @@ public class GraphVizCreator {
         .append("node [shape=plain fillcolor=\"#2A2A2A\" style=filled fontcolor=\"#12cc12\" fontname=\"Courier\"]").append(System.lineSeparator());
         for (BytecodeChunk bytecodeChunk : chunks.values()) {
             String coloredNode = "";
-            OpcodeSource firstOpcode = bytecodeChunk.getOpcodes().get(0);
-            if (Main.arguments.onlyTraceOpcodes && !trace.containsKey(firstOpcode.getOffset())) {
+            if (Main.arguments.onlyTraceOpcodes &&  !chunkIsInTrace(bytecodeChunk)) {
                 continue;
-            }
-            if (trace.containsKey(firstOpcode.getOffset())) {
-                coloredNode = " fontcolor=\"red\" ";
             }
             sb.append(bytecodeChunk.getId()).append("[").append(coloredNode).append("label=").append(buildLabel(bytecodeChunk)).append("]").append(System.lineSeparator());
 
@@ -46,6 +42,15 @@ public class GraphVizCreator {
         return sb.toString();
     }
 
+    private boolean chunkIsInTrace(BytecodeChunk chunk) {
+        for (OpcodeSource opcodeSource : chunk.getOpcodes()) {
+            if (trace.containsKey(opcodeSource.getOffset())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean checkIfAppendBranch(BytecodeChunk branch) {
         if (branch == null) {
             return false;
@@ -53,21 +58,42 @@ public class GraphVizCreator {
         if (!Main.arguments.onlyTraceOpcodes) {
             return true;
         }
-        OpcodeSource firstOpcode = branch.getOpcodes().get(0);
-        return trace.containsKey(firstOpcode.getOffset());
+        return chunkIsInTrace(branch);
     }
 
     private String buildLabel(BytecodeChunk bytecodeChunk) {
         StringBuilder sb= new StringBuilder("< <TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">").append(System.lineSeparator());
         for (OpcodeSource opcodeSource : bytecodeChunk.getOpcodes()) {
+            boolean isInTrace = trace.containsKey(opcodeSource.getOffset());
+
             String id = opcodeSource.getOffset() + "#" + opcodeSource.getBegin() + "#" + opcodeSource.getEnd();
-            sb.append("<TR><TD ID=\"").append(id).append("#offset#").append(contractName).append("\" HREF=\" \">0x")
-            .append(String.format("%04X", opcodeSource.getOffset()))
-            .append("</TD><TD ID=\"").append(id).append("#instr#").append(contractName).append("\" HREF=\" \">")
-            .append(opcodeSource.getOpcode())
-            .append("</TD>");
+            sb.append("<TR><TD ID=\"").append(id).append("#offset#").append(contractName).append("\" HREF=\" \">");
+            if (isInTrace) {
+                sb.append("<font color=\"#ff1020\">");
+            }
+            sb.append("0x").append(String.format("%04X", opcodeSource.getOffset()));
+            if (isInTrace) {
+                sb.append("</font>");
+            }
+            sb.append("</TD><TD ID=\"").append(id).append("#instr#").append(contractName).append("\" HREF=\" \">");
+            if (isInTrace) {
+                sb.append("<font color=\"#ff1020\">");
+            }
+            sb.append(opcodeSource.getOpcode());
+            if (isInTrace) {
+                sb.append("</font>");
+            }
+            sb.append("</TD>");
             if (opcodeSource.getParameter() != null) {
-                sb.append("<TD>0x").append(opcodeSource.getParameter().toString(16)).append("</TD>");
+                sb.append("<TD>");
+                if (isInTrace) {
+                    sb.append("<font color=\"#ff1020\">");
+                }
+                sb.append("0x").append(opcodeSource.getParameter().toString(16));
+                if (isInTrace) {
+                    sb.append("</font>");
+                }
+                sb.append("</TD>");
             }
             sb.append("</TR>").append(System.lineSeparator());
         }
