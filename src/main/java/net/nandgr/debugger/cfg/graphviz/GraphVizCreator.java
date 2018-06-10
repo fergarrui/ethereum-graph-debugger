@@ -1,5 +1,6 @@
 package net.nandgr.debugger.cfg.graphviz;
 
+import net.nandgr.debugger.Main;
 import net.nandgr.debugger.cfg.beans.BytecodeChunk;
 import net.nandgr.debugger.cfg.beans.OpcodeSource;
 import net.nandgr.debugger.node.response.json.DebugTraceTransactionLog;
@@ -26,19 +27,34 @@ public class GraphVizCreator {
         for (BytecodeChunk bytecodeChunk : chunks.values()) {
             String coloredNode = "";
             OpcodeSource firstOpcode = bytecodeChunk.getOpcodes().get(0);
+            if (Main.arguments.onlyTraceOpcodes && !trace.containsKey(firstOpcode.getOffset())) {
+                continue;
+            }
             if (trace.containsKey(firstOpcode.getOffset())) {
                 coloredNode = " fontcolor=\"red\" ";
             }
             sb.append(bytecodeChunk.getId()).append("[").append(coloredNode).append("label=").append(buildLabel(bytecodeChunk)).append("]").append(System.lineSeparator());
-            if (bytecodeChunk.getBranchA() != null) {
+
+            if (checkIfAppendBranch(bytecodeChunk.getBranchA())) {
                 sb.append(bytecodeChunk.getId()).append("->").append(bytecodeChunk.getBranchA().getId()).append("[color=\"#12cc12\"];").append(System.lineSeparator());
             }
-            if (bytecodeChunk.getBranchB() != null) {
+            if (checkIfAppendBranch(bytecodeChunk.getBranchB())) {
                 sb.append(bytecodeChunk.getId()).append("->").append(bytecodeChunk.getBranchB().getId()).append("[color=\"#12cc12\"];").append(System.lineSeparator());
             }
         }
         sb.append("}");
         return sb.toString();
+    }
+
+    private boolean checkIfAppendBranch(BytecodeChunk branch) {
+        if (branch == null) {
+            return false;
+        }
+        if (!Main.arguments.onlyTraceOpcodes) {
+            return true;
+        }
+        OpcodeSource firstOpcode = branch.getOpcodes().get(0);
+        return trace.containsKey(firstOpcode.getOffset());
     }
 
     private String buildLabel(BytecodeChunk bytecodeChunk) {

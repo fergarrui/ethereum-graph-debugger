@@ -1,5 +1,6 @@
 package net.nandgr.debugger.report;
 
+import net.nandgr.debugger.Main;
 import net.nandgr.debugger.transformers.ContractObject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -46,6 +47,7 @@ public class Report {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("contracts", contracts);
         velocityContext.put("txHash", txHash);
+        velocityContext.put("d3memory", Main.arguments.d3totalMemory);
         StringWriter stringWriter = new StringWriter();
         template.merge(velocityContext, stringWriter);
         try {

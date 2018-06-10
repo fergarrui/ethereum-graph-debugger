@@ -14,6 +14,7 @@
         <apache.http.client.version>4.5.5</apache.http.client.version>
         <junit.version>4.12</junit.version>
         <velocity.version>1.7</velocity.version>
+        <google.options.version>1.0.0</google.options.version>
         <mvn.assembly.plugin.version>3.1.0</mvn.assembly.plugin.version>
         <jar.cli>edebugger-${version}</jar.cli>
     </properties>
@@ -38,6 +39,11 @@
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity</artifactId>
             <version>${velocity.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pcj</groupId>
+            <artifactId>google-options</artifactId>
+            <version>${google.options.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -32,6 +32,10 @@ public class SolidityTransformer implements Transformer {
     public SolidityTransformer(String nodeUrl, String txHash) {
         this.nodeUrl = nodeUrl;
         this.txHash = txHash;
+        if (!Solc.checkSolcInClasspath()) {
+            System.out.println("solc was not found in classpath");
+            System.exit(0);
+        }
     }
 
     @Override

@@ -9,14 +9,35 @@ and jump where it is necessary in a quick and graphical way.
 
 # Usage
 
-Right now, the debugger is very simple:
+Version 0.0.4 and earlier (this will be removed when 0.0.5 is released):
 
 ```
 edebugger-1.0-SNAPSHOT.jar <solidity source file> <node URL> <transaction hash>
 ```
-For example:
+
+Version 0.0.5 (current snapshot in master):
+
 ```
-java -jar edebugger-1.0-SNAPSHOT.jar ~/tests/Program.sol http://127.0.0.1:8545 0x0c971feb820d2bca26c3e7a0a27b5015694d9ec8ea0169935ff7168a63da3f6f
+edebugger-<VERSION>-SNAPSHOT.jar <OPTIONS>
+Options category 'mandatory':
+  --node [-n] (a string; default: "")
+    The node where the transaction was run. It must support debug_traceTransaction
+  --source-file [-f] (a string; default: "")
+    The source file of the contract the transaction is executed against
+  --transaction-hash [-t] (a string; default: "")
+    Transaction hash to debug
+
+Options category 'optional':
+  --d3-memory [-m] (a string; default: "537395200")
+    D3 graph memory. If the graph is too large, you may want to increase this value (by multiplying it)
+  --[no]only-trace [-o] (a boolean; default: "false")
+    Exclude opcodes that are not executed in the transaction.
+    This may help if the graph is too large and/or the opcodes not executed are not important
+```
+
+Example:
+```
+java -jar edebugger-<VERSION>.jar -f ~/tests/Program.sol -n http://127.0.0.1:8545 -t 0x0c971feb820d2bca26c3e7a0a27b5015694d9ec8ea0169935ff7168a63da3f6f
 ```
 
 # Download
@@ -47,7 +68,7 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 For now there are many limitations since this is a very early release of the debugger
 
-* The control flow graph is drawn from the static bytecode, so there can be nodes without edges, a symbolic execution would be needed. Maybe will be added in future releases
+* The control flow graph is drawn from the static bytecode, so there can be nodes without all edges, a symbolic execution would be needed. Maybe will be added in future releases
 * Transactions executed in the runtime bytecode are supported (for example, the constructor execution of a contract cannot be debugged right now)
 * You must provide a node URL that supports `debug_traceTransaction`, like Geth or Ganache, therefore, Infura is not supported
 * It only supports Solidity for now, but planning to make it more modular to support different languages (if the compiler gives source mappings)

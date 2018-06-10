@@ -155,7 +155,7 @@ var Range = require("ace/range").Range
     `;
 
     window["graphviz-$contract.contractName"] = d3.select("#graph-$contract.contractName").graphviz();
-    window["graphviz-$contract.contractName"].totalMemory(537395200);
+    window["graphviz-$contract.contractName"].totalMemory($d3memory);
 #end
 
     function render(dotSrc, gViz, contractName) {
