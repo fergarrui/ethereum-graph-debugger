@@ -9,14 +9,6 @@ and jump where it is necessary in a quick and graphical way.
 
 # Usage
 
-Version 0.0.4 and earlier (this will be removed when 0.0.5 is released):
-
-```
-edebugger-1.0-SNAPSHOT.jar <solidity source file> <node URL> <transaction hash>
-```
-
-Version 0.0.5 (current snapshot in master):
-
 ```
 edebugger-<VERSION>-SNAPSHOT.jar <OPTIONS>
 Options category 'mandatory':
