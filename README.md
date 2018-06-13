@@ -10,7 +10,7 @@ and jump where it is necessary in a quick and graphical way.
 # Usage
 
 ```
-edebugger-<VERSION>-SNAPSHOT.jar <OPTIONS>
+edebugger-<VERSION>.jar <OPTIONS>
 Options category 'mandatory':
   --node [-n] (a string; default: "")
     The node where the transaction was run. It must support debug_traceTransaction
