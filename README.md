@@ -10,7 +10,7 @@ and jump where it is necessary in a quick and graphical way.
 # Usage
 
 ```
-edebugger-<VERSION>-SNAPSHOT.jar <OPTIONS>
+edebugger-<VERSION>.jar <OPTIONS>
 Options category 'mandatory':
   --address [-a] (a string; default: "")
     The Address of the contract the transaction is executed against. Cannot be
