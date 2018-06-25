@@ -45,8 +45,7 @@ Go to the [releases](https://github.com/fergarrui/ethereum-graph-debugger/releas
 
 # Example debug file
 
-This file is made as a demo to see what this debugger does at this stage. A function (`pushIf`) was executed in a test contract (the source code of the contract is in the left panel of the debug file).
-The file can be found here:  [Example debug file](http://htmlpreview.github.com/?https://raw.githubusercontent.com/fergarrui/ethereum-graph-debugger/master/examples/debug.html)
+This file is made as a demo to see what this debugger does at this stage. The file can be found here:  [Example debug file](http://htmlpreview.github.com/?https://raw.githubusercontent.com/fergarrui/ethereum-graph-debugger/master/examples/debug.html)
 
 # Existing tools
 There are already tools that allow you to debug Ethereum transactions (Solidity):
