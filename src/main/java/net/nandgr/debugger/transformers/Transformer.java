@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface Transformer {
 
-    List<ContractObject> loadContracts(String sourceCodeFile) throws TransformException;
+    List<ContractObject> loadContracts() throws TransformException;
 }

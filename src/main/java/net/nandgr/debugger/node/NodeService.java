@@ -31,9 +31,9 @@ public class NodeService {
         this.nodeUrl = nodeUrl;
     }
 
-    public void populateTraceDataResponse(String txHash) throws IOException {
+    public void populateTraceDataResponse(String address, String txHash) throws IOException {
         DebugTraceTransactionResponse debugTraceTransactionResponse = getDebugTraceTransactionResponse(txHash);
-        populateAddressDebugTraceMap(EMPTY_ADDRESS, debugTraceTransactionResponse.getResult().getStructLogs());
+        populateAddressDebugTraceMap(address, debugTraceTransactionResponse.getResult().getStructLogs());
     }
 
     private void populateAddressDebugTraceMap(String address, List<DebugTraceTransactionLog> debugTrace) {

@@ -11,11 +11,20 @@ public class Arguments extends OptionsBase {
     @Option(
         name = "source-file",
         abbrev = 'f',
-        help = "The source file of the contract the transaction is executed against",
+        help = "The source file of the contract the transaction is executed against. Cannot be set in combination with -a",
         category = "mandatory",
         defaultValue = ""
     )
     public String sourceFile;
+
+    @Option(
+            name = "address",
+            abbrev = 'a',
+            help = "The Address of the contract the transaction is executed against. Cannot be set in combination with -f",
+            category = "mandatory",
+            defaultValue = ""
+    )
+    public String address;
 
     @Option(
         name = "node",
@@ -54,12 +63,20 @@ public class Arguments extends OptionsBase {
     )
     public boolean onlyTraceOpcodes;
 
-    public void validate(OptionsParser parser) {
-        if (sourceFile.isEmpty() || nodeUrl.isEmpty() || transactionHash.isEmpty()) {
+    void validate(OptionsParser parser) {
+        if (mandatoryParameters() || forbiddenCombinations()) {
             String execName = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getName();
             System.out.println("Help: java -jar " + execName + " <OPTIONS>" + System.lineSeparator());
             System.out.println(parser.describeOptions(Collections.<String, String>emptyMap(), OptionsParser.HelpVerbosity.LONG));
             System.exit(0);
         }
+    }
+
+    private boolean forbiddenCombinations() {
+        return !sourceFile.isEmpty() && !address.isEmpty();
+    }
+
+    private boolean mandatoryParameters() {
+        return nodeUrl.isEmpty() || transactionHash.isEmpty() || (sourceFile.isEmpty() && address.isEmpty());
     }
 }

@@ -32,9 +32,10 @@ public class CFGCreatorDefault {
         int i = 0;
         for (; i < contractOpcodes.size() ; i++) {
             Opcode contractOpcode = contractOpcodes.get(i);
-            if (contractOpcode.getOpcode().equals(Opcodes.CODECOPY)) {
-                codeOffset = contractOpcodes.get(i-2).getParameter();
-            }
+            // TODO analyze this better, not needed here because constructor debugging is not supported yet
+//            if (contractOpcode.getOpcode().equals(Opcodes.CODECOPY)) {
+//                codeOffset = contractOpcodes.get(i-2).getParameter();
+//            }
             if (contractOpcode.getOffset() != 0 && contractOpcode.getOffset() == codeOffset.intValue()) {
                 constructorFound = true;
                 List<OpcodeSource> constructorOpcodes = contractOpcodes.subList(0, i);

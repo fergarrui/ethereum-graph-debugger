@@ -28,10 +28,12 @@ public class SolidityTransformer implements Transformer {
 
     private final String nodeUrl;
     private final String txHash;
+    private final String sourceFile;
 
-    public SolidityTransformer(String nodeUrl, String txHash) {
+    public SolidityTransformer(String nodeUrl, String txHash, String sourceFile) {
         this.nodeUrl = nodeUrl;
         this.txHash = txHash;
+        this.sourceFile = sourceFile;
         if (!Solc.checkSolcInClasspath()) {
             System.out.println("solc was not found in classpath");
             System.exit(0);
@@ -39,7 +41,7 @@ public class SolidityTransformer implements Transformer {
     }
 
     @Override
-    public List<ContractObject> loadContracts(String sourceCodeFile) throws TransformException {
+    public List<ContractObject> loadContracts() throws TransformException {
         ObjectMapper objectMapper = new ObjectMapper();
 
         NodeService nodeService = new NodeService(nodeUrl);
@@ -47,17 +49,17 @@ public class SolidityTransformer implements Transformer {
         Map<String, Map<Integer, DebugTraceTransactionLog>> traceData = null;
 
         try {
-            nodeService.populateTraceDataResponse(txHash);
+            nodeService.populateTraceDataResponse(NodeService.EMPTY_ADDRESS, txHash);
             traceData = nodeService.getAddressTrace();
         } catch (IOException e) {
             throw new TransformException("Failed getting debug trace for hash: " + txHash, e);
         }
 
-        Path path = Paths.get(sourceCodeFile);
+        Path path = Paths.get(sourceFile);
         String fileName = path.getFileName().toString();
         String contractName = fileName.substring(0, fileName.lastIndexOf("."));
 
-        Solc solc = new Solc(sourceCodeFile);
+        Solc solc = new Solc(sourceFile);
         SolcOutput solcOutput = null;
         try {
             solcOutput = solc.compile();
@@ -72,7 +74,7 @@ public class SolidityTransformer implements Transformer {
             String contractPath = "";
             String cName = "";
             if (contractAddress.equals(NodeService.EMPTY_ADDRESS)) {
-                contractPath = sourceCodeFile;
+                contractPath = sourceFile;
                 cName = contractName;
             } else {
                 try {
@@ -97,7 +99,6 @@ public class SolidityTransformer implements Transformer {
             Contract contract = solcContracts.get(contractPath + ":" + cName);
             List<Code> asmCode = contract.getAsm().getData().get("0").getCode();
             String code = contract.getBinRuntime();
-
 
             LinkedDisassembler disassembler = new LinkedDisassembler(code);
             List<OpcodeSource> opcodeSources = null;

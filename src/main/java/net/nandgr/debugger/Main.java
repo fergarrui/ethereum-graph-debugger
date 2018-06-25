@@ -3,10 +3,8 @@ package net.nandgr.debugger;
 import com.google.devtools.common.options.OptionsParser;
 import net.nandgr.debugger.report.Report;
 import net.nandgr.debugger.report.ReportException;
-import net.nandgr.debugger.transformers.ContractObject;
-import net.nandgr.debugger.transformers.SolidityTransformer;
-import net.nandgr.debugger.transformers.TransformException;
-import net.nandgr.debugger.transformers.Transformer;
+import net.nandgr.debugger.transformers.*;
+
 import java.util.List;
 
 public class Main {
@@ -16,12 +14,16 @@ public class Main {
     public static void main(String[] args){
 
         parseArguments(args);
+        Transformer transformer;
+        if (!arguments.address.isEmpty()) {
+            transformer = new ByteCodeTransformer(arguments.nodeUrl, arguments.transactionHash, arguments.address);
+        } else {
+            transformer = new SolidityTransformer(arguments.nodeUrl, arguments.transactionHash, arguments.sourceFile);
+        }
 
-        // for now only solidity is supported
-        Transformer solidityTransformer = new SolidityTransformer(arguments.nodeUrl, arguments.transactionHash);
         List<ContractObject> contracts = null;
         try {
-            contracts = solidityTransformer.loadContracts(arguments.sourceFile);
+            contracts = transformer.loadContracts();
         } catch (TransformException e) {
             e.printStackTrace();
             System.exit(0);

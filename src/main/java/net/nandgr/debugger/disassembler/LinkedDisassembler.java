@@ -17,18 +17,22 @@ public class LinkedDisassembler extends Disassembler {
         List<Opcode> opcodes = super.getOpcodes();
         asmCode.removeIf(elem -> elem.getName().equals("tag"));
 
-        if (opcodes.size()-1 != asmCode.size()) {
-            // TODO move to a new exception somewhere
-            throw new DisassemblerException("SolcOutput does not match with bytecode. Opcodes size: " + opcodes.size() + ", asm size: " + asmCode.size());
+        if (!asmCode.isEmpty()) {
+            if (opcodes.size()-1 != asmCode.size()) {
+                throw new DisassemblerException("SolcOutput does not match with bytecode. Opcodes size: " + opcodes.size() + ", asm size: " + asmCode.size());
+            }
         }
 
         List<OpcodeSource> opcodeSources = new ArrayList<>();
-        for (int i = 0; i < asmCode.size(); i++) {
+        for (int i = 0; i < opcodes.size() - 1; i++) {
             OpcodeSource opcodeSource = new OpcodeSource(opcodes.get(i));
-            Code currentAsmOpcode = asmCode.get(i);
-            opcodeSource.setBegin(currentAsmOpcode.getBegin());
-            opcodeSource.setEnd(currentAsmOpcode.getEnd());
+            if (!asmCode.isEmpty()) {
+                Code currentAsmOpcode = asmCode.get(i);
+                opcodeSource.setBegin(currentAsmOpcode.getBegin());
+                opcodeSource.setEnd(currentAsmOpcode.getEnd());
+            }
             opcodeSources.add(opcodeSource);
+
         }
 
         return opcodeSources;

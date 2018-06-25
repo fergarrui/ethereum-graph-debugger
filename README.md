@@ -12,19 +12,26 @@ and jump where it is necessary in a quick and graphical way.
 ```
 edebugger-<VERSION>-SNAPSHOT.jar <OPTIONS>
 Options category 'mandatory':
+  --address [-a] (a string; default: "")
+    The Address of the contract the transaction is executed against. Cannot be
+    set in combination with -f
   --node [-n] (a string; default: "")
-    The node where the transaction was run. It must support debug_traceTransaction
+    The node where the transaction was run. It must support
+    debug_traceTransaction
   --source-file [-f] (a string; default: "")
-    The source file of the contract the transaction is executed against
+    The source file of the contract the transaction is executed against. Cannot
+    be set in combination with -a
   --transaction-hash [-t] (a string; default: "")
     Transaction hash to debug
 
 Options category 'optional':
   --d3-memory [-m] (a string; default: "537395200")
-    D3 graph memory. If the graph is too large, you may want to increase this value (by multiplying it)
+    D3 graph memory. If the graph is too large, you may want to increase this
+    value (by multiplying it)
   --[no]only-trace [-o] (a boolean; default: "false")
-    Exclude opcodes that are not executed in the transaction.
-    This may help if the graph is too large and/or the opcodes not executed are not important
+    Exclude opcodes that are not executed in the transaction when creating the
+    graph. This may help if the graph is too large and the opcodes not executed
+    are not important
 ```
 
 Example:
@@ -50,6 +57,7 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 # Features
 
 * It compiles the provided source code and draws a control flow graph (also imported contracts)
+* It supports debugging of transactions even if no source code is provided (option `-a`). It will draw the CFG and trace the transaction
 * From the provided transaction hash (using `debug_traceTransaction`) it gets the trace of the transaction
 * Combines the control flow graph with the execution trace, highlighting the executed instructions in red
 * Supports contracts calls. All contracts involved in the transaction can be debugged
@@ -63,7 +71,7 @@ For now there are many limitations since this is a very early release of the deb
 * The control flow graph is drawn from the static bytecode, so there can be nodes without all edges, a symbolic execution would be needed. Maybe will be added in future releases
 * Transactions executed in the runtime bytecode are supported (for example, the constructor execution of a contract cannot be debugged right now)
 * You must provide a node URL that supports `debug_traceTransaction`, like Geth or Ganache, therefore, Infura is not supported
-* It only supports Solidity for now, but planning to make it more modular to support different languages (if the compiler gives source mappings)
+* It only supports Solidity or bytecode for now, but planning to make it more modular to support different languages (if the compiler gives source mappings)
 * The interface is quite ugly, but usable
 * Not really a limitation, but the editor syntax highlighting is set to Javascript at the moment
 * Probably many more

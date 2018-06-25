@@ -79,12 +79,14 @@ li a:link, li a:visited, li a:focus, li a:active {
 }
 
 .statemachine {
-	margin-top: 400px;
+    #if ($contracts[0].sourceCode)
+	    margin-top: 400px;
+	    height: 50%;
+    #end
 	font-size:14px;
 	color:white;
 	font-family: courier;
 	padding: 10px;
-	height: 50%;
 	overflow-y: auto;
 }
 
@@ -206,7 +208,9 @@ var Range = require("ace/range").Range
         pol1.classList.add("selectedPolygon");
         pol2.classList.add("selectedPolygon");
 
-        editorSelect(begin, end, contractName);
+        #if ($contracts[0].sourceCode)
+            editorSelect(begin, end, contractName);
+        #end
         var trace = window["mapTrace-" + contractName][offset];
 
         var stackElement = document.getElementById("stack-" + contractName);
@@ -284,13 +288,15 @@ var Range = require("ace/range").Range
 
     #foreach ($contract in $contracts)
         render(dotSrc$contract.contractName, window["graphviz-$contract.contractName"], "$contract.contractName");
-        window["editor-$contract.contractName"] = ace.edit("aceEditor-$contract.contractName");
-        window["editor-$contract.contractName"].setTheme("ace/theme/monokai");
-        window["editor-$contract.contractName"].setReadOnly(true);
-        window["editor-$contract.contractName"].session.setMode("ace/mode/javascript");
-        window["editor-$contract.contractName"].session.setOptions({useSoftTabs: false });
-        window["editor-$contract.contractName"].getSession().setUseWorker(false);
-        window["editor-$contract.contractName"].resize(true);
+        #if ($contract.sourceCode)
+            window["editor-$contract.contractName"] = ace.edit("aceEditor-$contract.contractName");
+            window["editor-$contract.contractName"].setTheme("ace/theme/monokai");
+            window["editor-$contract.contractName"].setReadOnly(true);
+            window["editor-$contract.contractName"].session.setMode("ace/mode/javascript");
+            window["editor-$contract.contractName"].session.setOptions({useSoftTabs: false });
+            window["editor-$contract.contractName"].getSession().setUseWorker(false);
+            window["editor-$contract.contractName"].resize(true);
+        #end
     #end
 
     function editorSelect(begin, end, contractName) {
@@ -354,7 +360,9 @@ var Range = require("ace/range").Range
         <div id="tabs-$contract.contractName" class="tab">
             <div id="parent-$contract.contractName" class="parent">
                 <div id="editor-$contract.contractName" class="editor">
+                    #if ($contract.sourceCode)
                     <div id="aceEditor-$contract.contractName" class="aceEditor">$contract.sourceCode</div>
+                    #end
                     <div id="statemachine-$contract.contractName" class="statemachine">
                         <div id="gas-$contract.contractName" class="gas"></div>
                         <h3>Stack</h3>
