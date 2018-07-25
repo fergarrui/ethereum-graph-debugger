@@ -97,6 +97,9 @@ public class SolidityTransformer implements Transformer {
             }
 
             Contract contract = solcContracts.get(contractPath + ":" + cName);
+            if (contract == null) {
+                continue;
+            }
             List<Code> asmCode = contract.getAsm().getData().get("0").getCode();
             String code = contract.getBinRuntime();
 

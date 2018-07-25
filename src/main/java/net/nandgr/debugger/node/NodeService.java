@@ -1,6 +1,5 @@
 package net.nandgr.debugger.node;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.nandgr.debugger.node.request.json.DebugTraceTransactionRequest;
 import net.nandgr.debugger.node.request.json.GetCodeRequest;
@@ -16,7 +15,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 public class NodeService {
