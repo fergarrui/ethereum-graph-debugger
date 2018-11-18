@@ -7,6 +7,8 @@ Instead of stepping through the execution of the program, it shows the whole pro
 the actual execution of the transaction highlighted in red. In this way, the developer can see the whole picture
 and jump where it is necessary in a quick and graphical way.
 
+### Update with interactive UI coming soon...
+
 # Usage
 
 ```
