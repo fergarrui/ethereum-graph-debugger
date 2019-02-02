@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+.app {
+  width: 100%;
+  position: relative;
+  font-family: 'Montserrat', sans-serif;
+
+  &__tabs {
+    margin-top: 50px;
+    padding: 50px 10px;
+  }
+}

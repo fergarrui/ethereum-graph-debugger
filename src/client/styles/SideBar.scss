@@ -1,0 +1,25 @@
+.side-bar {
+  width: 100%;
+  padding: 10px 0;
+  background: $color-grey;
+  
+  &__item {
+    width: 100%;
+    padding: 20px;
+    //background: $color-dark-grey;
+    color: $color-green;
+    text-transform: uppercase;
+    border-bottom: 1px solid $color-green;
+    border-top: 1px solid $color-green;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+
+    &:hover {
+      background: $color-green;
+      color: $color-dark-grey;
+    }
+  }
+}
+
+
+

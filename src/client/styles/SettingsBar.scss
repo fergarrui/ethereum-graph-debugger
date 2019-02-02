@@ -1,0 +1,73 @@
+.settings-bar {
+  width: 50%;
+  background: $color-dark-grey;
+  position: absolute;
+  padding: 0 5px 10px 5px;
+  top: -262px;
+  right: 0;
+  transition: top 0.3s;
+  z-index: 2;
+
+  &--active {
+    top: 29px;
+  }
+
+  &__item {
+    padding: 5px 10px;
+
+    p {
+      color: $color-green;
+      text-align: center;
+      padding: 20px 0 0 0;
+    }
+
+    &:nth-of-type(5) {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 10px 0 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 0;
+      font-size: 14px;
+      background: transparent;
+      color: $color-light-grey;
+      border-bottom: 1px dotted $color-light-grey;
+      transition: border-color 0.2s;
+
+      &:focus {
+        border-color: $color-green;
+        outline: 0 none;
+      }
+    }
+
+    button {
+      padding: 10px;
+      border-radius: 5px;
+      background: transparent;
+      border: 1px solid $color-light-grey;
+      cursor: pointer;
+      transition: opacity 0.7, border-color 0.2s;
+
+      &:focus {
+        border-color: $color-green;
+        outline: 0 none;
+
+        span {
+          color: $color-green;
+        }
+      }
+
+      &:hover {
+        opacity: 0.7;
+      }
+
+      span {
+        color: $color-light-grey;
+        font-size: 14px;
+        transition: color 0.2s;
+      }
+    }
+  }
+}

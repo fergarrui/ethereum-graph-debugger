@@ -1,0 +1,124 @@
+{
+  "name": "ethereum-graph-debugger",
+  "author": "Fernando Garcia",
+  "license": "GPL",
+  "version": "1.0.0",
+  "description": "Ethereum graph debugger",
+  "main": "dist/run-server.js",
+  "scripts": {
+    "build": "$(npm bin)/npm-run-all -s routes-gen tsc copy-index webpack:prod",
+    "clean": "$(npm bin)/npm-run-all -p clean:*",
+    "clean:dist": "$(npm bin)/rimraf dist",
+    "clean:cov": "$(npm bin)/rimraf coverage",
+    "start": "$(npm bin)/npm-run-all -s clean build start:simple",
+    "start:simple": "node ./dist/run-server.js",
+    "start:dev": "$(npm bin)/npm-run-all -s clean build -p watch:*",
+    "watch:node": "$(npm bin)/nodemon --inspect=0.0.0.0:9229 --watch './src/**/*.*' --delay 2.5 --exec npm run server-webpack -e ts",
+    "watch:ts": "tsc --watch",
+    "prettier": "prettier --write 'src/**/*.{ts,json}'",
+    "prettier:check": "prettier --list-different 'src/**/*.{ts,json}'",
+    "test": "jest",
+    "test:coverage": "npm run test -- --coverage",
+    "tsc": "$(npm bin)/tsc",
+    "copy-index": "copyfiles ./index.html ./dist/",
+    "routes-gen": "tsoa routes",
+    "server-webpack": "$(npm bin)/npm-run-all -s webpack:prod copy-index start:simple",
+    "webpack:prod": "webpack --mode production"
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      }
+    },
+    "globals": {
+      "ts-jest": {
+        "skipBabel": true,
+        "enableTsDiagnostics": true
+      }
+    },
+    "clearMocks": true,
+    "collectCoverageFrom": [
+      "src/*/**/*.{ts,js}",
+      "!src/**/{routes,index}.{ts,js}"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "node"
+    ],
+    "testEnvironment": "node"
+  },
+  "dependencies": {
+    "@types/express": "^4.16.0",
+    "async-polling": "^0.2.1",
+    "bn.js": "^4.11.8",
+    "body-parser": "^1.18.3",
+    "brace": "^0.11.1",
+    "copyfiles": "^2.1.0",
+    "d3": "^5.7.0",
+    "d3-graphviz": "^2.6.0",
+    "ethereumjs-util": "^6.0.0",
+    "express": "^4.16.4",
+    "express-winston": "^1.4.2",
+    "inversify": "^4.13.0",
+    "inversify-binding-decorators": "^3.2.0",
+    "method-override": "^3.0.0",
+    "react": "^16.6.0",
+    "react-dom": "^16.6.0",
+    "react-redux": "^6.0.0",
+    "react-svg-inline": "^2.1.1",
+    "recursive-readdir": "^2.2.2",
+    "redux-thunk": "^2.3.0",
+    "reflect-metadata": "^0.1.12",
+    "solc": "^0.4.25",
+    "tsoa": "2.1.8",
+    "terser": "3.14.1",
+    "web3": "^1.0.0-beta.36",
+    "winston": "^2.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.5",
+    "@babel/preset-env": "^7.1.5",
+    "@babel/preset-react": "^7.0.0",
+    "@types/jest": "^23.3.1",
+    "@types/node": "^10.12.18",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.4",
+    "classnames": "^2.2.6",
+    "css-loader": "^1.0.1",
+    "jest": "^23.5.0",
+    "node-sass": "^4.10.0",
+    "nodemon": "^1.18.3",
+    "npm-run-all": "^4.1.3",
+    "onchange": "^4.1.0",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^1.14.2",
+    "prop-types": "^15.6.2",
+    "raw-loader": "^0.5.1",
+    "react-simple-storage": "^1.4.1",
+    "redux": "^4.0.1",
+    "rimraf": "^2.5.2",
+    "sass-loader": "^7.1.0",
+    "sass-resources-loader": "^2.0.0",
+    "style-loader": "^0.23.1",
+    "ts-jest": "^22.4.6",
+    "tslint-config-prettier": "^1.14.0",
+    "typescript": "^3.1.3",
+    "webpack": "^4.25.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  }
+}

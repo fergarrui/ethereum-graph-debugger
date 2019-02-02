@@ -1,0 +1,61 @@
+.hamburger {
+  cursor: pointer;
+
+
+  &__top-layer, &__middle-layer, &__bottom-layer {
+      margin: 4px 0;
+      width: 27px;
+      height: 3px;
+      background: $color-green;
+      border-radius: 2px;
+      opacity: 1;
+      transform: translate(0, 0);
+      transition: transform 0.3s;       
+  }
+
+  &:hover & {
+                          
+      &__top-layer {
+          transform: translate(0, -3px);
+      }
+
+      &__bottom-layer {
+          transform: translate(0, 3px);
+      }
+  }
+}
+
+//State
+.hamburger {
+                               
+  &__top-layer--active {
+      transform: translate(0, -3px) rotate(45deg);
+      transform-origin: bottom left;
+  }
+
+  &__middle-layer--active {
+      opacity: 0;
+  }
+
+  &__bottom-layer--active {
+      transform: translate(0, 3px) rotate(-45deg);
+      transform-origin: top left;
+  }
+
+  &:hover & {
+                              
+      &__top-layer--active {
+          transform: translate(0, -3px) rotate(45deg);
+          transform-origin: bottom left;
+      }
+
+      &__middle-layer--active {
+          opacity: 0;
+      }
+
+      &__bottom-layer--active {
+          transform: translate(0, 3px) rotate(-45deg);
+          transform-origin: top left;
+      }
+  }
+}

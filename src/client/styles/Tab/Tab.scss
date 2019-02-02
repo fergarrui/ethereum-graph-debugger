@@ -1,0 +1,18 @@
+.tab {
+  width: 100%;
+  overflow: hidden;
+
+  &__navigation {
+    width: 100%;
+    display: flex;
+    text-transform: uppercase;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  &__panels {
+    position: relative;
+  }
+}
+
+

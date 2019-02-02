@@ -1,0 +1,74 @@
+$parent: '.evm-state__item';
+
+.evm-state {
+  padding-top: 10px;
+  padding-left: 10px; 
+
+  &__item {
+    padding: 10px 0;
+
+    &:first-of-type {
+      display: flex;
+
+      #{$parent}__content {
+        margin: 0 0 0 5px;
+      }
+    }
+
+    &__title {
+
+      h4 {
+        color: $color-light-grey;
+      }
+    }
+
+    &__content {
+      margin: 5px 0 0 0;
+
+      span {
+        color: $color-green;
+      }
+
+      &__row {
+        padding: 2px;
+        margin: 3px 0;
+        border-bottom: 0.5px solid $color-light-grey;
+                    
+        span {
+          font-size: 11px;
+          word-break: break-all;
+        }
+
+        &__key {
+          position: relative;
+          padding: 0 0 2px 0;
+          border-bottom: 0.5px dotted $color-green;
+        }
+
+        &__value {
+          padding: 5px 0 0 0;
+        }
+
+        &__key, &__value {
+
+          .label {
+            position: relative;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            color: $color-light-grey;
+            border: 1px solid $color-light-grey;
+            margin: 0 5px 0 0;
+
+            span {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+            }
+          }
+        }
+      }
+    }
+  }
+}

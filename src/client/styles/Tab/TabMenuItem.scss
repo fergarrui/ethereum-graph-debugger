@@ -1,0 +1,67 @@
+.tab-menu-item {
+  position: relative;
+  height: 60px;
+  flex: 1 0 auto;
+  padding: 15px 20px 20px 20px;
+  text-align: center;
+  background: $color-grey;
+  color: $color-green;
+  z-index: 0;
+  box-shadow: inset 2px 1px 5px (#000 + 30);
+  transform: translate(0, 20px);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out, background 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:first-of-type {
+    border-top-left-radius: 8px;
+  }
+
+  &:last-of-type {
+    border-top-right-radius: 8px;
+  }
+
+  &:hover {
+    transform: translate(0, 15px);
+  }
+
+  &__icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    svg {
+      width: 10px;
+      height: 10px;
+      fill: $color-green;
+      stroke: $color-green;
+      pointer-events: none;
+      transition: fill 0.2s ease-in-out, stroke 0.2s ease-in-out;
+    }
+  }
+}
+
+//State 
+.tab-menu-item {
+
+  &--active {
+    transform: translate(0, 10px);
+    box-shadow: 2px 5px 6px 2px ($color-grey - 30);
+    color: $color-grey;
+    background: $color-green;
+
+    &:hover {
+      transform: translate(0, 10px);
+    }
+  } 
+  
+  &--active & {
+
+    &__icon {
+
+      svg {
+        fill: $color-grey;
+        stroke: $color-grey;
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+.operations {
+  display: flex;
+  justify-content: flex-start;
+
+  &__item {
+    flex: 0 0 170px;
+    text-align: left;
+
+    span {
+      word-break: break-all;
+    }
+  }
+}

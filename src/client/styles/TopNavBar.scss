@@ -1,0 +1,23 @@
+.top-navbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: $color-dark-grey;
+  padding: 20px;
+  z-index: 5;
+
+  &__input {
+    flex: 1 1 auto;
+  }
+
+  &__icon {
+    padding-left: 25px;
+    cursor: pointer;
+  }
+}
+
+

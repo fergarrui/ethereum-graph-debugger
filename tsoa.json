@@ -1,0 +1,7 @@
+{
+  "routes": {
+    "entryFile": "./src/run-server.ts",
+    "routesDir": "./src",
+    "iocModule" : "./src/inversify/ioc"
+  }
+}

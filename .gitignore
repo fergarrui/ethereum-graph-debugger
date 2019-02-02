@@ -1,5 +1,7 @@
-.idea/*
-*.asm
-*.iml
-target/*
-todo.txt
+node_modules/*
+token
+dist/*
+.DS_Store
+coverage/*
+.vscode/*
+package-lock.json

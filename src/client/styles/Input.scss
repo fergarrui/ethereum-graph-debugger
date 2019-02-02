@@ -1,0 +1,57 @@
+.input {
+  display: flex;
+
+  &__item {
+
+    &:first-of-type {
+      flex: 1 1 auto;
+    }
+
+    &:last-of-type {
+      margin-left: 10px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 14px;
+
+      &:focus {
+        outline: transparent;
+      }
+    }
+
+    input[type='text'] {
+      width: 100%;
+      background: transparent;
+      color: $color-light-grey;
+      border-bottom: 1px dotted $color-light-grey;
+      transition: border-color 0.2s;
+
+      &:focus, {
+        border-color: $color-green;
+        outline: 0 none;
+      }
+    }
+
+    input[type='submit'] {
+      border: 1px solid $color-light-grey;
+      border-radius: 5px;
+      background: transparent;
+      color: $color-light-grey;
+      cursor: pointer;
+      transition: opacity 0.2s, border-color 0.2s, color 0.2s;
+
+      &:hover {
+        opacity: 0.7;
+      }
+
+      &:focus {
+        border-color: $color-green;
+        color: $color-green;
+        outline: 0 none;
+      }
+    }
+  }
+}
+
+
