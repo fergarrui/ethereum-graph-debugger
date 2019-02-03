@@ -58,7 +58,6 @@ class ConnectedTabPanel extends React.Component {
     if (paramKeys.length) {
       url += '?';
     }
-
     url += paramKeys.filter(key => parameters[key]).map( key=> `${key}=${parameters[key]}`).join('&');
     return url;
   }
@@ -184,7 +183,7 @@ class ConnectedTabPanel extends React.Component {
       name: name.replace('.sol', ''),
       path: encodeURIComponent(path),
       source: encodeURIComponent(code),
-      'constructor': false
+      'constructor': "false"
     }
     this.fetchData(this.getUrl('cfg/source', params), 'Control Flow Graph');
 
