@@ -1,4 +1,4 @@
-import { BN } from 'bn.js'
+let BN = require('bn.js')
 
 export class UintUtils {
   static TWO_POW_256 = new BN('10000000000000000000000000000000000000000000000000000000000000000', 16)

@@ -1,6 +1,6 @@
 import { Word } from './Word'
-import { BN } from 'bn.js'
 import { UintUtils } from './UintUtils'
+let BN = require('bn.js')
 
 export class EVMMemory {
   memory: Buffer

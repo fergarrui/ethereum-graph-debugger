@@ -1,11 +1,11 @@
-import { BN } from 'bn.js'
 import { Symbols } from './Symbols'
+let BN = require('bn.js')
 
 export class Word {
   static WORD_LENGTH_IN_BYTES = 32
 
   isSymbolic: boolean
-  value?: BN
+  value?: any
   symbol?: Symbols
 
   static createLiteral(valueHex: string): Word {

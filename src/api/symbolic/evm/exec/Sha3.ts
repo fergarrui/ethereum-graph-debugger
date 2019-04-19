@@ -3,7 +3,7 @@ import { EVM } from '../EVM'
 import { Operation } from '../../../bytecode/Operation'
 import { Word } from '../Word'
 import { Symbols } from '../Symbols'
-import { BN } from 'bn.js'
+let BN = require('bn.js')
 const utils = require('ethereumjs-util')
 
 export class Sha3 implements Executor {

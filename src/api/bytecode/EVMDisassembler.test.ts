@@ -1,8 +1,8 @@
 import 'reflect-metadata'
 import { Disassembler } from './Disassembler'
 import { EVMDisassembler } from './EVMDisassembler'
-import { BN } from 'bn.js'
 import { DisassembledContract } from './DisassembledContract'
+let BN = require('bn.js')
 
 describe('Disassembler test', () => {
   let disass: Disassembler

@@ -4,7 +4,7 @@ import { Operation } from '../../../bytecode/Operation'
 import { Word } from '../Word'
 import { Symbols } from '../Symbols'
 import { UintUtils } from '../UintUtils'
-import { BN } from 'bn.js'
+let BN = require('bn.js')
 
 export class Exp implements Executor {
   execute(op: Operation, evm: EVM) {

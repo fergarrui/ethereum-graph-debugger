@@ -3,9 +3,9 @@ import { EthereumCFGCreator } from './EthereumCFGCreator'
 import { EVMDisassembler } from '../bytecode/EVMDisassembler'
 import { Disassembler } from '../bytecode/Disassembler'
 import { Operation } from '../bytecode/Operation'
-import { BN } from 'bn.js'
 import { Opcodes } from '../bytecode/Opcodes'
 import { CFGBlocks } from './CFGBlocks'
+let BN = require('bn.js')
 
 describe('EthereumCFGCreator', () => {
   let cfgCreator: EthereumCFGCreator
