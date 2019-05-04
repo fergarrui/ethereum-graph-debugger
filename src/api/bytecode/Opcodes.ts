@@ -5,7 +5,6 @@ export class Opcodes {
 
   static populate() {
     this.opcodes[-1] = { name: 'UNKNOWN', opcode: 0x00, parameters: 0 } as Opcode
-    // TODO SHL, SHR, SAR
     this.opcodes[0x00] = { name: 'STOP', opcode: 0x00, parameters: 0 } as Opcode
     this.opcodes[0x01] = { name: 'ADD', opcode: 0x01, parameters: 0 } as Opcode
     this.opcodes[0x02] = { name: 'MUL', opcode: 0x02, parameters: 0 } as Opcode
@@ -29,6 +28,9 @@ export class Opcodes {
     this.opcodes[0x18] = { name: 'XOR', opcode: 0x18, parameters: 0 } as Opcode
     this.opcodes[0x19] = { name: 'NOT', opcode: 0x19, parameters: 0 } as Opcode
     this.opcodes[0x1a] = { name: 'BYTE', opcode: 0x1a, parameters: 0 } as Opcode
+    this.opcodes[0x1b] = { name: 'SHL', opcode: 0x1b, parameters: 0 } as Opcode
+    this.opcodes[0x1c] = { name: 'SHR', opcode: 0x1c, parameters: 0 } as Opcode
+    this.opcodes[0x1d] = { name: 'SAR', opcode: 0x1d, parameters: 0 } as Opcode
     this.opcodes[0x20] = { name: 'SHA3', opcode: 0x20, parameters: 0 } as Opcode
     this.opcodes[0x30] = { name: 'ADDRESS', opcode: 0x30, parameters: 0 } as Opcode
     this.opcodes[0x31] = { name: 'BALANCE', opcode: 0x31, parameters: 0 } as Opcode

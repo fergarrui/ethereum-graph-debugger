@@ -66,6 +66,9 @@ import { Byte } from './Byte'
 import { Sha3 } from './Sha3'
 import { Msize } from './Msize'
 import { Selfdestruct } from './Selfdestruct';
+import { Shr } from './Shr';
+import { Shl } from './Shl';
+import { Sar } from './Sar';
 
 @injectable()
 export class OpcodeExecutor {
@@ -167,6 +170,9 @@ export class OpcodeExecutor {
     this.ops['XOR'] = new Xor()
     this.ops['NOT'] = new Not()
     this.ops['BYTE'] = new Byte()
+    this.ops['SHR'] = new Shr()
+    this.ops['SHL'] = new Shl()
+    this.ops['SAR'] = new Sar()
 
     this.ops['SHA3'] = new Sha3()
 

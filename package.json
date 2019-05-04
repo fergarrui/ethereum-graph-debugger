@@ -83,7 +83,7 @@
     "recursive-readdir": "^2.2.2",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.12",
-    "solc": "^0.4.25",
+    "solc": "^0.5.8",
     "terser": "3.14.1",
     "tsoa": "2.1.8",
     "web3": "^1.0.0-beta.36",

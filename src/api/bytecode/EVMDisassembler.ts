@@ -56,7 +56,8 @@ export class EVMDisassembler implements Disassembler {
     let constructor = []
     let runtime = operations
     if (hasConstructor) {
-      const firstStopIndex = operations.findIndex(op => op.opcode.name === 'STOP')
+      // pre- 0.5.* the opcode we are searching is 'STOP'
+      const firstStopIndex = operations.findIndex(op => op.opcode.name === 'INVALID')
       constructor = operations.slice(0, firstStopIndex + 1)
       runtime = this.adjustRuntimeOffset(operations.slice(firstStopIndex + 1, operations.length))
     }
@@ -117,7 +118,11 @@ export class EVMDisassembler implements Disassembler {
     const constructor = disassembledCode.constructor
     const runtime = disassembledCode.runtime
     if (constructor.length !== asmConstructor.length + 1 || runtime.length !== asmRuntime.length + 1) {
-      throw new Error('Source mappings do not match with bytecode')
+      console.log(constructor)
+      console.log('================')
+      console.log(asmConstructor)
+      logger.error(`Source mappings do not match with bytecode, constructorLength=${constructor.length}, asmConstructorLength=${asmConstructor.length}, runtimeLength=${runtime.length}, asmRuntimeLength=${asmRuntime.length}`)
+      throw new Error(`Source mappings do not match with bytecode`)
     }
 
     if (disassembledCode.hasConstructor) {
