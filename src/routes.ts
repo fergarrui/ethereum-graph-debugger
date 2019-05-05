@@ -6,6 +6,7 @@ import { FileController } from './api/service/controller/FileController';
 import { DisassembleController } from './api/service/controller/DisassembleController';
 import { TransactionController } from './api/service/controller/TransactionController';
 import { ControlFlowGraphController } from './api/service/controller/ControlFlowGraphController';
+import { StorageRecoverController } from './api/service/controller/StorageRecoverController';
 
 const models: TsoaRoute.Models = {
     "Opcode": {
@@ -52,12 +53,20 @@ const models: TsoaRoute.Models = {
             "data": { "dataType": "string", "required": true },
             "to": { "dataType": "string", "required": true },
             "from": { "dataType": "string", "required": true },
+            "blockNumber": { "dataType": "double", "required": true },
+            "transactionIndex": { "dataType": "double", "required": true },
+            "contractAddress": { "dataType": "string", "required": true },
         },
     },
     "GFCResponse": {
         "properties": {
             "cfg": { "dataType": "string", "required": true },
             "operations": { "dataType": "array", "array": { "ref": "OperationResponse" }, "required": true },
+        },
+    },
+    "Storage": {
+        "properties": {
+            "storage": { "dataType": "any", "required": true },
         },
     },
 };
@@ -211,6 +220,35 @@ export function RegisterRoutes(app: any) {
 
 
             const promise = controller.getCFGFromBytecode.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/storage/:contractAddress',
+        function(request: any, response: any, next: any) {
+            const args = {
+                contractAddress: { "in": "path", "name": "contractAddress", "required": true, "dataType": "string" },
+                startBlock: { "in": "query", "name": "startBlock", "required": true, "dataType": "double" },
+                endBlock: { "in": "query", "name": "endBlock", "required": true, "dataType": "double" },
+                blockchainHost: { "in": "query", "name": "blockchainHost", "dataType": "string" },
+                blockchainProtocol: { "in": "query", "name": "blockchainProtocol", "dataType": "string" },
+                blockchainBasicAuthUsername: { "in": "query", "name": "blockchainBasicAuthUsername", "dataType": "string" },
+                blockchainBasicAuthPassword: { "in": "query", "name": "blockchainBasicAuthPassword", "dataType": "string" },
+                existingStorage: { "in": "query", "name": "existingStorage", "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<StorageRecoverController>(StorageRecoverController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.getStorage.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
 

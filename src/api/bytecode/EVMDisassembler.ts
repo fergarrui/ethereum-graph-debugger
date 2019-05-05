@@ -118,9 +118,6 @@ export class EVMDisassembler implements Disassembler {
     const constructor = disassembledCode.constructor
     const runtime = disassembledCode.runtime
     if (constructor.length !== asmConstructor.length + 1 || runtime.length !== asmRuntime.length + 1) {
-      console.log(constructor)
-      console.log('================')
-      console.log(asmConstructor)
       logger.error(`Source mappings do not match with bytecode, constructorLength=${constructor.length}, asmConstructorLength=${asmConstructor.length}, runtimeLength=${runtime.length}, asmRuntimeLength=${asmRuntime.length}`)
       throw new Error(`Source mappings do not match with bytecode`)
     }

@@ -3,4 +3,7 @@ export interface TransactionReceipt {
   data: string
   to: string
   from: string
+  blockNumber: number
+  transactionIndex: number
+  contractAddress: string
 }

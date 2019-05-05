@@ -15,6 +15,9 @@ import { TransactionServiceImpl } from '../api/service/service/TransactionServic
 import { GraphVizService } from '../api/cfg/GraphVizService'
 import { CFGService } from '../api/service/service/CFGService'
 import { OpcodeExecutor } from '../api/symbolic/evm/exec/OpcodeExecutor'
+import { BlockService } from '../api/service/service/BlockService';
+import { BlockServiceImpl } from '../api/service/service/BlockServiceImpl';
+import { StorageRecover } from '../api/service/service/StorageRecover';
 
 const iocContainer = new Container()
 const provide = makeProvideDecorator(iocContainer)
@@ -29,7 +32,9 @@ iocContainer.bind<Disassembler>(TYPES.Disassembler).to(EVMDisassembler)
 iocContainer.bind<CFGCreator>(TYPES.CFGCreator).to(EthereumCFGCreator)
 iocContainer.bind<GraphVizService>(TYPES.GraphVizService).to(GraphVizService)
 iocContainer.bind<CFGService>(TYPES.CFGService).to(CFGService)
+iocContainer.bind<BlockService>(TYPES.BlockService).to(BlockServiceImpl)
 iocContainer.bind<OpcodeExecutor>(TYPES.OpcodeExecutor).to(OpcodeExecutor)
+iocContainer.bind<StorageRecover>(TYPES.StorageRecover).to(StorageRecover)
 
 const provideNamed = (
   identifier: string | symbol | interfaces.Newable<any> | interfaces.Abstract<any>,

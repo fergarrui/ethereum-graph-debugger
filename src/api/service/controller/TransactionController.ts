@@ -3,7 +3,6 @@ import { provideSingleton, inject } from '../../../inversify/ioc'
 import { TYPES } from '../../../inversify/types'
 import { TransactionService } from '../service/TransactionService'
 import { TransactionReceipt } from '../bean/TransactionReceipt'
-import { DebugTrace } from '../../symbolic/evm/DebugTrace'
 import { logger } from '../../../Logger'
 import { Web3Configuration } from 'src/api/blockchain/Web3Configuration';
 

@@ -1,12 +1,12 @@
 import { TransactionService } from './TransactionService'
 import { injectable } from 'inversify'
-import { TYPES } from '../../../inversify/types'
 import { IWeb3 } from '../../blockchain/IWeb3'
 import { TransactionReceipt } from '../bean/TransactionReceipt'
 import { DebugTrace } from '../../symbolic/evm/DebugTrace'
 import { EVMDisassembler } from '../../bytecode/EVMDisassembler'
 import { Web3Configuration } from 'src/api/blockchain/Web3Configuration';
 import { Web3Instance } from '../../blockchain/Web3Instance'
+import { Transaction } from '../bean/Transaction';
 
 @injectable()
 export class TransactionServiceImpl implements TransactionService {
@@ -23,15 +23,24 @@ export class TransactionServiceImpl implements TransactionService {
     return receipt
   }
 
-  async findTransactionTrace(transactionHash: string, bytecode: string, config: Web3Configuration): Promise<DebugTrace> {
+  async findTransaction(transactionHash: string, config: Web3Configuration): Promise<Transaction> {
+    const iWeb3: IWeb3 = new Web3Instance(config)
+    const web3 = iWeb3.getInstance()
+    const receipt: Transaction = await web3.eth.getTransaction(transactionHash)
+    if (!receipt) {
+      throw new Error('Transaction not found in node')
+    }
+    return receipt
+  }
+
+
+  async getTrace(transactionHash: string, config: Web3Configuration): Promise<DebugTrace> {
     const iWeb3: IWeb3 = new Web3Instance(config)
     const web3 = iWeb3.getInstance()
     const transaction: TransactionReceipt = await web3.eth.getTransaction(transactionHash)
     if (!transaction) {
       throw new Error(`Transaction ${transactionHash} not found in node`)
     }
-    const toAddress = transaction.to
-    const deployedBytecode = await web3.eth.getCode(toAddress)
     const trace: DebugTrace = await new Promise<DebugTrace>((resolve, reject) => {
       web3.currentProvider.send(
         {
@@ -49,6 +58,19 @@ export class TransactionServiceImpl implements TransactionService {
         }
       )
     })
+    return trace
+  }
+
+  async findTransactionTrace(transactionHash: string, bytecode: string, config: Web3Configuration): Promise<DebugTrace> {
+    const iWeb3: IWeb3 = new Web3Instance(config)
+    const web3 = iWeb3.getInstance()
+    const transaction: TransactionReceipt = await web3.eth.getTransaction(transactionHash)
+    if (!transaction) {
+      throw new Error(`Transaction ${transactionHash} not found in node`)
+    }
+    const toAddress = transaction.to
+    const deployedBytecode = await web3.eth.getCode(toAddress)
+    const trace: DebugTrace = await this.getTrace(transactionHash, config)
     return await this.findContractTraceDepth(bytecode, deployedBytecode, trace, web3)
   }
 

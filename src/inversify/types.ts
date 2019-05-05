@@ -5,7 +5,9 @@ const TYPES = {
   Disassembler: Symbol.for('EVMDisassembler'),
   CFGCreator: Symbol.for('CFGCreator'),
   GraphVizService: Symbol.for('GraphVizService'),
+  BlockService: Symbol.for('BlockService'),
   CFGService: Symbol.for('CFGService'),
+  StorageRecover: Symbol.for('StorageRecover'),
   OpcodeExecutor: Symbol.for('OpcodeExecutor')
 }
 
