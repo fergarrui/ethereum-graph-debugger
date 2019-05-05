@@ -8,11 +8,6 @@ This project was rewritten with a frontend made by [Swolfeyes](https://github.co
 
 [Development repository](https://github.com/fergarrui/ethereum-graph-debugger-ts) was archived, marked as read-only and moved here, to the main repo.
 
-# Releases
-
-  * solc 0.4.24 compatible with ganache use: [v2.1.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v2.1.0)
-  * solc 0.5.8 (not compatible with ganache) use: [v3.0.2](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v3.0.2)
-
 # Existing tools
 There are already tools that allow you to debug Ethereum transactions (Solidity):
 
@@ -21,7 +16,12 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 # Usage
 
-Clone and start the application
+Use one of these releases:
+
+  * solc 0.4.24 compatible with ganache use: [v2.1.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v2.1.0)
+  * solc 0.5.8 (not compatible with ganache) use: [v3.0.2](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v3.0.2)
+
+If you want to use master (it can be more unstable), clone and start the application
 
 For the first time:
 ```
