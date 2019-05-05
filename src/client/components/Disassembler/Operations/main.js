@@ -14,7 +14,7 @@ const Operations = ({ items }) => {
           <div className={styles['operations__item']}>
             <span>{item.opcode.name}</span>
           </div>          
-            { item.opcode.parameters > 1 && 
+            { item.opcode.parameters > 0 && 
               <div className={styles['operations__item']}>
                 <span>{`0x`}{item.argument}</span>
               </div>
