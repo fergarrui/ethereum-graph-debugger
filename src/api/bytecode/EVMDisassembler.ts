@@ -56,8 +56,8 @@ export class EVMDisassembler implements Disassembler {
     let constructor = []
     let runtime = operations
     if (hasConstructor) {
-      // pre- 0.5.* the opcode we are searching is 'STOP'
-      const firstStopIndex = operations.findIndex(op => op.opcode.name === 'INVALID')
+      // pre- 0.5.* the opcode we are searching is 'STOP', post 0.5.* is INVALID
+      const firstStopIndex = operations.findIndex(op => op.opcode.name === 'STOP')
       constructor = operations.slice(0, firstStopIndex + 1)
       runtime = this.adjustRuntimeOffset(operations.slice(firstStopIndex + 1, operations.length))
     }
