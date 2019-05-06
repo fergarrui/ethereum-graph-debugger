@@ -8,6 +8,11 @@ import { Operation } from '../../bytecode/Operation'
 import { EVMExecutor } from '../../symbolic/evm/EVMExecutor'
 import { OpcodeExecutor } from '../../symbolic/evm/exec/OpcodeExecutor'
 import { CFGBlocks } from '../../cfg/CFGBlocks'
+import { logger } from '../../../Logger';
+import { DebugTrace } from '../../symbolic/evm/DebugTrace';
+import { Opcodes } from '../../bytecode/Opcodes';
+import { OperationBlock } from '../../cfg/OperationBlock';
+let BN = require('bn.js')
 
 @injectable()
 export class CFGService {
@@ -34,6 +39,47 @@ export class CFGService {
     return this.buildCfgContract(contract)
   }
 
+  completeCFGWithTrace(blocks: CFGBlocks, trace: DebugTrace) {
+    for (const log of trace.result.structLogs) {
+      if (!this.jumpHasBothChildren(log.op, log.pc, blocks)) {
+        const block = blocks.get(log.pc)
+        this.populateMissingBranch(block, blocks, log.stack, log.op)
+      }
+    }
+  }
+
+  private populateMissingBranch(block: OperationBlock, blocks: CFGBlocks, stack: string[], op: string) {
+    if (op === 'JUMP') {
+      const dest = stack[stack.length-1]
+      const destOffset = new BN(dest, 16).toNumber()
+      block.childA = destOffset
+    }
+  }
+
+  private jumpHasBothChildren(opcode: string, offset: number, blocks: CFGBlocks): boolean {
+    if (!Opcodes.isJumpOp(opcode)) {
+      return true
+    }
+    const block = blocks.get(offset)
+    if (!block) {
+      return true
+    }
+    if (opcode === 'JUMPI') {
+      if(!block.childA || !block.childB) {
+        return false
+      } else {
+        return true
+      }
+    }
+    if (opcode === 'JUMP') {
+      if (block.childA || block.childB) {
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+
   private buildCfgContract(contract: DisassembledContract): CFGContract {
     const runtimeBlocks = this.calculateCfgBlocks(contract.runtime)
     const cfgContract: CFGContract = {
@@ -54,9 +100,13 @@ export class CFGService {
   }
 
   private calculateCfgBlocks(ops: Operation[]): CFGBlocks {
+    logger.info('Calculating CFG blocks')
     const blocks = this.cfgCreator.divideBlocks(ops)
     const executor = new EVMExecutor(blocks, this.opExecutor)
     executor.run(0)
+    logger.info('Calculated dynamic CFG, checking if there are orphan nodes not inspected...')
+    executor.runOrphans()
+    logger.info(`Orphan blocks analyzed, tried to complete CFG inspecting bytecode`)
     return executor.blocks
   }
 }

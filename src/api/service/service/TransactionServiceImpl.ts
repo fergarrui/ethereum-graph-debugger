@@ -80,8 +80,16 @@ export class TransactionServiceImpl implements TransactionService {
     trace: DebugTrace,
     web3: any
   ): Promise<DebugTrace> {
-    const cleanBytecode = EVMDisassembler.removeMetadata(bytecode)
-    const cleanDeployedBytecode = EVMDisassembler.removeMetadata(deployedBytecode)
+    let cleanBytecode = EVMDisassembler.removeMetadata(bytecode)
+    let cleanDeployedBytecode = EVMDisassembler.removeMetadata(deployedBytecode)
+
+
+    if (cleanBytecode.length % 2 !== 0) {
+      cleanBytecode = cleanBytecode.substr(0, cleanBytecode.length-1)
+    }
+    if (cleanDeployedBytecode.length % 2 !== 0) {
+      cleanDeployedBytecode = cleanDeployedBytecode.substr(0, cleanDeployedBytecode.length-1)
+    }
     if (cleanBytecode === cleanDeployedBytecode) {
       return this.buildTrace(trace, trace.result.structLogs.filter(log => log.depth === 0))
     }

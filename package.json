@@ -2,7 +2,7 @@
   "name": "ethereum-graph-debugger",
   "author": "Fernando Garcia",
   "license": "GPL",
-  "version": "3.1.0",
+  "version": "2.3.0",
   "description": "Ethereum graph debugger",
   "main": "dist/run-server.js",
   "scripts": {
@@ -83,7 +83,7 @@
     "recursive-readdir": "^2.2.2",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.12",
-    "solc": "^0.5.8",
+    "solc": "^0.4.24",
     "terser": "3.14.1",
     "tsoa": "2.1.8",
     "web3": "1.0.0-beta.37",

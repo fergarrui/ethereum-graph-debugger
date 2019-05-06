@@ -155,6 +155,10 @@ export class Opcodes {
   static isJump(op: Opcode) {
     return op.name.startsWith('JUMP')
   }
+
+  static isJumpOp(op: string) {
+    return op.startsWith('JUMP') && op !== 'JUMPDEST'
+  }
 }
 
 Opcodes.populate()

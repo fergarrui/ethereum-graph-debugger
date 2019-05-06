@@ -5,6 +5,8 @@ import { Opcodes } from '../../bytecode/Opcodes'
 import { Operation } from '../../bytecode/Operation'
 import { OpcodeExecutor } from './exec/OpcodeExecutor'
 import { Executor } from './exec/Executor'
+import { Word } from './Word';
+import { logger } from '../../../Logger';
 
 export class EVMExecutor {
   readonly NO_NEXT_BLOCK = ['JUMP', 'STOP', 'REVERT', 'RETURN', 'INVALID']
@@ -35,8 +37,29 @@ export class EVMExecutor {
           block.childB = nextBlock.offset
         }
       }
-      if (nextBlock.offset !== 0) {
+      if (nextBlock.offset !== 0 && !this.alreadyRunOffsets.includes(nextBlock.offset)) {
         this.run(nextBlock.offset)
+      }
+    }
+  }
+
+  runOrphans() {
+    while (this.blocks.keys().length !== this.alreadyRunOffsets.length) {
+      logger.info(`There are ${this.blocks.keys().length - this.alreadyRunOffsets.length} orphan block(s) that need to be analyzed`)
+      const pickOrphan = this.blocks.keys().find(key => !this.alreadyRunOffsets.includes(key))
+      this.alreadyRunOffsets.push(pickOrphan)
+      const orphanBlock = this.blocks.get(pickOrphan)
+      if (orphanBlock) {
+        const nextBlocks: OperationBlock[] = this.findNextBlocks(orphanBlock)
+        for (const nextBlock of nextBlocks) {
+          if (orphanBlock.childA !== nextBlock.offset && orphanBlock.childB !== nextBlock.offset) {
+            if (!orphanBlock.childA) {
+              orphanBlock.childA = nextBlock.offset
+            } else if (!orphanBlock.childB) {
+              orphanBlock.childB = nextBlock.offset
+            }
+          }
+        }
       }
     }
   }
@@ -56,12 +79,20 @@ export class EVMExecutor {
     const ops = block.operations
     const lastOp: Operation = ops[ops.length - 1]
     if (Opcodes.isJump(lastOp.opcode)) {
-      const jumpLocation = this.evm.nextJumpLocation
+      let jumpLocation = this.evm.nextJumpLocation
       this.evm.nextJumpLocation = undefined
+      if (!jumpLocation) {
+        // try to get it heuristically
+        const prevLastOpcode = ops[ops.length - 2]
+        if(prevLastOpcode.opcode.name.startsWith('PUSH')) {
+          jumpLocation = Word.createLiteral(prevLastOpcode.argument)
+        }
+      }
+
       if (jumpLocation && !jumpLocation.isSymbolic) {
         const nextOffset = jumpLocation.value.toNumber()
         const locationBlock: OperationBlock = this.blocks.get(nextOffset)
-        if (locationBlock && !this.alreadyRunOffsets.includes(nextOffset)) {
+        if (locationBlock) {
           nextBlocks.push(locationBlock)
         }
       }
@@ -69,7 +100,7 @@ export class EVMExecutor {
     if (!this.NO_NEXT_BLOCK.includes(lastOp.opcode.name)) {
       const nextOffset = lastOp.offset + 1
       const nextBlock = this.blocks.get(nextOffset)
-      if (nextBlock && !this.alreadyRunOffsets.includes(nextOffset)) {
+      if (nextBlock) {
         nextBlocks.push(nextBlock)
       }
     }

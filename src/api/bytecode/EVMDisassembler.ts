@@ -46,12 +46,14 @@ export class EVMDisassembler implements Disassembler {
     if (bytecode.startsWith('0x')) {
       code = bytecode.slice(2)
     }
+
     if (code.includes(EVMDisassembler.metadataPrefix)) {
       code = code.split(EVMDisassembler.metadataPrefix)[0]
     }
-    
+
+    code = code.length % 2 !== 0 ? code.substr(0, code.length-1): code
     if (code.length % 2 !== 0) {
-      throw new Error(`Bad input, bytecode length not even: ${code}, length: ${code.length}`)
+      throw new Error(`disassembleContract - Bad input, bytecode length not even: ${code}, length: ${code.length}`)
     }
 
     const operations: Operation[] = this.disassembleBytecode(bytecode)
@@ -60,7 +62,7 @@ export class EVMDisassembler implements Disassembler {
     let runtime = operations
     if (hasConstructor) {
       // pre- 0.5.* the opcode we are searching is 'STOP', post 0.5.* is INVALID
-      const firstStopIndex = operations.findIndex(op => op.opcode.name === 'INVALID')
+      const firstStopIndex = operations.findIndex(op => op.opcode.name === 'STOP')
       constructor = operations.slice(0, firstStopIndex + 1)
       runtime = this.adjustRuntimeOffset(operations.slice(firstStopIndex + 1, operations.length))
     }
@@ -82,8 +84,9 @@ export class EVMDisassembler implements Disassembler {
     if (code.includes(EVMDisassembler.metadataPrefix)) {
       code = code.split(EVMDisassembler.metadataPrefix)[0]
     }
+    code = code.length % 2 !== 0 ? code.substr(0, code.length-1): code
     if (code.length % 2 !== 0) {
-      throw new Error(`Bad input, bytecode length not even: ${code}, length: ${code.length}`)
+      throw new Error(`disassembleBytecode - Bad input, bytecode length not even: ${code}, length: ${code.length}`)
     }
     let offset = 0
     const operations = code.match(/.{1,2}/g)

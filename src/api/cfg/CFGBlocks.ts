@@ -7,10 +7,6 @@ export class CFGBlocks {
     this.blocks[offset] = block
   }
 
-  // getBlock(offset: number): OperationBlock {
-  //   return this.blocks[offset]
-  // }
-
   get(offset: number): OperationBlock {
     const block: OperationBlock = this.blocks[offset]
     if(!block) {

@@ -42,7 +42,7 @@ export class DebuggerController extends Controller {
         blockchainBasicAuthPassword
       } as Web3Configuration
       const contractBlocks: CFGContract = await this.cfgService.buildCFGFromSource(name, source, path)
-      const runtimeRawBytecode = `0x${contractBlocks.contractRuntime.rawBytecode}`
+      const runtimeRawBytecode = contractBlocks.contractRuntime.rawBytecode.startsWith('0x')? contractBlocks.contractRuntime.rawBytecode: `0x${contractBlocks.contractRuntime.rawBytecode}`
       const trace: DebugTrace = await this.transactionService.findTransactionTrace(tx, runtimeRawBytecode, config)
       const cfg = this.createCFG(contractBlocks, false, trace)
       return this.buildResponse(contractBlocks, false, cfg, trace)
@@ -57,6 +57,7 @@ export class DebuggerController extends Controller {
     if (constructor) {
       blocks = contractBlocks.contractConstructor.blocks
     }
+    this.cfgService.completeCFGWithTrace(blocks, trace)
     return this.graphVizService.createDotFromBlocks(blocks, trace)
   }
 
