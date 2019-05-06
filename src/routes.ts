@@ -66,7 +66,7 @@ const models: TsoaRoute.Models = {
     },
     "Storage": {
         "properties": {
-            "storage": { "dataType": "any", "required": true },
+            "storage": { "dataType": "any", "default": {} },
         },
     },
 };

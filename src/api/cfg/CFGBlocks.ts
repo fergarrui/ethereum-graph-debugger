@@ -7,8 +7,22 @@ export class CFGBlocks {
     this.blocks[offset] = block
   }
 
+  // getBlock(offset: number): OperationBlock {
+  //   return this.blocks[offset]
+  // }
+
   get(offset: number): OperationBlock {
-    return this.blocks[offset]
+    const block: OperationBlock = this.blocks[offset]
+    if(!block) {
+      for (const key of Object.keys(this.blocks)) {
+        const b: OperationBlock = this.blocks[key]
+        const found = b.operations.find(op => op.offset === offset)
+        if (found) {
+          return b
+        }
+      }
+    }
+    return block
   }
 
   keys(): number[] {

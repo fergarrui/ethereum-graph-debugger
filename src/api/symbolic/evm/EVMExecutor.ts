@@ -11,6 +11,7 @@ export class EVMExecutor {
   evm: EVM
   blocks: CFGBlocks
   executor: OpcodeExecutor
+  alreadyRunOffsets: number[] = []
 
   constructor(blocks: CFGBlocks, executor: OpcodeExecutor) {
     this.evm = new EVM()
@@ -24,6 +25,7 @@ export class EVMExecutor {
       throw new Error(`Could not find block with offset ${offset}`)
     }
     this.runBlock(block)
+    this.alreadyRunOffsets.push(offset)
     const nextBlocks: OperationBlock[] = this.findNextBlocks(block)
     for (const nextBlock of nextBlocks) {
       if (block.childA !== nextBlock.offset && block.childB !== nextBlock.offset) {
@@ -57,15 +59,17 @@ export class EVMExecutor {
       const jumpLocation = this.evm.nextJumpLocation
       this.evm.nextJumpLocation = undefined
       if (jumpLocation && !jumpLocation.isSymbolic) {
-        const locationBlock: OperationBlock = this.blocks.get(jumpLocation.value.toNumber())
-        if (locationBlock) {
+        const nextOffset = jumpLocation.value.toNumber()
+        const locationBlock: OperationBlock = this.blocks.get(nextOffset)
+        if (locationBlock && !this.alreadyRunOffsets.includes(nextOffset)) {
           nextBlocks.push(locationBlock)
         }
       }
     }
     if (!this.NO_NEXT_BLOCK.includes(lastOp.opcode.name)) {
-      const nextBlock = this.blocks.get(lastOp.offset + 1)
-      if (nextBlock) {
+      const nextOffset = lastOp.offset + 1
+      const nextBlock = this.blocks.get(nextOffset)
+      if (nextBlock && !this.alreadyRunOffsets.includes(nextOffset)) {
         nextBlocks.push(nextBlock)
       }
     }

@@ -16,9 +16,11 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 # Usage
 
+### Download
+
 Use one of these releases:
 
-  * solc 0.4.24 compatible with ganache use: [v2.1.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v2.1.0)
+  * solc 0.4.24 compatible with ganache use: [v2.2.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v2.2.0)
   * solc 0.5.8 (not compatible with ganache) use: [v3.0.2](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v3.0.2)
 
 If you want to use master (it can be more unstable), clone and start the application
@@ -38,6 +40,20 @@ npm start
 
 Go to localhost:9090
 
+### Use
+
+  * Go to localhost:9090
+  * Enter the path where the contracts are in the input text (it will load Solidity contracts recursively)
+  * A tab per file found will be created
+  * Under a file tab there are a few actions using the left menu
+
+### How to debug bytecode (with no source code) [Experimental]
+
+  * Create a file with extension `.evm` and paste the runtime bytecode (:warning: important: with `0x` as prefix)
+    * For example: create a file named: `contract1.evm` with content `0x60806040`
+  * Scan the directory as described above
+  * You won't get source code mappings when clicking in operations of the CFG
+
 # Features
 
   * Now interactive :star2:: it has a sepparate frontend and API instead of building a static HTML file like in earlier versions
@@ -49,6 +65,7 @@ Go to localhost:9090
   * EVM state in transaction: it is shown below the editor when selecting an opcode present in the execution trace of the provided transaction hash
   * Settings: right now, there are settings to point to a different chain (by default it connects to http://127.0.0.1:8545) and basic authentication can be configured, so the RPC endpoint can be accessed if authentication is needed (to be compatible with platforms like [Kaleido](http://kaleido.io))
   * When building the CFG a basic dynamic execution is made to calculate jumps and to remove most of orphan blocks (this will be improved in the future, probably with SymExec)
+  * To debug directly bytecode, use `.evm` extension files
 
 # Limitations/Considerations
 

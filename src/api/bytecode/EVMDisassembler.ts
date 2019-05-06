@@ -41,14 +41,17 @@ export class EVMDisassembler implements Disassembler {
   }
 
   disassembleContract(bytecode: string): DisassembledContract {
-    let code = bytecode
+    let code = bytecode.trim()
 
     if (bytecode.startsWith('0x')) {
       code = bytecode.slice(2)
     }
-
+    if (code.includes(EVMDisassembler.metadataPrefix)) {
+      code = code.split(EVMDisassembler.metadataPrefix)[0]
+    }
+    
     if (code.length % 2 !== 0) {
-      throw new Error(`Bad input, bytecode length not even: ${code}`)
+      throw new Error(`Bad input, bytecode length not even: ${code}, length: ${code.length}`)
     }
 
     const operations: Operation[] = this.disassembleBytecode(bytecode)
@@ -70,7 +73,7 @@ export class EVMDisassembler implements Disassembler {
   }
 
   disassembleBytecode(bytecode: string): Operation[] {
-    let code = bytecode
+    let code = bytecode.trim()
 
     if (bytecode.startsWith('0x')) {
       code = bytecode.slice(2)
@@ -79,9 +82,8 @@ export class EVMDisassembler implements Disassembler {
     if (code.includes(EVMDisassembler.metadataPrefix)) {
       code = code.split(EVMDisassembler.metadataPrefix)[0]
     }
-
     if (code.length % 2 !== 0) {
-      throw new Error(`Bad input, bytecode length not even: ${code}`)
+      throw new Error(`Bad input, bytecode length not even: ${code}, length: ${code.length}`)
     }
     let offset = 0
     const operations = code.match(/.{1,2}/g)

@@ -140,7 +140,7 @@ class ConnectedTabPanel extends React.Component {
     });
 
     const params = {
-      name: name.replace('.sol', ''),
+      name: name.replace('.sol', '').replace('.evm', ''),
       path: encodeURIComponent(path),
       source: encodeURIComponent(code),
       blockchainHost: localStorage.getItem('host'),
@@ -180,7 +180,7 @@ class ConnectedTabPanel extends React.Component {
     const { name, path, code } = this.props;
 
     const params = {
-      name: name.replace('.sol', ''),
+      name: name.replace('.sol', '').replace('.evm', ''),
       path: encodeURIComponent(path),
       source: encodeURIComponent(code),
       'constructor': 'false'
@@ -194,7 +194,7 @@ class ConnectedTabPanel extends React.Component {
     const { name, code, path } = this.props;
 
     const params = {
-      name: name.replace('.sol', ''),
+      name: name.replace('.sol', '').replace('.evm', ''),
       path: encodeURIComponent(path),
       source: encodeURIComponent(code)
     }

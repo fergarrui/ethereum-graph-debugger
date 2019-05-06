@@ -27,7 +27,7 @@ class ConnectedGraph extends React.Component {
   componentDidMount() {
     const { cfg, graphId, graphType } = this.props;
 
-    const graphclass = graphId.replace('.sol', '');
+    const graphclass = graphId.replace('.sol', '').replace('.evm', '');
     const graphviz = d3.select(`.graph--${graphclass}--${graphType}`).graphviz()
     graphviz.totalMemory(537395200)
     graphviz.renderDot(cfg);
@@ -71,7 +71,7 @@ class ConnectedGraph extends React.Component {
   render() {
     const { cfg, graphId, graphType } = this.props;
 
-    const graphclass = `${graphId.replace('.sol', '')}--${graphType}`;
+    const graphclass = `${graphId.replace('.sol', '').replace('.evm', '')}--${graphType}`;
 
     return (
       <div className={styles['graph-container']}>

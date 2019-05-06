@@ -18,8 +18,15 @@ export class CFGService {
   ) {}
 
   buildCFGFromSource(contractName: string, source: string, path: string): CFGContract {
-    const contract: DisassembledContract = this.disassembler.disassembleSourceCode(contractName, source, path)
-    return this.buildCfgContract(contract)
+    let contract: DisassembledContract
+    if(source.startsWith('0x')) {
+      const cfg: CFGContract = this.buildCFGFromBytecode(source)
+      cfg.contractRuntime.rawBytecode = source
+      return cfg
+    } else {
+      contract = this.disassembler.disassembleSourceCode(contractName, source, path)
+      return this.buildCfgContract(contract)
+    }
   }
 
   buildCFGFromBytecode(bytecode: string): CFGContract {
