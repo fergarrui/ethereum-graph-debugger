@@ -21,7 +21,7 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 Use one of these releases:
 
   * solc 0.4.24 compatible with ganache use: [v2.2.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v2.2.0)
-  * solc 0.5.8 (not compatible with ganache) use: [v3.0.2](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v3.0.2)
+  * solc 0.5.8 (not compatible with ganache) use: [v3.1.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v3.1.0)
 
 If you want to use master (it can be more unstable), clone and start the application
 
