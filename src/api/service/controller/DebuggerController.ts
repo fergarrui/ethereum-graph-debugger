@@ -98,7 +98,10 @@ export class DebuggerController extends Controller {
   private groupTrace(trace: DebugTrace): any {
     const result = {}
     for (const log of trace.result.structLogs) {
-      result[log.pc] = log
+      if (!result[log.pc]) {
+        result[log.pc] = []
+      }
+      result[log.pc].push(log)
     }
     return result
   }
