@@ -48,6 +48,26 @@ export class CFGService {
     }
   }
 
+  checkTraceLoops(blocks: CFGBlocks, trace: DebugTrace) {
+    const logs = trace.result.structLogs
+    const count = this.count(logs.map(l => l.pc))
+    const repeated: any = Object.keys(count).filter(key => count[key] > 1).map( key=> { return {offset: key, repeated: count[key]}})
+    for (const repeatedOffset of repeated) {
+      console.log(`trying to find block ${repeatedOffset.offset}`)
+      const block = blocks.get(repeatedOffset.offset)
+      if (block) {
+        console.log('block found')
+        block.repeated = repeatedOffset.repeated
+      }
+    }
+  }
+
+  private count(logs): any[] {
+    return logs.reduce((a, b) => ({ ...a,
+      [b]: (a[b] || 0) + 1
+    }), {})
+  }
+
   private populateMissingBranch(block: OperationBlock, blocks: CFGBlocks, stack: string[], op: string) {
     if (op === 'JUMP') {
       const dest = stack[stack.length-1]

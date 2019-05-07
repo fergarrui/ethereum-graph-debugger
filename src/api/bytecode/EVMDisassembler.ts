@@ -112,7 +112,10 @@ export class EVMDisassembler implements Disassembler {
   }
 
   static removeMetadata(bytecode: string): string {
-    const splittedBytecode: string[] = bytecode.split(EVMDisassembler.metadataPrefix)
+    let splittedBytecode: string[] = bytecode.split(EVMDisassembler.metadataPrefix)
+    if (splittedBytecode.length < 2) {
+      splittedBytecode = bytecode.split(EVMDisassembler.metadataPrefix.toUpperCase())
+    }
     if (splittedBytecode.length < 2) {
       return bytecode
     }

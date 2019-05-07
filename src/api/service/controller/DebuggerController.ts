@@ -58,6 +58,7 @@ export class DebuggerController extends Controller {
       blocks = contractBlocks.contractConstructor.blocks
     }
     this.cfgService.completeCFGWithTrace(blocks, trace)
+    this.cfgService.checkTraceLoops(blocks, trace)
     return this.graphVizService.createDotFromBlocks(blocks, trace)
   }
 

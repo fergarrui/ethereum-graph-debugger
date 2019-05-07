@@ -22,7 +22,7 @@ export class CFGBlocks {
   }
 
   keys(): number[] {
-    return Object.keys(this.blocks).map(e => parseInt(e))
+    return Object.keys(this.blocks).map(e => parseFloat(e))
   }
 
   values(): OperationBlock[][] {

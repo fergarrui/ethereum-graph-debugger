@@ -90,7 +90,7 @@ export class TransactionServiceImpl implements TransactionService {
     if (cleanDeployedBytecode.length % 2 !== 0) {
       cleanDeployedBytecode = cleanDeployedBytecode.substr(0, cleanDeployedBytecode.length-1)
     }
-    if (cleanBytecode === cleanDeployedBytecode) {
+    if (cleanBytecode.toUpperCase() === cleanDeployedBytecode.toUpperCase() || (!cleanDeployedBytecode || cleanDeployedBytecode === '0x')) {
       return this.buildTrace(trace, trace.result.structLogs.filter(log => log.depth === 0))
     }
     const allCalls = trace.result.structLogs.filter(log => this.isCall(log.op))
