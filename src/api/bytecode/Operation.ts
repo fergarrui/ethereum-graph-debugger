@@ -6,4 +6,5 @@ export interface Operation {
   argument: any
   begin?: number
   end?: number
+  repeated?: number
 }

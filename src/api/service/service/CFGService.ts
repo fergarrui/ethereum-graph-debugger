@@ -51,13 +51,14 @@ export class CFGService {
   checkTraceLoops(blocks: CFGBlocks, trace: DebugTrace) {
     const logs = trace.result.structLogs
     const count = this.count(logs.map(l => l.pc))
-    const repeated: any = Object.keys(count).filter(key => count[key] > 1).map( key=> { return {offset: key, repeated: count[key]}})
+    const repeated: any = Object.keys(count).filter(key => count[key] > 1).map( key=> { return {offset:  parseInt(key), repeated: parseInt(count[key])}})
     for (const repeatedOffset of repeated) {
-      console.log(`trying to find block ${repeatedOffset.offset}`)
       const block = blocks.get(repeatedOffset.offset)
       if (block) {
-        console.log('block found')
-        block.repeated = repeatedOffset.repeated
+        const operation = block.operations.find(op => op.offset === parseInt(repeatedOffset.offset))
+        if (operation) {
+          operation.repeated = repeatedOffset.repeated
+        }
       }
     }
   }

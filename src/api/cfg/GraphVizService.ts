@@ -7,13 +7,16 @@ import { DebugTrace } from '../symbolic/evm/DebugTrace'
 @injectable()
 export class GraphVizService {
   createDotFromBlocks(blocks: CFGBlocks, trace: DebugTrace): string {
-    return `digraph " " {
+    let graph = `digraph " " {
       graph [splines=ortho ranksep="2" nodesep="2"]
       rankdir=LR
-      node [shape=plain fillcolor="#2A2A2A" style=filled fontname="Courier"]
-      ${this.createLegend()}
-      ${this.buildBody(blocks, trace)}
-    }`
+      node [shape=plain fillcolor="#2A2A2A" style=filled fontname="Courier"]`
+      if (trace) {
+        graph += `${this.createLegend()}`
+      }
+      graph += `${this.buildBody(blocks, trace)}
+        }`
+      return graph
   }
 
   private createLegend() {
@@ -45,6 +48,9 @@ export class GraphVizService {
       let fontColor = '#12cc12'
       if (trace && this.isOperationInTrace(op, trace)) {
         fontColor = '#ff1020'
+      }
+      if (op.repeated > 1) {
+        fontColor = '#CD950C'
       }
       ops += `<TR>`
       ops += `<TD ID="${op.offset.toString(16)}" HREF=" "><font color="${fontColor}">0x${op.offset.toString(
