@@ -1,7 +1,5 @@
 import React from 'react';
 
-import AccordionSection from './AccordionSection/main.js';
-
 import styles from '../../styles/Accordion/Accordion.scss';
 
 const Accordion = ({ children }) => (
