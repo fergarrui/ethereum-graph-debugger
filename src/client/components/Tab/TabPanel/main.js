@@ -7,8 +7,8 @@ import Editor from '../../Editor/main.js';
 import SideBar from '../../SideBar/main.js';
 import InnerTab from '../../InnerTab/main.js';
 import Modal from '../../Modal/main.js';
-import EVMState from '../../EVMState/main.js';
 import Hamburger from '../../Hamburger/main.js';
+import EVMTab from '../../EVMTab/EVMTab';
 
 import styles from '../../../styles/Tab/TabPanel.scss';
 
@@ -268,7 +268,8 @@ class ConnectedTabPanel extends React.Component {
           <div className={styles['tab-panel__left__data']}>
               <Editor code={code} index={index} />
               {
-                evm && <EVMState />
+                evm && 
+                <EVMTab data={evm} />
               }
           </div>
         </div>
