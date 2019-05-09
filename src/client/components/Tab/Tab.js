@@ -1,7 +1,7 @@
 import React from 'react';
 
-import TabMenuItem from './TabMenuItem/main.js';
-import TabPanel from './TabPanel/main.js';
+import TabMenuItem from './TabMenuItem/TabMenuItem';
+import TabPanel from './TabPanel/TabPanel';
 
 import styles from '../../styles/Tab/Tab.scss';
 

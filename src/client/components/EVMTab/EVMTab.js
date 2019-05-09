@@ -1,7 +1,6 @@
 import React from 'react';
 
-import TabMenuItem from '../Tab/TabMenuItem/main';
-import EVMTabPanel from './EVMTabPanel';
+import TabMenuItem from '../Tab/TabMenuItem/TabMenuItem';
 
 import styles from '../../styles/Tab/Tab.scss';
 

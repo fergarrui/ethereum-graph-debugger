@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Icon from '../Icon/main.js';
-import Input from '../Input/main.js';
+import Icon from '../Icon/Icon';
+import Input from '../Input/Input';
 
 import styles from '../../styles/Modal.scss';
 

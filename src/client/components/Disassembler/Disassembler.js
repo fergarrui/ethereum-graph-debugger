@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Accordion from '../Accordion/main.js';
-import AccordionSection from '../Accordion/AccordionSection/main.js';
-import Operations from './Operations/main.js';
-import Bytecode from './Bytecode/main.js';
+import Accordion from '../Accordion/Accordion';
+import AccordionSection from '../Accordion/AccordionSection/AccordionSection';
+import Operations from './Operations/Operations';
+import Bytecode from './Bytecode/Bytecode';
 
 import styles from '../../styles/Disassembler.scss';
 

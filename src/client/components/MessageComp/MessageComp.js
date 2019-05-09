@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { hideErrorMessage } from '../Store/Actions.js';
 
-import Icon from '../Icon/main.js';
+import Icon from '../Icon/Icon';
 
 import styles from '../../styles/MessageComp.scss';
 

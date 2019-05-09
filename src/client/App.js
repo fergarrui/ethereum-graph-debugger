@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { showLoadingMessage, showErrorMessage, hideLoadingMessage, getErrorMessage } from '../Store/Actions.js';
+import { showLoadingMessage, showErrorMessage, hideLoadingMessage, getErrorMessage } from './components/Store/Actions.js';
 
-import TopNavBar from '../TopNavBar/main.js';
-import Tab from '../Tab/main.js';
-import MessageComp from '../MessageComp/main.js';
-import SettingsBar from '../SettingsBar/main.js';
+import TopNavBar from './components/TopNavBar/TopNavBar';
+import Tab from './components/Tab/Tab';
+import MessageComp from './components/MessageComp/MessageComp';
+import SettingsBar from './components/SettingsBar/SettingsBar';
 
-import styles from '../../styles/App.scss';
+import styles from './styles/App.scss';
 
 const mapStateToProps = state => {
   return {

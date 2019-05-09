@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Graph from '../Graph/main.js';
+import Graph from '../Graph/Graph';
 
 import styles from '../../styles/TransactionDebugger.scss';
 

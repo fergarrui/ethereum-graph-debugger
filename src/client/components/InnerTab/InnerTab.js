@@ -1,7 +1,7 @@
 import React from 'react';
 
-import TabMenuItem from '../Tab/TabMenuItem/main.js';
-import InnerTabPanel from './InnerTabPanel/main.js';
+import TabMenuItem from '../Tab/TabMenuItem/TabMenuItem';
+import InnerTabPanel from './InnerTabPanel/InnerTabPanel';
 
 import styles from '../../styles/Tab/Tab.scss';
 
