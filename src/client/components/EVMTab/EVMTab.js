@@ -14,32 +14,24 @@ class EVMTab extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if(prevProps.data != this.props.data) {
+      this.setState({
+        currentTabIndex: 0
+      });
+    }
+  }
   setActiveTab(index) {
     this.setState({
       currentTabIndex: index,
     });
   }
 
-  handleIconClick(event, index) {
-    event.stopPropagation();
-
-    const { data } = this.props;
-
-    this.setState({
-      currentTabIndex:
-      index === data.length - 1  && index === this.state.currentTabIndex ? 0 
-      : index === this.state.currentTabIndex ? index  
-      : this.state.currentTabIndex,
-    });
-
-    this.props.onMenuItemIconClick(index);
-  }
-
   render() {
-    const { data } = this.props;
+    const { data, children } = this.props;
     const { currentTabIndex } = this.state;
 
-    console.log(data)
+    const currentTab = React.Children.toArray(children).filter((child, i) => i === currentTabIndex);
 
     return (
       <div className={styles['tab']}>
@@ -47,6 +39,7 @@ class EVMTab extends React.Component {
         {data.map((item, i) => {
             return (
               <TabMenuItem
+                evm={true}
                 key={`id--${item.gas}`}
                 name={i + 1}
                 active={currentTabIndex === i}
@@ -55,15 +48,7 @@ class EVMTab extends React.Component {
             )
           })}        
         </div>
-        { data.map((item, i) => {
-          return (
-            <EVMTabPanel 
-              key={`id--${item.gas}`}
-              active={currentTabIndex === i}
-              evmData={item} />
-          )
-        }) 
-      }
+          {currentTab}
       </div>
     );
   }
