@@ -9,6 +9,8 @@ import InnerTab from '../../InnerTab/main.js';
 import Modal from '../../Modal/main.js';
 import Hamburger from '../../Hamburger/main.js';
 import EVMTab from '../../EVMTab/EVMTab';
+import EVMTabPanel from '../../EVMTab/EVMTabPanel';
+import EVMState from '../../EVMState/main';
 
 import styles from '../../../styles/Tab/TabPanel.scss';
 
@@ -269,7 +271,17 @@ class ConnectedTabPanel extends React.Component {
               <Editor code={code} index={index} />
               {
                 evm && 
-                <EVMTab data={evm} />
+                <EVMTab data={evm}>
+                  {
+                    evm.map(item => {
+                      return (
+                        <EVMTabPanel key={`id--${item.gas}`}>
+                          <EVMState evm={item} />
+                        </EVMTabPanel>
+                      )
+                    })
+                  }
+                </EVMTab>
               }
           </div>
         </div>

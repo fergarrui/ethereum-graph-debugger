@@ -8,7 +8,7 @@ import styles from '../../../styles/Tab/TabMenuItem.scss';
 
 const cx = classnames.bind(styles);
 
-const TabMenuItem = ({ name, title, onClick, active, onIconClick }) => {
+const TabMenuItem = ({ name, title, onClick, active, onIconClick, evm }) => {
 
   const classes = cx({
     'tab-menu-item': true,
@@ -18,7 +18,9 @@ const TabMenuItem = ({ name, title, onClick, active, onIconClick }) => {
   return (
     <div className={classes} onClick={onClick}>
       <div onClick={onIconClick} className={styles['tab-menu-item__icon']}>
-        <Icon iconName='Cross' />
+      {
+        !evm && <Icon iconName='Cross' />
+      }
       </div>
       <div className={'tab-menu-item__text'}>
         <span>{name ? name : title}</span>

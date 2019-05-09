@@ -3,13 +3,7 @@ import { connect } from 'react-redux';
 
 import styles from '../../styles/EVMState.scss';
 
-// const mapStateToProps = state => {
-//   return {
-//     evm: state.selectEVMState,
-//   }
-// }
-
-const ConnectedEVMState = ({ evm }) => {
+const EVMState = ({ evm }) => {
 
   return (
     <div className={styles['evm-state']}>
@@ -88,9 +82,6 @@ const ConnectedEVMState = ({ evm }) => {
     </div>
   )
 }
-
-
-const EVMState = connect()(ConnectedEVMState);
 
 EVMState.displayName = 'EVMState';
 
