@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Icon from '../../Icon/main.js';
+import Icon from '../../Icon/Icon';
 
 import classnames from 'classnames/bind';
 

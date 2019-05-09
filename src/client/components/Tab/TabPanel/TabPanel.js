@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 
 import { showLoadingMessage, hideLoadingMessage, showErrorMessage, getErrorMessage } from '../../Store/Actions.js';
 
-import Editor from '../../Editor/main.js';
-import SideBar from '../../SideBar/main.js';
-import InnerTab from '../../InnerTab/main.js';
-import Modal from '../../Modal/main.js';
-import Hamburger from '../../Hamburger/main.js';
+import Editor from '../../Editor/Editor';
+import SideBar from '../../SideBar/SideBar';
+import InnerTab from '../../InnerTab/InnerTab';
+import Modal from '../../Modal/Modal';
+import Hamburger from '../../Hamburger/Hamburger';
 import EVMTab from '../../EVMTab/EVMTab';
 import EVMTabPanel from '../../EVMTab/EVMTabPanel';
-import EVMState from '../../EVMState/main';
+import EVMState from '../../EVMState/EVMState';
 
 import styles from '../../../styles/Tab/TabPanel.scss';
 

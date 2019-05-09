@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Input from '../Input/main.js';
-import Icon from '../Icon/main.js';
+import Input from '../Input/Input';
+import Icon from '../Icon/Icon';
 
 import styles from '../../styles/TopNavBar.scss';
 

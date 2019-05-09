@@ -1,7 +1,5 @@
 import React from 'react';
 
-import EVMState from '../EVMState/main';
-
 import classnames from 'classnames/bind';
 
 import styles from '../../styles/Tab/InnerTabPanel.scss';

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CodeEditor from './AceEditor/main.js';
+import CodeEditor from './AceEditor/AceEditor';
 
 const Editor = ({ code, index }) => {
 

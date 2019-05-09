@@ -1,8 +1,8 @@
 import React from 'react';
 
-import TransactionDebugger from '../../TransactionDebugger/main.js';
-import Disassembler from '../../Disassembler/main.js';
-import ControlFlowGraph from '../../ControlFlowGraph/main.js';
+import TransactionDebugger from '../../TransactionDebugger/TransactionDebugger';
+import Disassembler from '../../Disassembler/Disassembler';
+import ControlFlowGraph from '../../ControlFlowGraph/ControlFlowGraph';
 
 import styles from '../../../styles/Tab/InnerTabPanel.scss';
 
