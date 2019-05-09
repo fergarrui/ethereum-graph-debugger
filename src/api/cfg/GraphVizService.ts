@@ -23,9 +23,9 @@ export class GraphVizService {
     return `
     subgraph cluster_legend {
       label="Legend";
-      legend1 [label=< <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD COLSPAN="3"><font color="#ffffff">Not run in transaction</font></TD></TR><TR><TD><font color="#12cc12">0x3f</font></TD><TD ID="3f" HREF=" "><font color="#12cc12">JUMPDEST</font></TD></TR></TABLE> >]
-      legend2 [label=< <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD COLSPAN="3"><font color="#ffffff">Run in transaction</font></TD></TR><TR><TD><font color="#ff1020">0x0</font></TD><TD><font color="#ff1020">PUSH1</font></TD><TD><font color="#ff1020">0x80</font></TD></TR></TABLE> >]
-      legend3 [label=< <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD COLSPAN="3"><font color="#ffffff">Run in transaction</font></TD></TR><TR><TD COLSPAN="3"><font color="#ffffff">Belongs to a loop</font></TD></TR><TR><TD><font color="#CD950C">0x3f</font></TD><TD ID="3f" HREF=" "><font color="#CD950C">JUMPDEST</font></TD></TR></TABLE> >]
+      legend1 [label=< <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD COLSPAN="3"><font color="#ffffff">Not run in transaction</font></TD></TR><TR><TD><font color="#12cc12">0x00</font></TD><TD><font color="#12cc12">PUSH1</font></TD></TR></TABLE> >]
+      legend2 [label=< <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD COLSPAN="3"><font color="#ffffff">Run in transaction</font></TD></TR><TR><TD><font color="#ff1020">0x00</font></TD><TD><font color="#ff1020">PUSH1</font></TD></TR></TABLE> >]
+      legend3 [label=< <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4"><TR><TD COLSPAN="3"><font color="#ffffff">Run in transaction</font></TD></TR><TR><TD COLSPAN="3"><font color="#ffffff">Belongs to a loop</font></TD></TR><TR><TD><font color="#CD950C">0x00</font></TD><TD><font color="#CD950C">PUSH1</font></TD></TR></TABLE> >]
     }
     `
   }
