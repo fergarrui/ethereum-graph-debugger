@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../../styles/Hamburger.scss';
+import styles from './Hamburger.scss';
 
 import classnames from 'classnames/bind';
 

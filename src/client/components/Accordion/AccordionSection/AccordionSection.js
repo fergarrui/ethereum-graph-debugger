@@ -2,7 +2,7 @@ import React from 'react';
 
 import classnames from 'classnames/bind';
 
-import styles from '../../../styles/Accordion/AccordionSection.scss';
+import styles from './AccordionSection.scss';
 
 const cx = classnames.bind(styles);
 

@@ -27,7 +27,7 @@
       border-bottom: 1px dotted $color-light-grey;
       transition: border-color 0.2s;
 
-      &:focus, {
+      &:focus {
         border-color: $color-green;
         outline: 0 none;
       }

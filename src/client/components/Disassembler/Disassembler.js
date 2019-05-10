@@ -5,7 +5,7 @@ import AccordionSection from '../Accordion/AccordionSection/AccordionSection';
 import Operations from './Operations/Operations';
 import Bytecode from './Bytecode/Bytecode';
 
-import styles from '../../styles/Disassembler.scss';
+import styles from './Disassembler.scss';
 
 const Disassembler = ({ disassemblerResponse }) => {
 

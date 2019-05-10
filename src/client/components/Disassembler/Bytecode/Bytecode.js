@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../../../styles/Bytecode.scss';
+import styles from './Bytecode.scss';
 
 const Bytecode = ({ bytecode }) => (
   <div className={styles['bytecode']}>

@@ -5,7 +5,7 @@ import { hideErrorMessage } from '../Store/Actions.js';
 
 import Icon from '../Icon/Icon';
 
-import styles from '../../styles/MessageComp.scss';
+import styles from './MessageComp.scss';
 
 const mapDispatchToProps = dispatch => {
   return {

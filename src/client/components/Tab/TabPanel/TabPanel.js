@@ -12,7 +12,7 @@ import EVMTab from '../../EVMTab/EVMTab';
 import EVMTabPanel from '../../EVMTab/EVMTabPanel';
 import EVMState from '../../EVMState/EVMState';
 
-import styles from '../../../styles/Tab/TabPanel.scss';
+import styles from './TabPanel.scss';
 
 import classnames from 'classnames/bind';
 

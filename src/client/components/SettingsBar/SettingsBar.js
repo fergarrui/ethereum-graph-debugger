@@ -2,7 +2,7 @@ import React from 'react';
 
 import classnames from 'classnames/bind';
 
-import styles from '../../styles/SettingsBar.scss';
+import styles from './SettingsBar.scss';
 
 const cx = classnames.bind(styles);
 

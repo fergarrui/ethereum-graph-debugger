@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../../styles/SideBar.scss';
+import styles from './SideBar.scss';
 
 class SideBar extends React.Component {
 

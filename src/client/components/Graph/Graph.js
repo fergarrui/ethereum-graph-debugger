@@ -1,6 +1,6 @@
 import React,  { Component } from 'react';
 
-import styles from '../../styles/Graph.scss';
+import styles from './Graph.scss';
 
 import * as d3 from 'd3';
 import * as d3Graphviz from 'd3-graphviz';

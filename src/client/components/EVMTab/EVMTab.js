@@ -2,7 +2,7 @@ import React from 'react';
 
 import TabMenuItem from '../Tab/TabMenuItem/TabMenuItem';
 
-import styles from '../../styles/Tab/Tab.scss';
+import styles from '../Tab/Tab.scss';
 
 class EVMTab extends React.Component {
   constructor(props) {

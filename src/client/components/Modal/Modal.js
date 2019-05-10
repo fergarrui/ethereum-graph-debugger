@@ -3,7 +3,7 @@ import React from 'react';
 import Icon from '../Icon/Icon';
 import Input from '../Input/Input';
 
-import styles from '../../styles/Modal.scss';
+import styles from './Modal.scss';
 
 const Modal =  ({ onIconClick, onInputChange, onInputSubmit }) => {
 

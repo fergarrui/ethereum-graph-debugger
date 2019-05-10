@@ -2,7 +2,7 @@ import React from 'react';
 
 import Graph from '../Graph/Graph';
 
-import styles from '../../styles/ControlFlowGraph.scss';
+import styles from './ControlFlowGraph.scss';
 
 const ControlFlowGraph = ({ contractName, contractPath, graphResponse }) => {
   return (
