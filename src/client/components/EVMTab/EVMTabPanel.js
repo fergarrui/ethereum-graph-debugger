@@ -2,7 +2,7 @@ import React from 'react';
 
 import classnames from 'classnames/bind';
 
-import styles from '../../styles/Tab/InnerTabPanel.scss';
+import styles from '../InnerTab/InnerTabPanel/InnerTabPanel.scss';
 
 const cx = classnames.bind(styles);
 

@@ -9,7 +9,7 @@ import Menu from './SVG/menu.svg';
 import Spinner from './SVG/spinner.svg';
 import Cogs from './SVG/cogs.svg';
 
-import styles from '../../styles/Icon.scss';
+import styles from './Icon.scss';
 
 const Icon = ({ iconName }) => {
 

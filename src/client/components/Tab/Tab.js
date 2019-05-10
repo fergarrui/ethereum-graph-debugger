@@ -3,7 +3,7 @@ import React from 'react';
 import TabMenuItem from './TabMenuItem/TabMenuItem';
 import TabPanel from './TabPanel/TabPanel';
 
-import styles from '../../styles/Tab/Tab.scss';
+import styles from './Tab.scss';
 
 class Tab extends React.Component {
   constructor(props) {

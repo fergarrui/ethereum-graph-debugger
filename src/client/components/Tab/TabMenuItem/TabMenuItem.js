@@ -4,7 +4,7 @@ import Icon from '../../Icon/Icon';
 
 import classnames from 'classnames/bind';
 
-import styles from '../../../styles/Tab/TabMenuItem.scss';
+import styles from './TabMenuItem.scss';
 
 const cx = classnames.bind(styles);
 

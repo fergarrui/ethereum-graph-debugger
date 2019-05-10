@@ -2,7 +2,7 @@ import React from 'react';
 
 import Graph from '../Graph/Graph';
 
-import styles from '../../styles/TransactionDebugger.scss';
+import styles from './TransactionDebugger.scss';
 
 const TransactionDebugger = ({ contractName, contractPath, debuggerResponse }) => {
 

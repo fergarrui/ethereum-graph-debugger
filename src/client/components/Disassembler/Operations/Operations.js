@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../../../styles/Operations.scss'
+import styles from './Operations.scss'
 
 const Operations = ({ items }) => {
   return (

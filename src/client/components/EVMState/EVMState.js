@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../../styles/EVMState.scss';
+import styles from './EVMState.scss';
 
 const EVMState = ({ evm }) => {
 

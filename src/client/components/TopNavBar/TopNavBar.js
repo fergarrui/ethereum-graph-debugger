@@ -3,7 +3,7 @@ import React from 'react';
 import Input from '../Input/Input';
 import Icon from '../Icon/Icon';
 
-import styles from '../../styles/TopNavBar.scss';
+import styles from './TopNavBar.scss';
 
 const TopNavBar = ({ onInputChange, onInputSubmit, onIconClick }) => {
 

@@ -4,7 +4,7 @@ import TransactionDebugger from '../../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../../Disassembler/Disassembler';
 import ControlFlowGraph from '../../ControlFlowGraph/ControlFlowGraph';
 
-import styles from '../../../styles/Tab/InnerTabPanel.scss';
+import styles from './InnerTabPanel.scss';
 
 import classnames from 'classnames/bind';
 

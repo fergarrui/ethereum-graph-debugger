@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../../styles/Accordion/Accordion.scss';
+import styles from './Accordion.scss';
 
 const Accordion = ({ children }) => (
   <div className={styles['accordion']}>
