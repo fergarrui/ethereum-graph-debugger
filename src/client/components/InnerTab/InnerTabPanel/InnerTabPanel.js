@@ -3,6 +3,7 @@ import React from 'react';
 import TransactionDebugger from '../../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../../Disassembler/Disassembler';
 import ControlFlowGraph from '../../ControlFlowGraph/ControlFlowGraph';
+import Storage from '../../Storage/Storage';
 
 import styles from './InnerTabPanel.scss';
 
@@ -36,6 +37,10 @@ const InnerTabPanel = ({ type, active, contractName, contractCode, contractPath,
           contractName={contractName} 
           contractCode={contractCode}
           graphResponse={graphResponse}
+        />
+      }
+      {type === 'View Storage' &&
+        <Storage
         />
       }
     </div>

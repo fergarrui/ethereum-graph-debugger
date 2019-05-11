@@ -12,35 +12,10 @@
     top: 29px;
   }
 
-  &__item {
+  &__buttons {
     padding: 5px 10px;
-
-    p {
-      color: $color-green;
-      text-align: center;
-      padding: 20px 0 0 0;
-    }
-
-    &:nth-of-type(5) {
-      display: flex;
-      justify-content: space-between;
-      padding: 20px 10px 0 10px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px 0;
-      font-size: 14px;
-      background: transparent;
-      color: $color-light-grey;
-      border-bottom: 1px dotted $color-light-grey;
-      transition: border-color 0.2s;
-
-      &:focus {
-        border-color: $color-green;
-        outline: 0 none;
-      }
-    }
+    display: flex;
+    justify-content: space-between;
 
     button {
       padding: 10px;
@@ -49,6 +24,10 @@
       border: 1px solid $color-light-grey;
       cursor: pointer;
       transition: opacity 0.7, border-color 0.2s;
+
+      &:last-of-type {
+        margin-left: 10px;
+      }
 
       &:focus {
         border-color: $color-green;
@@ -68,6 +47,15 @@
         font-size: 14px;
         transition: color 0.2s;
       }
+    }
+  }
+
+  &__message {
+    display: table;
+    margin: auto;
+
+    p {
+      color: $color-green;
     }
   }
 }

@@ -12,6 +12,7 @@ import Hamburger from '../../Hamburger/Hamburger';
 import EVMTab from '../../EVMTab/EVMTab';
 import EVMTabPanel from '../../EVMTab/EVMTabPanel';
 import EVMState from '../../EVMState/EVMState';
+import Form from '../../Form/Form';
 
 import styles from './TabPanel.scss';
 import fade from '../../../styles/transitions/fade.scss';
@@ -35,13 +36,16 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-class ConnectedTabPanel extends React.Component {
+class TabPanel extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       sideBarOpen: false,
-      modalOpen: false,
+      modalOpen: {
+        transactionDebugger: false,
+        viewStorage: false
+      },
       inputValue: '',
       prameter: '',
       tabs: [],
@@ -81,7 +85,7 @@ class ConnectedTabPanel extends React.Component {
 
   handleRequestPending() {
     this.setState({
-      modalOpen: false,
+      modalOpen: {...this.state.modalOpen, transactionDebugger: false, viewStorage: false },
       sideBarOpen: false,
     });
 
@@ -95,7 +99,6 @@ class ConnectedTabPanel extends React.Component {
     if(type === 'Disassembler') {
       this.setState({
         disassemblerResponse: response,
-
       });
     }
 
@@ -108,6 +111,12 @@ class ConnectedTabPanel extends React.Component {
     if(type === 'Control Flow Graph') {
       this.setState({
         graphResponse: response,
+      });
+    }
+
+    if(type === 'View Storage') {
+      this.setState({
+        storageResponse: response,
       });
     }
 
@@ -126,22 +135,17 @@ class ConnectedTabPanel extends React.Component {
     this.props.getErrorMessage(message);
   }
 
-  handleInputChange(event) {
-    const { value } = event.target;
+  // handleInputChange(event) {
+  //   const { value } = event.target;
 
-    this.setState({
-      inputValue: value,
-      parameter: value,
-    });
-  }
+  //   this.setState({
+  //     inputValue: value,
+  //     parameter: value,
+  //   });
+  // }
 
   handleInputSubmit() {
-    const { inputValue, parameter } = this.state;
     const { name, path, code } = this.props;
-
-    this.setState({
-      parameter: inputValue,
-    });
 
     const params = {
       name: name.replace('.sol', '').replace('.evm', ''),
@@ -153,7 +157,26 @@ class ConnectedTabPanel extends React.Component {
       blockchainBasicAuthPassword: localStorage.getItem('password')
     }
 
-    this.fetchData(this.getUrl(`debug/${parameter}/`, params), 'Transaction Debugger');
+    this.fetchData(this.getUrl(`debug/${this.state.transactionHash}/`, params), 'Transaction Debugger');
+  }
+
+  handleFormInputChange(event) {    
+    const { name, value } = event.target; 
+
+    this.setState({
+      [name]: value,
+    });
+  }
+
+  handleSubmitViewStorageForm() {
+    const params = {
+      startBlock: encodeURIComponent(this.state.startBlock),
+      endBlock: encodeURIComponent(this.state.endBlock)
+    }
+
+    this.fetchData(this.getUrl('storage', params), 'View Storage');
+
+    document.removeEventListener('click', this.handleOutsideClick);
   }
 
   handleMenuIconClick() {
@@ -207,6 +230,15 @@ class ConnectedTabPanel extends React.Component {
     document.removeEventListener('click', this.handleOutsideClick);
   }
 
+  handleViewStorageClick() {
+    this.setState({
+      modalOpen: {...this.state.modalOpen, viewStorage: true },
+      sideBarOpen: false,
+    });
+
+    document.removeEventListener('click', this.handleOutsideClick);
+  }
+
   handleMenuItemIconClick(index) {
     const newTabs = this.state.tabs.filter((item, i) => i !== index);
 
@@ -216,14 +248,15 @@ class ConnectedTabPanel extends React.Component {
   }
 
   handleModalIconClick() {
+
     this.setState({
-      modalOpen: false,
+      modalOpen: { ...this.state.modalOpen, transactionDebugger: false, viewStorage: false } 
     });
   }
 
   handleTransactionDebuggerClick() {
     this.setState({
-      modalOpen: true,
+      modalOpen: {...this.state.modalOpen, transactionDebugger: true},
       sideBarOpen: false,
     });
 
@@ -239,7 +272,22 @@ class ConnectedTabPanel extends React.Component {
   render() {
     
     const { code, name, path, active, index, children, evm } = this.props;
-    const { tabs, sideBarOpen, disassemblerResponse, graphResponse, debuggerResponse, modalOpen, } = this.state;
+    const { tabs, sideBarOpen, disassemblerResponse, graphResponse, debuggerResponse, storageResponse, modalOpen, } = this.state;
+
+    const inputTypes = [
+      {
+        name: 'Address',
+        placeholder: 'Enter contract address'
+      },
+      {
+        name: 'startBlock',
+        placeholder: 'Start block'
+      },
+      {
+        name: 'endBlock',
+        placeholder: 'End block'
+      }
+    ]
 
     const tabPanelClasses = cx({
       'tab-panel': true,
@@ -267,6 +315,7 @@ class ConnectedTabPanel extends React.Component {
               onDisassemblerClick={() => this.handleDisassemblerClick()}
               onTransactionDebuggerClick={() => this.handleTransactionDebuggerClick()}
               onControlFlowGraphClick={() => this.handleControlFlowGraphClick()}
+              onViewStorageClick={() => this.handleViewStorageClick()}
             />
           </div>
           <div className={styles['tab-panel__left__data']}>
@@ -296,6 +345,7 @@ class ConnectedTabPanel extends React.Component {
               graphResponse={graphResponse}
               debuggerResponse={debuggerResponse}
               disassemblerResponse={disassemblerResponse}
+              storageResponse={storageResponse}
               onMenuItemIconClick={this.handleMenuItemIconClick} 
             >
             {children}
@@ -309,21 +359,44 @@ class ConnectedTabPanel extends React.Component {
           transitionLeaveTimeout={300}
           >
           {
-            modalOpen &&  
-              <Modal 
-                onInputChange={(e) => this.handleInputChange(e)} 
-                onInputSubmit={() => this.handleInputSubmit()}
-                onIconClick={() => this.handleModalIconClick()}
-              />
+            modalOpen.transactionDebugger &&  
+              <Modal onIconClick={() => this.handleModalIconClick()}>          
+                <Form
+                  submitButton={true}
+                  inputTypes={[{ name: 'transactionHash', placeholder: 'Transaction Hash' }]}
+                  buttonValue='Debug'
+                  onInputChange={(e) => this.handleFormInputChange(e)}
+                  onInputKeyUp={() => this.handleInputSubmit()}
+                  onSubmitForm={() => this.handleInputSubmit()}
+                  />
+              </Modal>
           }
         </CSSTransitionGroup>
+        <CSSTransitionGroup
+          transitionName={fade}
+          transitionAppear={true}
+          transitionAppearTimeout={300}
+          trnasitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+          >
+          {
+            modalOpen.viewStorage &&  
+              <Modal onIconClick={() => this.handleModalIconClick()}>          
+                <Form
+                  buttonValue='Submit'
+                  submitButton={true} 
+                  inputTypes={inputTypes}
+                  onInputChange={(e) => this.handleFormInputChange(e)} 
+                  onSubmitForm={() => this.handleSubmitViewStorageForm()}
+                  />
+              </Modal>
+          }
+      </CSSTransitionGroup>
       </div>
     )
   }
 }
 
-const TabPanel = connect(mapStateToProps, mapDispatchToProps)(ConnectedTabPanel);
-
 TabPanel.displayName = 'TabPanel';
 
-export default TabPanel;
+export default connect(mapStateToProps, mapDispatchToProps)(TabPanel);;
