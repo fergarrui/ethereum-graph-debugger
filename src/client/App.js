@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 import { showLoadingMessage, showErrorMessage, hideLoadingMessage, getErrorMessage } from './components/Store/Actions.js';
 
@@ -9,6 +10,8 @@ import MessageComp from './components/MessageComp/MessageComp';
 import SettingsBar from './components/SettingsBar/SettingsBar';
 
 import styles from './styles/App.scss';
+import fade from './styles/transitions/fade.scss';
+import scale from './styles/transitions/scale.scss';
 
 const mapStateToProps = state => {
   return {
@@ -160,21 +163,45 @@ class ConnectedApp extends React.Component {
             onSaveButtonClick={() => this.handleSettingsSaveButtonClick()}
           />
         </div>
-        { showLoadingMessage &&
-          <MessageComp message='Loading...' />
-        }
-        { showErrorMessage &&
-          <MessageComp 
-            message={errorMessage}
-            onMessageButtonClick={() => this.handleMessageButtonClick()}
-           />
-        }
+        <CSSTransitionGroup
+          transitionName={fade}
+          transitionAppear={true}
+          transitionAppearTimeout={300}
+          trnasitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+          >
+          { showLoadingMessage &&
+            <MessageComp message='Loading...' />
+          }
+        </CSSTransitionGroup>
+        <CSSTransitionGroup
+          transitionName={fade}
+          transitionAppear={true}
+          transitionAppearTimeout={300}
+          trnasitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+          >
+          { showErrorMessage &&
+            <MessageComp 
+              message={errorMessage}
+              onMessageButtonClick={() => this.handleMessageButtonClick()}
+            />
+          }
+        </CSSTransitionGroup>
         <div className={styles['app__tabs']}>
+          <CSSTransitionGroup
+            transitionName={scale}
+            transitionAppear={true}
+            transitionAppearTimeout={300}
+            trnasitionEnterTimeout={300}
+            transitionLeaveTimeout={300}
+            >
           {fetchRequestStatus === 'success' && 
           <Tab data={contracts} onMenuItemIconClick={this.handleMenuItemIconClick}>
             {children}
           </Tab>        
           }
+          </CSSTransitionGroup>
         </div>
       </div>
     );

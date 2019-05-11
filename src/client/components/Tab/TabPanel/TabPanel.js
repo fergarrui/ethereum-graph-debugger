@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import  { CSSTransitionGroup } from 'react-transition-group';
 
 import { showLoadingMessage, hideLoadingMessage, showErrorMessage, getErrorMessage } from '../../Store/Actions.js';
 
@@ -13,6 +14,7 @@ import EVMTabPanel from '../../EVMTab/EVMTabPanel';
 import EVMState from '../../EVMState/EVMState';
 
 import styles from './TabPanel.scss';
+import fade from '../../../styles/transitions/fade.scss';
 
 import classnames from 'classnames/bind';
 
@@ -299,14 +301,22 @@ class ConnectedTabPanel extends React.Component {
             {children}
           </InnerTab>
         </div>
-        {
-          modalOpen &&  
-            <Modal 
-              onInputChange={(e) => this.handleInputChange(e)} 
-              onInputSubmit={() => this.handleInputSubmit()}
-              onIconClick={() => this.handleModalIconClick()}
-            />
-        }
+        <CSSTransitionGroup
+          transitionName={fade}
+          transitionAppear={true}
+          transitionAppearTimeout={300}
+          trnasitionEnterTimeout={300}
+          transitionLeaveTimeout={300}
+          >
+          {
+            modalOpen &&  
+              <Modal 
+                onInputChange={(e) => this.handleInputChange(e)} 
+                onInputSubmit={() => this.handleInputSubmit()}
+                onIconClick={() => this.handleModalIconClick()}
+              />
+          }
+        </CSSTransitionGroup>
       </div>
     )
   }
