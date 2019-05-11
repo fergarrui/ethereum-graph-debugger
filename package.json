@@ -80,6 +80,7 @@
     "react-dom": "^16.6.0",
     "react-redux": "^6.0.0",
     "react-svg-inline": "^2.1.1",
+    "react-transition-group": "^1.2.1",
     "recursive-readdir": "^2.2.2",
     "redux-thunk": "^2.3.0",
     "reflect-metadata": "^0.1.12",
