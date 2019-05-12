@@ -14,7 +14,7 @@ export class BlockServiceImpl implements BlockService {
     const web3 = iWeb3.getInstance()
     const block: Block = await web3.eth.getBlock(blockNumber, false)
     if (!block) {
-      logger.info('Block not found in node')
+      logger.info(`Block ${blockNumber} not found in node`)
     }
     return block
   }

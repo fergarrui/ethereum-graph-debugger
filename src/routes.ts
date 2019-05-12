@@ -70,8 +70,28 @@ const models: TsoaRoute.Models = {
             "storage": { "dataType": "any", "default": {} },
         },
     },
+    "DeployContractRequest": {
+        "properties": {
+            "from": { "dataType": "string" },
+            "gas": { "dataType": "double" },
+            "gasPrice": { "dataType": "double" },
+            "value": { "dataType": "double" },
+            "blockchainHost": { "dataType": "string" },
+            "blockchainProtocol": { "dataType": "string" },
+            "blockchainBasicAuthUsername": { "dataType": "string" },
+            "blockchainBasicAuthPassword": { "dataType": "string" },
+        },
+    },
     "RunContractFunctionRequest": {
         "properties": {
+            "from": { "dataType": "string" },
+            "gas": { "dataType": "double" },
+            "gasPrice": { "dataType": "double" },
+            "value": { "dataType": "double" },
+            "blockchainHost": { "dataType": "string" },
+            "blockchainProtocol": { "dataType": "string" },
+            "blockchainBasicAuthUsername": { "dataType": "string" },
+            "blockchainBasicAuthPassword": { "dataType": "string" },
             "abi": { "dataType": "any", "required": true },
             "params": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
         },
@@ -282,15 +302,33 @@ export function RegisterRoutes(app: any) {
             const promise = controller.getAbi.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
+    app.post('/contract/deploy',
+        function(request: any, response: any, next: any) {
+            const args = {
+                deployRequest: { "in": "body", "name": "deployRequest", "required": true, "ref": "DeployContractRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<ContractController>(ContractController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.deploy.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
     app.post('/contract/run/:contractAddress',
         function(request: any, response: any, next: any) {
             const args = {
                 contractAddress: { "in": "path", "name": "contractAddress", "required": true, "dataType": "string" },
                 runFunction: { "in": "body", "name": "runFunction", "required": true, "ref": "RunContractFunctionRequest" },
-                blockchainHost: { "in": "query", "name": "blockchainHost", "dataType": "string" },
-                blockchainProtocol: { "in": "query", "name": "blockchainProtocol", "dataType": "string" },
-                blockchainBasicAuthUsername: { "in": "query", "name": "blockchainBasicAuthUsername", "dataType": "string" },
-                blockchainBasicAuthPassword: { "in": "query", "name": "blockchainBasicAuthPassword", "dataType": "string" },
             };
 
             let validatedArgs: any[] = [];

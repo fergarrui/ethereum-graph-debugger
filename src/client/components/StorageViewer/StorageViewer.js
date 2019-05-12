@@ -24,13 +24,13 @@ const StorageViewer = ({ storageResponse }) => {
             return (
               <div className={styles['storage__body__item']} key={key}>
                 <div className={styles['storage__body__item__col']}>
-                  <span>{key}</span>
+                  <span>{`0x${key}`}</span>
                 </div>
                 <div className={styles['storage__body__item__col']}>
-                  <span>{val.value}</span>
+                  <span>{`0x${val.value}`}</span>
                 </div>
               </div>
-            )    
+            )
           })
         }
       </div>
