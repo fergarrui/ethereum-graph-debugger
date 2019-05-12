@@ -5,6 +5,7 @@ import { CSSTransitionGroup } from 'react-transition-group';
 import { showLoadingMessage, showErrorMessage, hideLoadingMessage, getErrorMessage } from './components/Store/Actions.js';
 
 import TopNavBar from './components/TopNavBar/TopNavBar';
+import Form from './components/Form/Form';
 import Tab from './components/Tab/Tab';
 import MessageComp from './components/MessageComp/MessageComp';
 import SettingsBar from './components/SettingsBar/SettingsBar';
@@ -30,7 +31,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-class ConnectedApp extends React.Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
@@ -152,11 +153,16 @@ class ConnectedApp extends React.Component {
 
     return (
       <div className={styles['app']}>
-        <TopNavBar
-          onInputChange={(e) => this.handleInputChange(e)}
-          onInputSubmit={() => this.handleInputSubmit()}
-          onIconClick={() => this.handleSettingsiconClick()}
-        />
+        <TopNavBar onIconClick={() => this.handleSettingsiconClick()}>
+          <Form 
+            submitButton={true}
+            inputTypes={[{ name: 'contractsPath', placeholder: 'Insert contracts path'}]}
+            buttonValue='Load contracts from URI'
+            onInputChange={(e) => this.handleInputChange(e)}
+            onSubmitForm={() => this.handleInputSubmit()}
+            onInputKeyUp={() => this.handleInputSubmit()}
+            />
+        </TopNavBar>
         <div ref={node => { this.node = node; }}>
           <SettingsBar 
             active={!!settingsVisible}
@@ -208,8 +214,6 @@ class ConnectedApp extends React.Component {
   }
 }
 
-const App = connect(mapStateToProps, mapDispatchToProps)(ConnectedApp);
-
 App.displayName = 'App';
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);;

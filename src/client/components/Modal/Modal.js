@@ -1,11 +1,10 @@
 import React from 'react';
 
 import Icon from '../Icon/Icon';
-import Input from '../Input/Input';
 
 import styles from './Modal.scss';
 
-const Modal =  ({ onIconClick, onInputChange, onInputSubmit }) => {
+const Modal =  ({ onIconClick, children }) => {
 
   return (
     <div className={styles['modal']}>
@@ -15,13 +14,8 @@ const Modal =  ({ onIconClick, onInputChange, onInputSubmit }) => {
             <Icon iconName='Cross' />
           </button>
         </div>
-        <div className={styles['modal__main__input']}>
-          <Input 
-            placeholder='Transaction hash'
-            buttonValue='Debug'
-            onChange={onInputChange}
-            onSubmit={onInputSubmit}
-          />
+        <div className={styles['modal__main__body']}>
+          {children}
         </div>
       </div>
     </div>

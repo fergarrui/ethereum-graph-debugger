@@ -1,6 +1,7 @@
 import React from 'react';
-
 import classnames from 'classnames/bind';
+
+import Form from '../Form/Form';
 
 import styles from './SettingsBar.scss';
 
@@ -33,7 +34,6 @@ class SettingsBar extends React.Component {
   handleKeyUp(event) {    
     const { onSaveButtonClick } = this.props;
 
-
     if(event.keyCode !== 13) {
       return;
     }
@@ -41,7 +41,7 @@ class SettingsBar extends React.Component {
     onSaveButtonClick();
   }
 
-  handleClick() {
+  handlClearClick() {
     localStorage.clear();
 
     this.setState({
@@ -63,46 +63,39 @@ class SettingsBar extends React.Component {
       'settings-bar': true,
       'settings-bar--active': !!active
     });
+
+    const inputTypes = [
+      {
+        name:'host', 
+        placeholder: localStorage.getItem('host') || 'Blockchain host (default: 127.0.0.1:8545)'
+      },
+      {
+        name:'protocol', 
+        placeholder: localStorage.getItem('protocol') || 'Blockchain protocol (default: http)'
+      },
+      {
+        name:'username',
+        placeholder: localStorage.getItem('username') || 'Blockchain basic auth username'
+      },
+      {
+        name:'password', 
+        placeholder: localStorage.getItem('password') || 'Blockchain basic auth password' 
+      }
+    ]
   
       return (
         <div className={settingsBarClasses}>
-          <div className={styles['settings-bar__item']}>
-            <input
-              name='host' 
-              placeholder={localStorage.getItem('host') || 'Blockchain host (default: 127.0.0.1:8545)'}  
-              onChange={this.handleInputChange}
-              onKeyUp={this.handleKeyUp}
-             />
-          </div>
-          <div className={styles['settings-bar__item']}>
-            <input
-              name='protocol' 
-              placeholder={localStorage.getItem('protocol') || 'Blockchain protocol (default: http)'} 
-              onChange={this.handleInputChange}
-              onKeyUp={this.handleKeyUp}
-             />
-          </div>
-          <div className={styles['settings-bar__item']}>
-            <input
-              name='username'
-              placeholder={localStorage.getItem('username') || 'Blockchain basic auth username'} 
-              onChange={this.handleInputChange}
-              onKeyUp={this.handleKeyUp}
-             />
-          </div>
-          <div className={styles['settings-bar__item']}>
-            <input
-              name='password' 
-              placeholder={localStorage.getItem('password') || 'Blockchain basic auth password'} 
-              onChange={this.handleInputChange}
-              onKeyUp={this.handleKeyUp}
-             />
-          </div>
-          <div className={styles['settings-bar__item']}>
+          <Form 
+            inputTypes={inputTypes}
+            onInputChange={(e) => this.handleInputChange(e)}
+            onInputKeyUp={() => this.handleSaveClick()}
+            settingsBarForm={true}
+          />
+          <div className={styles['settings-bar__buttons']}>
             <button onClick={() => this.handleSaveClick()}><span>Save and Close</span></button>
-            <button onClick={() => this.handleClick()}><span>Clear Config</span></button>
+            <button onClick={() => this.handlClearClick()}><span>Clear Config</span></button>
           </div>
-          <div className={styles['settings-bar__item']}>
+          <div className={styles['settings-bar__message']}>
             {
               configCleared && <p>Config cleared</p>
             }
