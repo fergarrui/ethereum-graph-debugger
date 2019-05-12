@@ -1,8 +1,6 @@
-export interface TransactionRequest {
-  from?: string,
-  gas?: number,
-  gasPrice?: number,
-  value?: number,
+import { TransactionBase } from "../bean/TransactionBase";
+
+export interface TransactionRequest extends TransactionBase {
   blockchainHost?: string,
   blockchainProtocol?: string,
   blockchainBasicAuthUsername?: string,

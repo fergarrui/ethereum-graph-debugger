@@ -1,4 +1,7 @@
 import { injectable } from "inversify";
+import { Web3Instance } from "../../blockchain/Web3Instance";
+import { IWeb3 } from "../../blockchain/IWeb3";
+import { TransactionBase } from "../bean/TransactionBase";
 let solc = require('solc')
 let fs = require('fs')
 let nodePath = require('path')
@@ -6,12 +9,12 @@ let nodePath = require('path')
 @injectable()
 export class ContractService {
 
-  getAbi(contractName: string, source: string, path: string) {
+  getAbi(contractName: string, source: string, path: string): any {
     const contract = this.compileContract(contractName, source, path)
     return contract.abi
   }
 
-  compileContract(contractName: string, source: string, path: string) {
+  compileContract(contractName: string, source: string, path: string): any {
     const compileJson = this.generateCompileObject(contractName, source, path)
     const compiledContract = JSON.parse(solc.compileStandardWrapper(JSON.stringify(compileJson)))
     const contractWithExt = `${contractName}.sol`
@@ -20,6 +23,33 @@ export class ContractService {
       throw new Error('Bad source code')
     }
     return contract
+  }
+
+  async deployContractSource <T extends TransactionBase> (web3config: any, contractName: string, source: string, path: string, txBase: T): Promise<any> {
+    const iWeb3: IWeb3 = new Web3Instance(web3config)
+    const web3 = iWeb3.getInstance()
+    const compiledContract = this.compileContract(contractName, source, path)
+    const bytecode = compiledContract.evm.bytecode.object
+    return this.sendTx(web3, null, bytecode, txBase.from, txBase.gas, txBase.gasPrice, txBase.value)
+  }
+
+  async runFunction <T extends TransactionBase> (web3config: any, abi: any, params: string[], to: string, txBase: T): Promise<any> {
+    const iWeb3: IWeb3 = new Web3Instance(web3config)
+    const web3 = iWeb3.getInstance()
+    const functionCallEncoded: string = web3.eth.abi.encodeFunctionCall(abi, params)
+    return this.sendTx(web3, to, functionCallEncoded, txBase.from, txBase.gas, txBase.gasPrice, txBase.value)
+  }
+
+  private async sendTx(web3: any, to: string, input: string, from?: string, gas?: number, gasPrice?: number, value?: number): Promise<any> {
+    const accounts = await web3.eth.getAccounts()
+    return web3.eth.sendTransaction({
+      to,
+      from: from || accounts[0],
+      gas,
+      gasPrice,
+      value,
+      input
+    });
   }
 
   private generateCompileObject(contractName: string, content: string, path: string) {

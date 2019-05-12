@@ -8,6 +8,7 @@ import { IWeb3 } from '../../blockchain/IWeb3';
 import { Web3Instance } from '../../blockchain/Web3Instance';
 import { Web3Configuration } from '../../blockchain/Web3Configuration';
 import { DeployContractRequest } from '../request/DeployContractRequest';
+import { TransactionRequest } from '../request/TransactionRequest';
 
 @Route('contract')
 @provideSingleton(ContractController)
@@ -41,7 +42,13 @@ export class ContractController extends Controller {
   async deploy(
     @Body() deployRequest: DeployContractRequest,
   ) {
-
+    const config = {
+      blockchainHost: deployRequest.blockchainHost,
+      blockchainProtocol: deployRequest.blockchainProtocol,
+      blockchainBasicAuthUsername: deployRequest.blockchainBasicAuthUsername,
+      blockchainBasicAuthPassword: deployRequest.blockchainBasicAuthPassword
+    } as Web3Configuration
+    return this.contractService.deployContractSource(config, deployRequest.name, deployRequest.source, deployRequest.path, deployRequest)
   }
 
   @Post('run/{contractAddress}')
@@ -56,18 +63,13 @@ export class ContractController extends Controller {
       blockchainBasicAuthUsername: runFunction.blockchainBasicAuthUsername,
       blockchainBasicAuthPassword: runFunction.blockchainBasicAuthPassword
     } as Web3Configuration
-    const iWeb3: IWeb3 = new Web3Instance(config)
-    const web3 = iWeb3.getInstance()
-    const functionCallEncoded = web3.eth.abi.encodeFunctionCall(runFunction.abi, runFunction.params)
-    const accounts = await web3.eth.getAccounts()
-    const receipt = await web3.eth.sendTransaction({
-      to: contractAddress,
-      from: runFunction.from || accounts[0],
-      gas: runFunction.gas,
-      gasPrice: runFunction.gasPrice,
-      value: runFunction.value,
-      input: functionCallEncoded
-    })
-    return receipt
+
+    return this.contractService.runFunction(
+      config, 
+      runFunction.abi, 
+      runFunction.params, 
+      contractAddress, 
+      runFunction
+    )
   }
 }
