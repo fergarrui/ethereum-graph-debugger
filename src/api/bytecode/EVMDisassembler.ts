@@ -17,6 +17,9 @@ export class EVMDisassembler implements Disassembler {
   constructor() {}
 
   disassembleSourceCode(contractName: string, source: string, path: string): DisassembledContract {
+    if (source.startsWith('0x')) {
+      return this.disassembleContract(source)
+    }
     const compileJson = this.generateCompileObject(contractName, source, path)
     const compiledContract = JSON.parse(solc.compileStandardWrapper(JSON.stringify(compileJson)))
     const contractWithExt = `${contractName}.sol`
