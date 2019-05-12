@@ -1,8 +1,6 @@
-export interface RunContractFunctionRequest {
+import { TransactionRequest } from "./TransactionRequest";
+
+export interface RunContractFunctionRequest extends TransactionRequest {
   abi: any
-  params: string[],
-  from?: string,
-  gas?: number,
-  gasPrice?: number,
-  value?: number
-}
+  params: string[]
+  }

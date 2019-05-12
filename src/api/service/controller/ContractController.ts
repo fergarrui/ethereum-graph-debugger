@@ -7,6 +7,7 @@ import { RunContractFunctionRequest } from '../request/RunContractFunctionReques
 import { IWeb3 } from '../../blockchain/IWeb3';
 import { Web3Instance } from '../../blockchain/Web3Instance';
 import { Web3Configuration } from '../../blockchain/Web3Configuration';
+import { DeployContractRequest } from '../request/DeployContractRequest';
 
 @Route('contract')
 @provideSingleton(ContractController)
@@ -36,21 +37,24 @@ export class ContractController extends Controller {
     }
   }
 
+  @Post('deploy')
+  async deploy(
+    @Body() deployRequest: DeployContractRequest,
+  ) {
+
+  }
+
   @Post('run/{contractAddress}')
   async run(
     @Path() contractAddress: string,
     @Body() runFunction: RunContractFunctionRequest,
-    @Query('blockchainHost') blockchainHost?: string,
-    @Query('blockchainProtocol') blockchainProtocol?: string,
-    @Query('blockchainBasicAuthUsername') blockchainBasicAuthUsername?: string,
-    @Query('blockchainBasicAuthPassword') blockchainBasicAuthPassword?: string
   )
   {
     const config = {
-      blockchainHost,
-      blockchainProtocol,
-      blockchainBasicAuthUsername,
-      blockchainBasicAuthPassword
+      blockchainHost: runFunction.blockchainHost,
+      blockchainProtocol: runFunction.blockchainProtocol,
+      blockchainBasicAuthUsername: runFunction.blockchainBasicAuthUsername,
+      blockchainBasicAuthPassword: runFunction.blockchainBasicAuthPassword
     } as Web3Configuration
     const iWeb3: IWeb3 = new Web3Instance(config)
     const web3 = iWeb3.getInstance()
