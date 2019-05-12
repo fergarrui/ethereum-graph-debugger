@@ -80,6 +80,9 @@ const models: TsoaRoute.Models = {
             "blockchainProtocol": { "dataType": "string" },
             "blockchainBasicAuthUsername": { "dataType": "string" },
             "blockchainBasicAuthPassword": { "dataType": "string" },
+            "name": { "dataType": "string", "required": true },
+            "source": { "dataType": "string", "required": true },
+            "path": { "dataType": "string", "required": true },
         },
     },
     "RunContractFunctionRequest": {
