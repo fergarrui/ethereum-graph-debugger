@@ -3,7 +3,7 @@ import React from 'react';
 import TransactionDebugger from '../../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../../Disassembler/Disassembler';
 import ControlFlowGraph from '../../ControlFlowGraph/ControlFlowGraph';
-import Storage from '../../Storage/Storage';
+import StorageViewer from '../../StorageViewer/StorageViewer';
 
 import styles from './InnerTabPanel.scss';
 
@@ -11,7 +11,7 @@ import classnames from 'classnames/bind';
 
 const cx = classnames.bind(styles);
 
-const InnerTabPanel = ({ type, active, contractName, contractCode, contractPath, debuggerResponse, graphResponse, disassemblerResponse }) => {
+const InnerTabPanel = ({ type, active, contractName, contractCode, contractPath, debuggerResponse, graphResponse, disassemblerResponse, storageResponse }) => {
   const tabPanelClasses = cx({
     'inner-tab-panel': true,
     'inner-tab-panel--active': !!active,
@@ -39,9 +39,8 @@ const InnerTabPanel = ({ type, active, contractName, contractCode, contractPath,
           graphResponse={graphResponse}
         />
       }
-      {type === 'View Storage' &&
-        <Storage
-        />
+      {type === 'Storage Viewer' &&
+        <StorageViewer storageResponse={storageResponse} />
       }
     </div>
   );
