@@ -5,6 +5,7 @@ import { Disassembler } from '../bytecode/Disassembler'
 import { Operation } from '../bytecode/Operation'
 import { Opcodes } from '../bytecode/Opcodes'
 import { CFGBlocks } from './CFGBlocks'
+import { createEVMDisassembler } from '../symbolic/evm/exec/TestUtils';
 let BN = require('bn.js')
 
 describe('EthereumCFGCreator', () => {
@@ -13,7 +14,7 @@ describe('EthereumCFGCreator', () => {
 
   beforeEach(() => {
     cfgCreator = new EthereumCFGCreator()
-    disassembler = new EVMDisassembler()
+    disassembler = createEVMDisassembler()
   })
 
   it('Test blocks correctly created, no jumps', () => {

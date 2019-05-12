@@ -7,6 +7,7 @@ import './api/service/controller/FileController'
 import './api/service/controller/DisassembleController'
 import './api/service/controller/ControlFlowGraphController'
 import './api/service/controller/StorageRecoverController'
+import './api/service/controller/ContractController'
 
 const server = new Server()
 // make it configurable

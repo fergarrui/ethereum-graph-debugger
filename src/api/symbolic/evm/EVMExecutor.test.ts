@@ -5,7 +5,7 @@ import { Disassembler } from '../../bytecode/Disassembler'
 import { EVMDisassembler } from '../../bytecode/EVMDisassembler'
 import { OpcodeExecutor } from './exec/OpcodeExecutor'
 import { Word } from './Word'
-import { createExecutor } from './exec/TestUtils'
+import { createExecutor, createEVMDisassembler } from './exec/TestUtils'
 import { DisassembledContract } from '../../bytecode/DisassembledContract'
 
 describe('EVMExecutor', () => {
@@ -15,7 +15,7 @@ describe('EVMExecutor', () => {
 
   beforeEach(() => {
     cfgCreator = new EthereumCFGCreator()
-    disassembler = new EVMDisassembler()
+    disassembler = createEVMDisassembler()
   })
 
   it('Test simple PUSH execution', () => {

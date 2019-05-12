@@ -1,9 +1,8 @@
-import { createExecutor } from './TestUtils'
+import { createExecutor, createEVMDisassembler } from './TestUtils'
 import { EVMExecutor } from '../EVMExecutor'
 import { EthereumCFGCreator } from '../../../cfg/EthereumCFGCreator'
 import { Disassembler } from '../../../bytecode/Disassembler'
 import { OpcodeExecutor } from './OpcodeExecutor'
-import { EVMDisassembler } from '../../../bytecode/EVMDisassembler'
 import { Word } from '../Word'
 import { Symbols } from '../Symbols'
 
@@ -14,7 +13,7 @@ describe('Smod', () => {
 
   beforeEach(() => {
     cfgCreator = new EthereumCFGCreator()
-    disassembler = new EVMDisassembler()
+    disassembler = createEVMDisassembler()
   })
 
   it('Test Smod 1', () => {

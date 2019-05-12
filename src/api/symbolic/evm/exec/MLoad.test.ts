@@ -1,4 +1,4 @@
-import { createExecutor } from './TestUtils'
+import { createExecutor, createEVMDisassembler } from './TestUtils'
 import { EVMExecutor } from '../EVMExecutor'
 import { EthereumCFGCreator } from '../../../cfg/EthereumCFGCreator'
 import { Disassembler } from '../../../bytecode/Disassembler'
@@ -13,7 +13,7 @@ describe('MLoad', () => {
 
   beforeEach(() => {
     cfgCreator = new EthereumCFGCreator()
-    disassembler = new EVMDisassembler()
+    disassembler = createEVMDisassembler()
   })
 
   it('Test MLoad from 0', () => {

@@ -4,6 +4,8 @@ import { OpcodeExecutor } from './OpcodeExecutor'
 import { Operation } from '../../../bytecode/Operation'
 import { CFGBlocks } from '../../../cfg/CFGBlocks'
 import { EVMExecutor } from '../EVMExecutor'
+import { EVMDisassembler } from '../../../bytecode/EVMDisassembler';
+import { ContractService } from '../../../service/service/ContractService';
 
 export function createExecutor(
   disassembler: Disassembler,
@@ -14,4 +16,8 @@ export function createExecutor(
   const ops: Operation[] = disassembler.disassembleBytecode(bytecode)
   const blocks: CFGBlocks = cfgCreator.divideBlocks(ops)
   return new EVMExecutor(blocks, opcodeExecutor)
+}
+
+export function createEVMDisassembler(): EVMDisassembler {
+  return new EVMDisassembler(new ContractService())
 }

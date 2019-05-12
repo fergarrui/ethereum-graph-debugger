@@ -1,9 +1,8 @@
 import { EthereumCFGCreator } from './EthereumCFGCreator'
 import { Disassembler } from '../bytecode/Disassembler'
 import { OpcodeExecutor } from '../symbolic/evm/exec/OpcodeExecutor'
-import { EVMDisassembler } from '../bytecode/EVMDisassembler'
 import { EVMExecutor } from '../symbolic/evm/EVMExecutor'
-import { createExecutor } from '../symbolic/evm/exec/TestUtils'
+import { createExecutor, createEVMDisassembler } from '../symbolic/evm/exec/TestUtils'
 import { GraphVizService } from './GraphVizService'
 
 describe('GraphVizService', () => {
@@ -14,7 +13,7 @@ describe('GraphVizService', () => {
 
   beforeEach(() => {
     cfgCreator = new EthereumCFGCreator()
-    disassembler = new EVMDisassembler()
+    disassembler = createEVMDisassembler()
     graph = new GraphVizService()
   })
 

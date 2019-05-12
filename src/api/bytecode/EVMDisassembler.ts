@@ -1,41 +1,40 @@
 import { Disassembler } from './Disassembler'
 import { Operation } from './Operation'
 import { Opcodes } from './Opcodes'
-import { injectable } from 'inversify'
+import { injectable, inject } from 'inversify'
 import { Opcode } from './Opcode'
 import { DisassembledContract } from './DisassembledContract'
 import { logger } from '../../Logger';
+import { TYPES } from '../../inversify/types';
+import { ContractService } from '../service/service/ContractService';
 let BN = require('bn.js')
-let solc = require('solc')
-let fs = require('fs')
-let nodePath = require('path')
+
 
 @injectable()
 export class EVMDisassembler implements Disassembler {
   static readonly metadataPrefix = 'a165627a7a72305820'
 
-  constructor() {}
+  constructor(
+    @inject(TYPES.ContractService) private contractService: ContractService
+  ) {}
 
   disassembleSourceCode(contractName: string, source: string, path: string): DisassembledContract {
     if (source.startsWith('0x')) {
       return this.disassembleContract(source)
     }
-    const compileJson = this.generateCompileObject(contractName, source, path)
-    const compiledContract = JSON.parse(solc.compileStandardWrapper(JSON.stringify(compileJson)))
-    const contractWithExt = `${contractName}.sol`
-    const contract = compiledContract.contracts[contractWithExt][contractName]
-    if (!contract) {
-      throw new Error('Bad source code')
-    }
+    
+    const contract = this.contractService.compileContract(contractName, source, path)
+
+
     const bytecode = contract.evm.bytecode.object
-    const runtimeBytecode = compiledContract.contracts[contractWithExt][contractName].evm.deployedBytecode.object
-    const contractAssembly = compiledContract.contracts[contractWithExt][contractName].evm.legacyAssembly
+    const runtimeBytecode = contract.evm.deployedBytecode.object
+    const contractAssembly = contract.evm.legacyAssembly
     if (!contractAssembly) {
-      logger.error(JSON.stringify(compiledContract))
+      logger.error(JSON.stringify(contract))
       throw new Error(`No code found in contract ${contractName}`)
     }
     const asmRuntime = contractAssembly['.data'][0]['.code'].filter(elem => elem.name !== 'tag')
-    const asmConstructor = compiledContract.contracts[contractWithExt][contractName].evm.legacyAssembly['.code'].filter(
+    const asmConstructor = contract.evm.legacyAssembly['.code'].filter(
       elem => elem.name !== 'tag'
     )
     const disassembledCode: DisassembledContract = this.disassembleContract(bytecode)
@@ -164,75 +163,7 @@ export class EVMDisassembler implements Disassembler {
     } as Operation
   }
 
-  private findImports(sources: any, content: string, path: string, filesChecked: string[], initialPath: string) {
-    const regexp = /import "(.*)"|import '(.*)'/g
-    const match = content.match(regexp)
-    if (!match) {
-      return
-    }
-    const matches = match.map(imp => {
-      const splittedImp = imp.split('"')
-      if (splittedImp.length < 2) {
-        return imp.split("'")[1]
-      } else {
-        return splittedImp[1]
-      }
-    })
 
-    for (const imp of matches) {
-      let importFilePath = path
-      if (!importFilePath.endsWith(nodePath.sep)) {
-        importFilePath = importFilePath + nodePath.sep
-      }
-      importFilePath = nodePath.normalize(importFilePath + imp)
-      const importPathRelative = nodePath
-        .relative(initialPath, importFilePath)
-        .replace('./', '')
-        .replace('../', '')
-        .replace(/^\./, '')
-
-      const importContent = fs.readFileSync(importFilePath).toString()
-      let sourceFileName = imp.replace('./', '').replace('../', '')
-      if (sourceFileName.startsWith('.')) {
-        sourceFileName = sourceFileName.substr(1, sourceFileName.length)
-      }
-      if (filesChecked.includes(importPathRelative)) {
-        continue
-      }
-      filesChecked.push(importPathRelative)
-      sources[importPathRelative] = {
-        content: importContent
-      }
-      this.findImports(
-        sources,
-        importContent,
-        nodePath.normalize(nodePath.dirname(importFilePath)),
-        filesChecked,
-        initialPath
-      )
-    }
-  }
-
-  private generateCompileObject(contractName: string, content: string, path: string) {
-    const sources = {}
-    sources[`${contractName}.sol`] = {
-      content: content
-    }
-    const filesChecked = []
-    this.findImports(sources, content, path, filesChecked, path)
-    const compileJson = {
-      language: 'Solidity',
-      sources,
-      settings: {
-        outputSelection: {
-          '*': {
-            '*': ['evm.bytecode', 'evm.legacyAssembly', 'evm.deployedBytecode']
-          }
-        }
-      }
-    }
-    return compileJson
-  }
 
   private isPush(opcode: Opcode): boolean {
     return opcode.name.startsWith('PUSH')

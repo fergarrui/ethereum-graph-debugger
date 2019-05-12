@@ -6,7 +6,6 @@ import { Web3Configuration } from "../../blockchain/Web3Configuration";
 import { TransactionReceipt } from "../bean/TransactionReceipt";
 import { TransactionService } from "./TransactionService";
 import { Storage } from "../bean/Storage"
-import { IWeb3 } from "../../blockchain/IWeb3";
 import { Transaction } from "../bean/Transaction";
 
 @injectable()

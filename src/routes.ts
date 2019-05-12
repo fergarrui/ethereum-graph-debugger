@@ -7,6 +7,7 @@ import { DisassembleController } from './api/service/controller/DisassembleContr
 import { TransactionController } from './api/service/controller/TransactionController';
 import { ControlFlowGraphController } from './api/service/controller/ControlFlowGraphController';
 import { StorageRecoverController } from './api/service/controller/StorageRecoverController';
+import { ContractController } from './api/service/controller/ContractController';
 
 const models: TsoaRoute.Models = {
     "Opcode": {
@@ -67,6 +68,12 @@ const models: TsoaRoute.Models = {
     "Storage": {
         "properties": {
             "storage": { "dataType": "any", "default": {} },
+        },
+    },
+    "RunContractFunctionRequest": {
+        "properties": {
+            "abi": { "dataType": "any", "required": true },
+            "params": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
         },
     },
 };
@@ -249,6 +256,57 @@ export function RegisterRoutes(app: any) {
 
 
             const promise = controller.getStorage.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/contract/abi',
+        function(request: any, response: any, next: any) {
+            const args = {
+                source: { "in": "query", "name": "source", "required": true, "dataType": "string" },
+                name: { "in": "query", "name": "name", "required": true, "dataType": "string" },
+                path: { "in": "query", "name": "path", "required": true, "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<ContractController>(ContractController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.getAbi.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/contract/run/:contractAddress',
+        function(request: any, response: any, next: any) {
+            const args = {
+                contractAddress: { "in": "path", "name": "contractAddress", "required": true, "dataType": "string" },
+                runFunction: { "in": "body", "name": "runFunction", "required": true, "ref": "RunContractFunctionRequest" },
+                blockchainHost: { "in": "query", "name": "blockchainHost", "dataType": "string" },
+                blockchainProtocol: { "in": "query", "name": "blockchainProtocol", "dataType": "string" },
+                blockchainBasicAuthUsername: { "in": "query", "name": "blockchainBasicAuthUsername", "dataType": "string" },
+                blockchainBasicAuthPassword: { "in": "query", "name": "blockchainBasicAuthPassword", "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<ContractController>(ContractController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.run.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
 
