@@ -16,6 +16,7 @@ import Form from '../../Form/Form';
 
 import styles from './TabPanel.scss';
 import fade from '../../../styles/transitions/fade.scss';
+import scale from '../../../styles/transitions/scale.scss';
 
 import classnames from 'classnames/bind';
 
@@ -114,7 +115,7 @@ class TabPanel extends React.Component {
       });
     }
 
-    if(type === 'View Storage') {
+    if(type === 'Storage Viewer') {
       this.setState({
         storageResponse: response,
       });
@@ -135,16 +136,7 @@ class TabPanel extends React.Component {
     this.props.getErrorMessage(message);
   }
 
-  // handleInputChange(event) {
-  //   const { value } = event.target;
-
-  //   this.setState({
-  //     inputValue: value,
-  //     parameter: value,
-  //   });
-  // }
-
-  handleInputSubmit() {
+  handleTransactionFormSubmit() {
     const { name, path, code } = this.props;
 
     const params = {
@@ -174,7 +166,7 @@ class TabPanel extends React.Component {
       endBlock: encodeURIComponent(this.state.endBlock)
     }
 
-    this.fetchData(this.getUrl('storage', params), 'View Storage');
+    this.fetchData(this.getUrl(`storage/${this.state.contractAddress}/`, params), 'Storage Viewer');
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
@@ -276,7 +268,7 @@ class TabPanel extends React.Component {
 
     const inputTypes = [
       {
-        name: 'Address',
+        name: 'contractAddress',
         placeholder: 'Enter contract address'
       },
       {
@@ -337,19 +329,26 @@ class TabPanel extends React.Component {
           </div>
         </div>
         <div className={styles['tab-panel__right']}>
-           <InnerTab 
-              data={tabs} 
-              contractName={name}
-              contractCode={code}
-              contractPath={path}
-              graphResponse={graphResponse}
-              debuggerResponse={debuggerResponse}
-              disassemblerResponse={disassemblerResponse}
-              storageResponse={storageResponse}
-              onMenuItemIconClick={this.handleMenuItemIconClick} 
+          <CSSTransitionGroup
+            transitionName={scale}
+            transitionAppear={true}
+            trnasitionEnterTimeout={300}
+            transitionLeaveTimeout={300}
             >
-            {children}
-          </InnerTab>
+              <InnerTab 
+                data={tabs} 
+                contractName={name}
+                contractCode={code}
+                contractPath={path}
+                graphResponse={graphResponse}
+                debuggerResponse={debuggerResponse}
+                disassemblerResponse={disassemblerResponse}
+                storageResponse={storageResponse}
+                onMenuItemIconClick={this.handleMenuItemIconClick} 
+              >
+              {children}
+            </InnerTab>
+          </CSSTransitionGroup>
         </div>
         <CSSTransitionGroup
           transitionName={fade}
@@ -366,8 +365,8 @@ class TabPanel extends React.Component {
                   inputTypes={[{ name: 'transactionHash', placeholder: 'Transaction Hash' }]}
                   buttonValue='Debug'
                   onInputChange={(e) => this.handleFormInputChange(e)}
-                  onInputKeyUp={() => this.handleInputSubmit()}
-                  onSubmitForm={() => this.handleInputSubmit()}
+                  onInputKeyUp={() => this.handleTransactionFormSubmit()}
+                  onSubmitForm={() => this.handleTransactionFormSubmit()}
                   />
               </Modal>
           }
@@ -388,6 +387,7 @@ class TabPanel extends React.Component {
                   inputTypes={inputTypes}
                   onInputChange={(e) => this.handleFormInputChange(e)} 
                   onSubmitForm={() => this.handleSubmitViewStorageForm()}
+                  onInputKeyUp={() => this.handleSubmitViewStorageForm()}
                   />
               </Modal>
           }

@@ -17,7 +17,6 @@ class SettingsBar extends React.Component {
     }
 
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleKeyUp = this.handleKeyUp.bind(this);
   }
 
   handleInputChange(event) {    
@@ -29,16 +28,6 @@ class SettingsBar extends React.Component {
     });
 
     localStorage.setItem(name, value);
-  }
-
-  handleKeyUp(event) {    
-    const { onSaveButtonClick } = this.props;
-
-    if(event.keyCode !== 13) {
-      return;
-    }
-
-    onSaveButtonClick();
   }
 
   handlClearClick() {
