@@ -20,7 +20,7 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 Use release link:
 
-  * [v2.6.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v2.6.0)
+  * [v3.2.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v3.2.0)
 
 If you want to use master (it can be more unstable), clone and start the application
 
