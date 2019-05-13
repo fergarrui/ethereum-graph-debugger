@@ -20,5 +20,5 @@ export function createExecutor(
 }
 
 export function createEVMDisassembler(): EVMDisassembler {
-  return new EVMDisassembler(new ContractService(new Solc()))
+  return new EVMDisassembler(new ContractService(new Solc()), new Solc())
 }

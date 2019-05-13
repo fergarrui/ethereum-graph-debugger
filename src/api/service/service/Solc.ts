@@ -54,4 +54,20 @@ export class Solc {
   checkVersion(): string {
     return solc.version()
   }
+
+  checkSimpleVersion(): string {
+    let version: string = solc.version()
+    if (version.startsWith('v')) {
+      version = version.substr(1, version.length)
+    }
+    const indexOfPlus = version.indexOf('+')
+    return version.substr(0, indexOfPlus)
+  }
+
+  isVersion5OrAbove(): boolean {
+    const version = this.checkSimpleVersion()
+    const versionSplitted = version.split('.')
+    const minor = versionSplitted[1]
+    return parseInt(minor) >= 5
+  }
 }

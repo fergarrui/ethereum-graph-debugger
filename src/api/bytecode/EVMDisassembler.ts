@@ -7,6 +7,7 @@ import { DisassembledContract } from './DisassembledContract'
 import { logger } from '../../Logger';
 import { TYPES } from '../../inversify/types';
 import { ContractService } from '../service/service/ContractService';
+import { Solc } from '../service/service/Solc';
 let BN = require('bn.js')
 
 
@@ -15,7 +16,8 @@ export class EVMDisassembler implements Disassembler {
   static readonly metadataPrefix = 'a165627a7a72305820'
 
   constructor(
-    @inject(TYPES.ContractService) private contractService: ContractService
+    @inject(TYPES.ContractService) private contractService: ContractService,
+    @inject(TYPES.Solc) private solc: Solc
   ) {}
 
   disassembleSourceCode(contractName: string, source: string, path: string): DisassembledContract {
@@ -63,8 +65,11 @@ export class EVMDisassembler implements Disassembler {
     let constructor = []
     let runtime = operations
     if (hasConstructor) {
-      // pre- 0.5.* the opcode we are searching is 'STOP', post 0.5.* is INVALID
-      const firstStopIndex = operations.findIndex(op => op.opcode.name === 'STOP')
+      let splitOpcode = 'STOP'
+      if (this.solc.isVersion5OrAbove()) {
+        splitOpcode = 'INVALID'
+      }
+      const firstStopIndex = operations.findIndex(op => op.opcode.name === splitOpcode)
       constructor = operations.slice(0, firstStopIndex + 1)
       runtime = this.adjustRuntimeOffset(operations.slice(firstStopIndex + 1, operations.length))
     }
