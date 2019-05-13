@@ -1,13 +1,18 @@
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 import { Web3Instance } from "../../blockchain/Web3Instance";
 import { IWeb3 } from "../../blockchain/IWeb3";
 import { TransactionBase } from "../bean/TransactionBase";
-let solc = require('solc')
+import { TYPES } from "../../../inversify/types";
+import { Solc } from "./Solc";
 let fs = require('fs')
 let nodePath = require('path')
 
 @injectable()
 export class ContractService {
+
+  constructor(
+    @inject(TYPES.Solc) private solc: Solc
+  ){}
 
   getAbi(contractName: string, source: string, path: string): any {
     const contract = this.compileContract(contractName, source, path)
@@ -16,7 +21,7 @@ export class ContractService {
 
   compileContract(contractName: string, source: string, path: string): any {
     const compileJson = this.generateCompileObject(contractName, source, path)
-    const compiledContract = JSON.parse(solc.compileStandardWrapper(JSON.stringify(compileJson)))
+    const compiledContract = JSON.parse(this.solc.getInstance().compileStandardWrapper(JSON.stringify(compileJson)))
     const contractWithExt = `${contractName}.sol`
     const contract = compiledContract.contracts[contractWithExt][contractName]
     if (!contract) {
@@ -25,11 +30,14 @@ export class ContractService {
     return contract
   }
 
-  async deployContractSource <T extends TransactionBase> (web3config: any, contractName: string, source: string, path: string, txBase: T): Promise<any> {
+  async deployContract <T extends TransactionBase> (web3config: any, contractName: string, source: string, path: string, txBase: T): Promise<any> {
     const iWeb3: IWeb3 = new Web3Instance(web3config)
     const web3 = iWeb3.getInstance()
-    const compiledContract = this.compileContract(contractName, source, path)
-    const bytecode = compiledContract.evm.bytecode.object
+    let bytecode = source
+    if (!source.startsWith('0x')) {
+      const compiledContract = this.compileContract(contractName, source, path)
+      bytecode = compiledContract.evm.bytecode.object
+    }
     return this.sendTx(web3, null, bytecode, txBase.from, txBase.gas, txBase.gasPrice, txBase.value)
   }
 
@@ -72,6 +80,7 @@ export class ContractService {
     }
     return compileJson
   }
+
   private findImports(sources: any, content: string, path: string, filesChecked: string[], initialPath: string) {
     const regexp = /import "(.*)"|import '(.*)'/g
     const match = content.match(regexp)

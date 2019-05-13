@@ -6,6 +6,7 @@ import { CFGBlocks } from '../../../cfg/CFGBlocks'
 import { EVMExecutor } from '../EVMExecutor'
 import { EVMDisassembler } from '../../../bytecode/EVMDisassembler';
 import { ContractService } from '../../../service/service/ContractService';
+import { Solc } from '../../../service/service/Solc';
 
 export function createExecutor(
   disassembler: Disassembler,
@@ -19,5 +20,5 @@ export function createExecutor(
 }
 
 export function createEVMDisassembler(): EVMDisassembler {
-  return new EVMDisassembler(new ContractService())
+  return new EVMDisassembler(new ContractService(new Solc()))
 }

@@ -8,6 +8,7 @@ import { TransactionController } from './api/service/controller/TransactionContr
 import { ControlFlowGraphController } from './api/service/controller/ControlFlowGraphController';
 import { StorageRecoverController } from './api/service/controller/StorageRecoverController';
 import { ContractController } from './api/service/controller/ContractController';
+import { SolcController } from './api/service/controller/SolcController';
 
 const models: TsoaRoute.Models = {
     "Opcode": {
@@ -97,6 +98,11 @@ const models: TsoaRoute.Models = {
             "blockchainBasicAuthPassword": { "dataType": "string" },
             "abi": { "dataType": "any", "required": true },
             "params": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
+        },
+    },
+    "SolcChangeVersionRequest": {
+        "properties": {
+            "version": { "dataType": "string", "required": true },
         },
     },
 };
@@ -348,6 +354,70 @@ export function RegisterRoutes(app: any) {
 
 
             const promise = controller.run.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/solc',
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<SolcController>(SolcController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.getVersion.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/solc/list',
+        function(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<SolcController>(SolcController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.getAvailableVersions.apply(controller, validatedArgs);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/solc',
+        function(request: any, response: any, next: any) {
+            const args = {
+                solcChangeVersionRequest: { "in": "body", "name": "solcChangeVersionRequest", "required": true, "ref": "SolcChangeVersionRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<SolcController>(SolcController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.changeVersion.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
 

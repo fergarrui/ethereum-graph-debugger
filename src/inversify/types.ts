@@ -9,7 +9,8 @@ const TYPES = {
   CFGService: Symbol.for('CFGService'),
   StorageRecover: Symbol.for('StorageRecover'),
   OpcodeExecutor: Symbol.for('OpcodeExecutor'),
-  ContractService: Symbol.for('ContractService')
+  ContractService: Symbol.for('ContractService'),
+  Solc: Symbol.for('Solc')
 }
 
 export { TYPES }

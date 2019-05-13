@@ -19,6 +19,7 @@ import { BlockService } from '../api/service/service/BlockService';
 import { BlockServiceImpl } from '../api/service/service/BlockServiceImpl';
 import { StorageRecover } from '../api/service/service/StorageRecover';
 import { ContractService } from '../api/service/service/ContractService';
+import { Solc } from '../api/service/service/Solc';
 
 const iocContainer = new Container()
 const provide = makeProvideDecorator(iocContainer)
@@ -37,6 +38,7 @@ iocContainer.bind<BlockService>(TYPES.BlockService).to(BlockServiceImpl)
 iocContainer.bind<OpcodeExecutor>(TYPES.OpcodeExecutor).to(OpcodeExecutor)
 iocContainer.bind<StorageRecover>(TYPES.StorageRecover).to(StorageRecover)
 iocContainer.bind<ContractService>(TYPES.ContractService).to(ContractService)
+iocContainer.bind<Solc>(TYPES.Solc).to(Solc)
 
 const provideNamed = (
   identifier: string | symbol | interfaces.Newable<any> | interfaces.Abstract<any>,
