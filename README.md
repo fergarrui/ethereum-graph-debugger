@@ -18,10 +18,9 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 ### Download
 
-Use one of these releases:
+Use release link:
 
-  * solc 0.4.24 compatible with ganache use: [v2.5.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v2.5.0)
-  * solc 0.5.8 (not compatible with ganache) use: [v3.1.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v3.1.0)
+  * [v2.6.0](https://github.com/fergarrui/ethereum-graph-debugger/releases/tag/v2.6.0)
 
 If you want to use master (it can be more unstable), clone and start the application
 
@@ -53,6 +52,33 @@ Go to localhost:9090
     * For example: create a file named: `contract1.evm` with content `0x60806040`
   * Scan the directory as described above
   * You won't get source code mappings when clicking in operations of the CFG
+
+### [Temporal] - switch solc version
+
+Current `solc` version is `0.5.8`, if you want to use an earlier version, for now it can only be done via API (UI coming soon)
+
+  * List supported `solc` versions
+    * `curl http://localhost:9090/solc/list`
+    * Output will be like: 
+    ```
+    [
+    {
+        "version": "0.5.8",
+        "commit": "v0.5.8+commit.23d335f2"
+    },
+    {
+        "version": "0.5.7",
+        "commit": "v0.5.7+commit.6da8b019"
+    },
+    {
+        "version": "0.5.6",
+        "commit": "v0.5.6+commit.b259423e"
+    },
+    (... truncated ...)
+    ```
+  * Select a commit, for example: `v0.5.6+commit.b259423e`
+  * Set the version to that commit: `curl -X POST --data '{"version": "v0.5.8+commit.23d335f2"}' http://localhost:9090/solc`
+  * Check what version is loaded: `curl http://localhost:9090/solc`
 
 # Features
 
