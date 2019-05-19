@@ -34,6 +34,11 @@ const models: TsoaRoute.Models = {
             "trace": { "dataType": "any", "required": true },
         },
     },
+    "StringBodyRequest": {
+        "properties": {
+            "request": { "dataType": "string", "required": true },
+        },
+    },
     "ContractFile": {
         "properties": {
             "name": { "dataType": "string", "required": true },
@@ -108,11 +113,11 @@ const models: TsoaRoute.Models = {
 };
 
 export function RegisterRoutes(app: any) {
-    app.get('/debug/:tx',
+    app.post('/debug/:tx',
         function(request: any, response: any, next: any) {
             const args = {
                 tx: { "in": "path", "name": "tx", "required": true, "dataType": "string" },
-                source: { "in": "query", "name": "source", "required": true, "dataType": "string" },
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
                 name: { "in": "query", "name": "name", "required": true, "dataType": "string" },
                 path: { "in": "query", "name": "path", "required": true, "dataType": "string" },
                 blockchainHost: { "in": "query", "name": "blockchainHost", "dataType": "string" },
@@ -160,10 +165,10 @@ export function RegisterRoutes(app: any) {
             const promise = controller.findContractsInDir.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
-    app.get('/disassemble',
+    app.post('/disassemble',
         function(request: any, response: any, next: any) {
             const args = {
-                source: { "in": "query", "name": "source", "required": true, "dataType": "string" },
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
                 name: { "in": "query", "name": "name", "required": true, "dataType": "string" },
                 path: { "in": "query", "name": "path", "required": true, "dataType": "string" },
             };
@@ -210,10 +215,10 @@ export function RegisterRoutes(app: any) {
             const promise = controller.getReceipt.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
-    app.get('/cfg/source',
+    app.post('/cfg/source',
         function(request: any, response: any, next: any) {
             const args = {
-                source: { "in": "query", "name": "source", "required": true, "dataType": "string" },
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
                 name: { "in": "query", "name": "name", "required": true, "dataType": "string" },
                 path: { "in": "query", "name": "path", "required": true, "dataType": "string" },
                 constructor: { "in": "query", "name": "constructor", "dataType": "boolean" },
@@ -235,10 +240,10 @@ export function RegisterRoutes(app: any) {
             const promise = controller.getCFGFromSource.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, next);
         });
-    app.get('/cfg/bytecode',
+    app.post('/cfg/bytecode',
         function(request: any, response: any, next: any) {
             const args = {
-                bytecode: { "in": "query", "name": "bytecode", "required": true, "dataType": "string" },
+                bytecode: { "in": "body", "name": "bytecode", "required": true, "ref": "StringBodyRequest" },
                 constructor: { "in": "query", "name": "constructor", "dataType": "boolean" },
             };
 

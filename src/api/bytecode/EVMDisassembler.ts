@@ -26,8 +26,6 @@ export class EVMDisassembler implements Disassembler {
     }
     
     const contract = this.contractService.compileContract(contractName, source, path)
-
-
     const bytecode = contract.evm.bytecode.object
     const runtimeBytecode = contract.evm.deployedBytecode.object
     const contractAssembly = contract.evm.legacyAssembly

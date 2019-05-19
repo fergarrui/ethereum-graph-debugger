@@ -1,4 +1,4 @@
-import { Route, Controller, Get, Query } from 'tsoa'
+import { Route, Controller, Query, Body, Post } from 'tsoa'
 import { provideSingleton, inject } from '../../../inversify/ioc'
 import { TYPES } from '../../../inversify/types'
 import { CFGService } from '../service/CFGService'
@@ -7,6 +7,8 @@ import { CFGContract } from '../bean/CFGContract'
 import { GFCResponse } from '../response/CFGResponse'
 import { OperationResponse } from '../response/OperationResponse'
 import { logger } from '../../../Logger'
+import { StringBodyRequest } from '../request/StringBodyRequest';
+const fs = require('fs')
 
 @Route('cfg')
 @provideSingleton(ControlFlowGraphController)
@@ -18,19 +20,20 @@ export class ControlFlowGraphController extends Controller {
     super()
   }
 
-  @Get('source')
+  @Post('source')
   async getCFGFromSource(
-    @Query('source') source: string,
+    @Body() source: StringBodyRequest,
     @Query('name') name: string,
     @Query('path') path: string,
     @Query('constructor') constructor?: boolean
   ): Promise<GFCResponse> {
     try {
-      const contractBlocks: CFGContract = this.cfgService.buildCFGFromSource(name, source, path)
+      const contractBlocks: CFGContract = this.cfgService.buildCFGFromSource(name, source.request, path)
       if (!contractBlocks.contractConstructor && constructor) {
         throw new Error('Constructor is true but no constructor found in bytecode')
       }
       const cfg = this.createCFG(contractBlocks, constructor)
+      await fs.writeFileSync('cfg', cfg)
       return this.buildResponse(contractBlocks, constructor, cfg)
     } catch (err) {
       logger.error(err)
@@ -38,13 +41,13 @@ export class ControlFlowGraphController extends Controller {
     }
   }
 
-  @Get('bytecode')
+  @Post('bytecode')
   async getCFGFromBytecode(
-    @Query('bytecode') bytecode: string,
+    @Body() bytecode: StringBodyRequest,
     @Query('constructor') constructor?: boolean
   ): Promise<GFCResponse> {
     try {
-      const contractBlocks: CFGContract = this.cfgService.buildCFGFromBytecode(bytecode)
+      const contractBlocks: CFGContract = this.cfgService.buildCFGFromBytecode(bytecode.request)
       if (!contractBlocks.contractConstructor && constructor) {
         throw new Error('Constructor is true but no constructor found in bytecode')
       }

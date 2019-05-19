@@ -71,15 +71,20 @@ class TabPanel extends React.Component {
     return url;
   }
 
- fetchData(url, type) {
+ fetchData(url, type, body) {
    this.handleRequestPending();
-
-   fetch(url)
+  fetch(url, body? {
+      body: JSON.stringify({request: body}),
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    }: {})
     .then(res => res.json())
     .then(data => {
-      data.error 
-      ? this.handleRequestFail(data.message) 
-      : this.handleRequestSuccess(data, type);      
+      data.error
+      ? this.handleRequestFail(data)
+      : this.handleRequestSuccess(data, type);
     })
     .catch(err => this.handleRequestFail(err));
  }
@@ -130,7 +135,8 @@ class TabPanel extends React.Component {
     this.props.loadingMessageOff();
   }
 
-  handleRequestFail(message) {
+  handleRequestFail(data) {
+    const message = data.message
     this.props.loadingMessageOff();
     this.props.errorMessageOn();
     this.props.getErrorMessage(message);
@@ -142,14 +148,13 @@ class TabPanel extends React.Component {
     const params = {
       name: name.replace('.sol', '').replace('.evm', ''),
       path: encodeURIComponent(path),
-      source: encodeURIComponent(code),
       blockchainHost: localStorage.getItem('host'),
       blockchainProtocol: localStorage.getItem('protocol'),
       blockchainBasicAuthUsername: localStorage.getItem('username'),
       blockchainBasicAuthPassword: localStorage.getItem('password')
     }
 
-    this.fetchData(this.getUrl(`debug/${this.state.transactionHash}/`, params), 'Transaction Debugger');
+    this.fetchData(this.getUrl(`debug/${this.state.transactionHash}/`, params), 'Transaction Debugger', code);
   }
 
   handleFormInputChange(event) {    
@@ -201,10 +206,9 @@ class TabPanel extends React.Component {
     const params = {
       name: name.replace('.sol', '').replace('.evm', ''),
       path: encodeURIComponent(path),
-      source: encodeURIComponent(code),
       'constructor': 'false'
     }
-    this.fetchData(this.getUrl('cfg/source', params), 'Control Flow Graph');
+    this.fetchData(this.getUrl('cfg/source', params), 'Control Flow Graph', code);
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
@@ -214,10 +218,9 @@ class TabPanel extends React.Component {
 
     const params = {
       name: name.replace('.sol', '').replace('.evm', ''),
-      path: encodeURIComponent(path),
-      source: encodeURIComponent(code)
+      path: encodeURIComponent(path)
     }
-    this.fetchData(this.getUrl('disassemble', params), 'Disassembler');
+    this.fetchData(this.getUrl('disassemble', params), 'Disassembler', code);
 
     document.removeEventListener('click', this.handleOutsideClick);
   }

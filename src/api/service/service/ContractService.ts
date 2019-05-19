@@ -4,6 +4,7 @@ import { IWeb3 } from "../../blockchain/IWeb3";
 import { TransactionBase } from "../bean/TransactionBase";
 import { TYPES } from "../../../inversify/types";
 import { Solc } from "./Solc";
+import { logger } from "../../../Logger";
 let fs = require('fs')
 let nodePath = require('path')
 
@@ -22,6 +23,12 @@ export class ContractService {
   compileContract(contractName: string, source: string, path: string): any {
     const compileJson = this.generateCompileObject(contractName, source, path)
     const compiledContract = JSON.parse(this.solc.getInstance().compileStandardWrapper(JSON.stringify(compileJson)))
+    if (compiledContract.errors && compiledContract.errors.filter(e => e.severity === 'error').length > 0) {
+      const errors = compiledContract.errors.filter(e => e.severity === 'error')
+      let errorMessage = `Error compiling. ${errors[0].formattedMessage} . View console to see al errors`
+      logger.error(errors)
+      throw new Error(errorMessage)
+    }
     const contractWithExt = `${contractName}.sol`
     const contract = compiledContract.contracts[contractWithExt][contractName]
     if (!contract) {

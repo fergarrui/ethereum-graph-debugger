@@ -1,4 +1,4 @@
-import { Route, Controller, Get, Query, Path } from 'tsoa'
+import { Route, Controller, Query, Path, Body, Post } from 'tsoa'
 import { provideSingleton, inject } from '../../../inversify/ioc'
 import { TYPES } from '../../../inversify/types'
 import { CFGService } from '../service/CFGService'
@@ -10,6 +10,7 @@ import { OperationResponse } from '../response/OperationResponse'
 import { TraceResponse } from '../response/TraceResponse'
 import { logger } from '../../../Logger'
 import { Web3Configuration } from 'src/api/blockchain/Web3Configuration';
+import { StringBodyRequest } from '../request/StringBodyRequest';
 
 @Route('debug')
 @provideSingleton(DebuggerController)
@@ -22,10 +23,10 @@ export class DebuggerController extends Controller {
     super()
   }
 
-  @Get('{tx}')
+  @Post('{tx}')
   async debug(
     @Path() tx: string,
-    @Query('source') source: string,
+    @Body() source: StringBodyRequest,
     @Query('name') name: string,
     @Query('path') path: string,
     @Query('blockchainHost') blockchainHost?: string,
@@ -41,7 +42,7 @@ export class DebuggerController extends Controller {
         blockchainBasicAuthUsername,
         blockchainBasicAuthPassword
       } as Web3Configuration
-      const contractBlocks: CFGContract = await this.cfgService.buildCFGFromSource(name, source, path)
+      const contractBlocks: CFGContract = await this.cfgService.buildCFGFromSource(name, source.request, path)
       const runtimeRawBytecode = contractBlocks.contractRuntime.rawBytecode.startsWith('0x')? contractBlocks.contractRuntime.rawBytecode: `0x${contractBlocks.contractRuntime.rawBytecode}`
       const trace: DebugTrace = await this.transactionService.findTransactionTrace(tx, runtimeRawBytecode, config)
       const cfg = this.createCFG(contractBlocks, false, trace)

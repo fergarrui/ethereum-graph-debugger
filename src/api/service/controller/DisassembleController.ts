@@ -1,10 +1,11 @@
-import { Controller, Route, Get, Query } from 'tsoa'
+import { Controller, Route, Query, Post, Body } from 'tsoa'
 import { provideSingleton, inject } from '../../../inversify/ioc'
 import { TYPES } from '../../../inversify/types'
 import { Disassembler } from '../../bytecode/Disassembler'
 import { DisassembledContract } from '../../bytecode/DisassembledContract'
 import { DisassembledContractResponse } from '../response/DisassembledContractResponse'
 import { logger } from '../../../Logger'
+import { StringBodyRequest } from '../request/StringBodyRequest';
 
 @Route('disassemble')
 @provideSingleton(DisassembleController)
@@ -13,14 +14,14 @@ export class DisassembleController extends Controller {
     super()
   }
 
-  @Get()
+  @Post()
   async disassembleSourceCode(
-    @Query('source') source: string,
+    @Body() source: StringBodyRequest,
     @Query('name') name: string,
     @Query('path') path: string
   ): Promise<DisassembledContractResponse> {
     try {
-      const disassembled: DisassembledContract = this.disassembler.disassembleSourceCode(name, source, path)
+      const disassembled: DisassembledContract = this.disassembler.disassembleSourceCode(name, source.request, path)
       return this.contractToResponse(disassembled)
     } catch (err) {
       logger.error(err)
