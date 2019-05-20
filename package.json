@@ -2,7 +2,7 @@
   "name": "ethereum-graph-debugger",
   "author": "Fernando Garcia",
   "license": "GPL",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "Ethereum graph debugger",
   "main": "dist/run-server.js",
   "scripts": {
