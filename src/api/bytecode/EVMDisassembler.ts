@@ -14,6 +14,7 @@ let BN = require('bn.js')
 @injectable()
 export class EVMDisassembler implements Disassembler {
   static readonly metadataPrefix = 'a165627a7a72305820'
+  static readonly metadataPrefixV2 = 'a265627a7a72305820'
 
   constructor(
     @inject(TYPES.ContractService) private contractService: ContractService,
@@ -52,6 +53,9 @@ export class EVMDisassembler implements Disassembler {
     if (code.includes(EVMDisassembler.metadataPrefix)) {
       code = code.split(EVMDisassembler.metadataPrefix)[0]
     }
+    if (code.includes(EVMDisassembler.metadataPrefixV2)) {
+      code = code.split(EVMDisassembler.metadataPrefixV2)[0]
+    }
 
     code = code.length % 2 !== 0 ? code.substr(0, code.length-1): code
     if (code.length % 2 !== 0) {
@@ -89,6 +93,9 @@ export class EVMDisassembler implements Disassembler {
     if (code.includes(EVMDisassembler.metadataPrefix)) {
       code = code.split(EVMDisassembler.metadataPrefix)[0]
     }
+    if (code.includes(EVMDisassembler.metadataPrefixV2)) {
+      code = code.split(EVMDisassembler.metadataPrefixV2)[0]
+    }
     code = code.length % 2 !== 0 ? code.substr(0, code.length-1): code
     if (code.length % 2 !== 0) {
       throw new Error(`disassembleBytecode - Bad input, bytecode length not even: ${code}, length: ${code.length}`)
@@ -120,6 +127,12 @@ export class EVMDisassembler implements Disassembler {
     let splittedBytecode: string[] = bytecode.split(EVMDisassembler.metadataPrefix)
     if (splittedBytecode.length < 2) {
       splittedBytecode = bytecode.split(EVMDisassembler.metadataPrefix.toUpperCase())
+    }
+    if (splittedBytecode.length < 2) {
+      splittedBytecode = bytecode.split(EVMDisassembler.metadataPrefixV2)
+    }
+    if (splittedBytecode.length < 2) {
+      splittedBytecode = bytecode.split(EVMDisassembler.metadataPrefixV2.toLocaleUpperCase())
     }
     if (splittedBytecode.length < 2) {
       return bytecode

@@ -83,7 +83,6 @@ export class TransactionServiceImpl implements TransactionService {
     let cleanBytecode = EVMDisassembler.removeMetadata(bytecode)
     let cleanDeployedBytecode = EVMDisassembler.removeMetadata(deployedBytecode)
 
-
     if (cleanBytecode.length % 2 !== 0) {
       cleanBytecode = cleanBytecode.substr(0, cleanBytecode.length-1)
     }
