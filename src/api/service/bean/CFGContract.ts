@@ -4,7 +4,8 @@ import { Operation } from '../../bytecode/Operation'
 export interface CFGContract {
   contractConstructor?: {
     bytecode: Operation[]
-    blocks: CFGBlocks
+    blocks: CFGBlocks,
+    rawBytecode
   }
   contractRuntime: {
     bytecode: Operation[]

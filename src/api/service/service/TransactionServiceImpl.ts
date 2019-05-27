@@ -69,7 +69,10 @@ export class TransactionServiceImpl implements TransactionService {
       throw new Error(`Transaction ${transactionHash} not found in node`)
     }
     const toAddress = transaction.to
-    const deployedBytecode = await web3.eth.getCode(toAddress)
+    let deployedBytecode = bytecode
+    if (toAddress) {
+      deployedBytecode = await web3.eth.getCode(toAddress)
+    }
     const trace: DebugTrace = await this.getTrace(transactionHash, config)
     return await this.findContractTraceDepth(bytecode, deployedBytecode, trace, web3)
   }

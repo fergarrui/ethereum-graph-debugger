@@ -43,10 +43,15 @@ export class DebuggerController extends Controller {
         blockchainBasicAuthPassword
       } as Web3Configuration
       const contractBlocks: CFGContract = await this.cfgService.buildCFGFromSource(name, source.request, path)
-      const runtimeRawBytecode = contractBlocks.contractRuntime.rawBytecode.startsWith('0x')? contractBlocks.contractRuntime.rawBytecode: `0x${contractBlocks.contractRuntime.rawBytecode}`
-      const trace: DebugTrace = await this.transactionService.findTransactionTrace(tx, runtimeRawBytecode, config)
-      const cfg = this.createCFG(contractBlocks, false, trace)
-      return this.buildResponse(contractBlocks, false, cfg, trace)
+      const transaction = await this.transactionService.findTransaction(tx, config)
+      const isConstructor = transaction.to? false: true
+      let rawBytecode = contractBlocks.contractRuntime.rawBytecode.startsWith('0x')? contractBlocks.contractRuntime.rawBytecode: `0x${contractBlocks.contractRuntime.rawBytecode}`
+      if (isConstructor) {
+        rawBytecode = contractBlocks.contractConstructor.rawBytecode.startsWith('0x')?  contractBlocks.contractConstructor.rawBytecode: `0x${ contractBlocks.contractConstructor.rawBytecode}`
+      }
+      const trace: DebugTrace = await this.transactionService.findTransactionTrace(tx, rawBytecode, config)
+      const cfg = this.createCFG(contractBlocks, isConstructor, trace)
+      return this.buildResponse(contractBlocks, isConstructor, cfg, trace)
     } catch (err) {
       logger.error(err)
       throw new Error(err.message)

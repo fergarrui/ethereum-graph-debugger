@@ -114,7 +114,8 @@ export class CFGService {
       const constructorBlocks = this.calculateCfgBlocks(contract.constructor)
       cfgContract.contractConstructor = {
         blocks: constructorBlocks,
-        bytecode: contract.constructor
+        bytecode: contract.constructor,
+        rawBytecode: contract.bytecode
       }
     }
     return cfgContract
