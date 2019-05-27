@@ -7,17 +7,80 @@
   left: 0;
   right: 0;
   background: $color-dark-grey;
-  padding: 20px;
   z-index: 5;
 
   &__form {
+    padding: 20px;
+    background: $color-dark-grey;
     flex: 1 1 auto;
   }
 
-  &__icon {
+  &__settings-dropdown {
+    display: flex;
+    justify-content: flex-end;
     flex: 0 1 auto;
-    padding-left: 25px;
-    cursor: pointer;
+    position: relative;
+    padding: 30px 20px;
+    height: 88px;
+    cursor: pointer;  
+    background: $color-dark-grey;
+  }
+
+  &__versions-dropdown {
+    flex: 0 1 250px;
+    position: relative;
+    margin-left: 10px;
+    padding: 24.5px 20px;
+    height: 88px;
+    background: $color-dark-grey;
+
+    &__text {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translate(0, -50%);
+
+      span {
+        color: $color-green;
+      }
+    }
+
+    &__toggler {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translate(0, -50%);
+      padding: 10px;
+      border-radius: 5px;
+      background: transparent;
+      border: 1px solid $color-light-grey;
+      cursor: pointer;
+      z-index: 3;
+      transition: opacity 0.7, border-color 0.2s;
+  
+      span {
+        color: $color-light-grey;
+        transition: color 0.1s ease-in;
+        font-size: 14px;
+      }
+  
+      &:focus {
+        border-color: $color-green;
+        outline: 0 none;
+  
+        span {
+          color: $color-green;
+        }
+      }
+
+      &:hover {
+        border-color: $color-green;
+        
+        span {
+          color: $color-green;
+        }
+      }
+    }
   }
 }
 

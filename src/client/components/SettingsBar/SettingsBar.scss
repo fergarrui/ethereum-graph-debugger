@@ -1,16 +1,7 @@
 .settings-bar {
-  width: 50%;
+  width: 100%;
   background: $color-dark-grey;
-  position: absolute;
   padding: 0 5px 10px 5px;
-  top: -262px;
-  right: 0;
-  transition: top 0.3s;
-  z-index: 2;
-
-  &--active {
-    top: 29px;
-  }
 
   &__buttons {
     padding: 5px 10px;

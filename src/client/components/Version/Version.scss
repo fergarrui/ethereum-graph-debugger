@@ -1,0 +1,27 @@
+.version {
+  max-height: 300px;
+  overflow: auto;
+  padding: 20px 10px;
+
+  &__item {
+    width: 100%;
+    padding: 10px 20px;
+    border-bottom: 1px dotted $color-light-grey;
+    transition: border-bottom-color 0.3s;
+    cursor: pointer;
+
+    &:hover {
+      border-bottom-color: $color-green;
+
+      span {
+        color: $color-green;
+      }
+    }
+
+    span {
+      color: $color-light-grey;
+      transition: color 0.2s;
+      pointer-events: none;
+    }
+  }
+}

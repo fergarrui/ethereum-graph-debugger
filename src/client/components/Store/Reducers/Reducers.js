@@ -1,6 +1,6 @@
 import { SELECT_EDITOR_LINES, SHOW_EVM_STATE, SHOW_LOADING_MESSAGE, 
   HIDE_LOADING_MESSAGE, SHOW_ERROR_MESSAGE, HIDE_ERROR_MESSAGE, 
-  HIDE_EVM_STATE, GET_ERROR_MESSAGE } from '../Constants.js';
+  HIDE_EVM_STATE, GET_ERROR_MESSAGE, GET_VERSION_NUM } from '../Constants.js';
 
 
 export function selectLines(state = [0, 0], action) {
@@ -31,6 +31,13 @@ export function toggleErrorMessage(state = false, action) {
     case SHOW_ERROR_MESSAGE: return action.show;
     case HIDE_ERROR_MESSAGE: return action.show;
     case GET_ERROR_MESSAGE: return action.message;
+    default: return state;
+  }
+}
+
+export function displayVersionNumber(state = '', action) {
+  switch(action.type) {
+    case GET_VERSION_NUM: return action.version;
     default: return state;
   }
 }

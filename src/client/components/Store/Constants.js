@@ -10,3 +10,4 @@ export const GET_HOST = 'GET_HOST';
 export const GET_PROTOCOL = 'GET_PROTOCOL';
 export const GET_USERNAME = 'GET_USERNAME';
 export const GET_PASSWORD = 'GET_PASSWORD';
+export const GET_VERSION_NUM = 'GET_VERSION_NUM'; 

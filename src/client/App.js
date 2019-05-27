@@ -9,6 +9,8 @@ import Form from './components/Form/Form';
 import Tab from './components/Tab/Tab';
 import MessageComp from './components/MessageComp/MessageComp';
 import SettingsBar from './components/SettingsBar/SettingsBar';
+import Dropdown from './components/Dropdown/Dropdown';
+import Version from './components/Version/Version';
 
 import styles from './styles/App.scss';
 import fade from './styles/transitions/fade.scss';
@@ -40,11 +42,11 @@ class App extends React.Component {
       parameter: '',
       fetchRequestStatus: undefined,
       contracts: [],
-      settingsVisible: false,
     }
+  }
 
-    this.handleMenuItemIconClick = this.handleMenuItemIconClick.bind(this);
-    this.handleOutsideClick = this.handleOutsideClick.bind(this);
+  componentDidMount() {
+    this.fetchData('http://localhost:9090/solc/list');
   }
 
   handleMenuItemIconClick(index) {
@@ -74,13 +76,14 @@ class App extends React.Component {
       settingsVisible: false,
     });
 
-    this.fetchData(parameter);
+    const url = `http://localhost:9090/files/${encodeURIComponent(parameter) || ' '}?extension=sol`;
+    this.fetchData(url);
   }
 
-  fetchData(parameter) {
+  fetchData(url) {
     this.handleRequestPending();
 
-    fetch(`http://localhost:9090/files/${encodeURIComponent(parameter) || ' '}?extension=sol`)
+    fetch(url)
       .then(res => res.json())
       .then(data => {
         data.error 
@@ -96,10 +99,18 @@ class App extends React.Component {
   }
 
   handleRequestSuccess(response) {
-    this.setState({
-      fetchRequestStatus: 'success',
-      contracts: response,
-    });
+
+    if(response.some(item => item.version)) {
+      this.setState({
+        fetchRequestStatus: 'success',
+        versions: response,
+      });
+    } else {
+      this.setState({
+        fetchRequestStatus: 'success',
+        contracts: response,
+      });
+    }
 
     this.props.loadingMessageOff();
   }
@@ -110,50 +121,16 @@ class App extends React.Component {
     this.props.getErrorMessage(message);
   }
 
-  handleSettingsiconClick() {
-    this.toggleOutsideClick();
-
-    this.setState(prevState => ({
-      settingsVisible: !prevState.settingsVisible,
-    }))
-  }
-
-  handleSettingsSaveButtonClick() {
-    this.toggleOutsideClick();
-
-    this.setState({
-      settingsVisible: false,
-    });
-  }
-
-  toggleOutsideClick() {
-    if (!this.state.settingsVisible) {
-      document.addEventListener('click', this.handleOutsideClick);
-    } else {
-      document.removeEventListener('click', this.handleOutsideClick);
-    }
-  }
-
-  handleOutsideClick(e) {
-    if (this.node.contains(e.target)) {
-      return;
-    }
-
-    document.removeEventListener('click', this.handleOutsideClick);
-  
-    this.setState({
-      settingsVisible: false,
-    });
-  }
-
   render() {
 
-    const { fetchRequestStatus, contracts, settingsVisible, configPlaceholder } = this.state;
+    const { fetchRequestStatus, contracts, versions } = this.state;
     const { children, showLoadingMessage, showErrorMessage, errorMessage } = this.props;
 
     return (
       <div className={styles['app']}>
-        <TopNavBar onIconClick={() => this.handleSettingsiconClick()}>
+        <TopNavBar
+          fetchRequestStatus={fetchRequestStatus}
+          versions={versions}>
           <Form 
             submitButton={true}
             inputTypes={[{ name: 'contractsPath', placeholder: 'Insert contracts path'}]}
@@ -163,12 +140,6 @@ class App extends React.Component {
             onInputKeyUp={() => this.handleInputSubmit()}
             />
         </TopNavBar>
-        <div ref={node => { this.node = node; }}>
-          <SettingsBar 
-            active={!!settingsVisible}
-            onSaveButtonClick={() => this.handleSettingsSaveButtonClick()}
-          />
-        </div>
         <CSSTransitionGroup
           transitionName={fade}
           transitionAppear={true}
@@ -202,7 +173,7 @@ class App extends React.Component {
             trnasitionEnterTimeout={300}
             transitionLeaveTimeout={300}
             >
-          {fetchRequestStatus === 'success' && 
+          {fetchRequestStatus === 'success' && contracts.length &&
           <Tab data={contracts} onMenuItemIconClick={this.handleMenuItemIconClick}>
             {children}
           </Tab>        

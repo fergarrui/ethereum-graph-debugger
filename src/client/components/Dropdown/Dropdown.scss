@@ -1,0 +1,20 @@
+.dropdown {
+  width: 100%;
+  position: absolute;
+  right: 0;    
+  top: -262px;
+  background: $color-dark-grey;
+  z-index: -3;
+  opacity: 0;
+  padding: 20px 10px 20px 10px;
+  transition: top 0.3s, opacity 0.4s;
+
+  &--settings {
+    width: 300px;
+  }
+
+  &--active {
+    opacity: 1;
+    top: 100%;
+  }
+}
