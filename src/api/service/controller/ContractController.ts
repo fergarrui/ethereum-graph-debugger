@@ -4,11 +4,8 @@ import { TYPES } from '../../../inversify/types';
 import { ContractService } from '../service/ContractService';
 import { logger } from '../../../Logger';
 import { RunContractFunctionRequest } from '../request/RunContractFunctionRequest';
-import { IWeb3 } from '../../blockchain/IWeb3';
-import { Web3Instance } from '../../blockchain/Web3Instance';
 import { Web3Configuration } from '../../blockchain/Web3Configuration';
 import { DeployContractRequest } from '../request/DeployContractRequest';
-import { TransactionRequest } from '../request/TransactionRequest';
 
 @Route('contract')
 @provideSingleton(ContractController)

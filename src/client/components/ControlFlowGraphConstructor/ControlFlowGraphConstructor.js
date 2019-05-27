@@ -2,13 +2,13 @@ import React from 'react';
 
 import Graph from '../Graph/Graph';
 
-import styles from './ControlFlowGraph.scss';
+import styles from './ControlFlowGraphConstructor.scss';
 
-const ControlFlowGraph = ({ contractName, contractPath, graphResponse }) => {
+const ControlFlowGraphConstructor = ({ contractName, contractPath, graphResponse }) => {
   return (
     <div className={styles['control-flow-graph']}>
         <Graph 
-          graphType="cfg" 
+          graphType="cfgconstructor" 
           graphId={contractName} 
           contractPath={contractPath} 
           cfg={graphResponse.cfg} 
@@ -18,6 +18,6 @@ const ControlFlowGraph = ({ contractName, contractPath, graphResponse }) => {
   );
 }
 
-ControlFlowGraph.displayName = 'ControlFlowGraph';
+ControlFlowGraphConstructor.displayName = 'ControlFlowGraphConstructor';
 
-export default ControlFlowGraph;
+export default ControlFlowGraphConstructor;

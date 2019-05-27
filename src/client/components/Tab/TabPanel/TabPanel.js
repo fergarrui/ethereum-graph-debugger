@@ -114,7 +114,13 @@ class TabPanel extends React.Component {
       });
     }
 
-    if(type === 'Control Flow Graph') {
+    if(type === 'Control Flow Graph Runtime') {
+      this.setState({
+        graphResponse: response,
+      });
+    }
+
+    if(type === 'Control Flow Graph Constructor') {
       this.setState({
         graphResponse: response,
       });
@@ -200,7 +206,20 @@ class TabPanel extends React.Component {
     });
   }
 
-  handleControlFlowGraphClick() {
+  handleControlFlowGraphConstructorClick() {
+    const { name, path, code } = this.props;
+
+    const params = {
+      name: name.replace('.sol', '').replace('.evm', ''),
+      path: encodeURIComponent(path),
+      'constructor': 'true'
+    }
+    this.fetchData(this.getUrl('cfg/source', params), 'Control Flow Graph Constructor', code);
+
+    document.removeEventListener('click', this.handleOutsideClick);
+  }
+
+  handleControlFlowGraphRuntimeClick() {
     const { name, path, code } = this.props;
 
     const params = {
@@ -208,7 +227,7 @@ class TabPanel extends React.Component {
       path: encodeURIComponent(path),
       'constructor': 'false'
     }
-    this.fetchData(this.getUrl('cfg/source', params), 'Control Flow Graph', code);
+    this.fetchData(this.getUrl('cfg/source', params), 'Control Flow Graph Runtime', code);
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
@@ -309,7 +328,8 @@ class TabPanel extends React.Component {
             <SideBar 
               onDisassemblerClick={() => this.handleDisassemblerClick()}
               onTransactionDebuggerClick={() => this.handleTransactionDebuggerClick()}
-              onControlFlowGraphClick={() => this.handleControlFlowGraphClick()}
+              onControlFlowGraphConstructorClick={() => this.handleControlFlowGraphConstructorClick()}
+              onControlFlowGraphRuntimeClick={() => this.handleControlFlowGraphRuntimeClick()}
               onViewStorageClick={() => this.handleViewStorageClick()}
             />
           </div>

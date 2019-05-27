@@ -1,5 +1,5 @@
 /* tslint:disable */
-import { Controller, ValidateParam, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
+import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute } from 'tsoa';
 import { iocContainer } from './inversify/ioc';
 import { DebuggerController } from './api/service/controller/DebuggerController';
 import { FileController } from './api/service/controller/FileController';
@@ -9,6 +9,7 @@ import { ControlFlowGraphController } from './api/service/controller/ControlFlow
 import { StorageRecoverController } from './api/service/controller/StorageRecoverController';
 import { ContractController } from './api/service/controller/ContractController';
 import { SolcController } from './api/service/controller/SolcController';
+import * as express from 'express';
 
 const models: TsoaRoute.Models = {
     "Opcode": {
@@ -111,8 +112,9 @@ const models: TsoaRoute.Models = {
         },
     },
 };
+const validationService = new ValidationService(models);
 
-export function RegisterRoutes(app: any) {
+export function RegisterRoutes(app: express.Express) {
     app.post('/debug/:tx',
         function(request: any, response: any, next: any) {
             const args = {
@@ -139,7 +141,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.debug.apply(controller, validatedArgs);
+            const promise = controller.debug.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/files/:dir',
@@ -162,7 +164,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.findContractsInDir.apply(controller, validatedArgs);
+            const promise = controller.findContractsInDir.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/disassemble',
@@ -186,7 +188,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.disassembleSourceCode.apply(controller, validatedArgs);
+            const promise = controller.disassembleSourceCode.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/tx/:tx/receipt',
@@ -212,7 +214,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.getReceipt.apply(controller, validatedArgs);
+            const promise = controller.getReceipt.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/cfg/source',
@@ -237,7 +239,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.getCFGFromSource.apply(controller, validatedArgs);
+            const promise = controller.getCFGFromSource.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/cfg/bytecode',
@@ -260,7 +262,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.getCFGFromBytecode.apply(controller, validatedArgs);
+            const promise = controller.getCFGFromBytecode.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/storage/:contractAddress',
@@ -289,7 +291,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.getStorage.apply(controller, validatedArgs);
+            const promise = controller.getStorage.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/contract/abi',
@@ -313,7 +315,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.getAbi.apply(controller, validatedArgs);
+            const promise = controller.getAbi.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/contract/deploy',
@@ -335,7 +337,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.deploy.apply(controller, validatedArgs);
+            const promise = controller.deploy.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/contract/run/:contractAddress',
@@ -358,7 +360,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.run.apply(controller, validatedArgs);
+            const promise = controller.run.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/solc',
@@ -379,7 +381,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.getVersion.apply(controller, validatedArgs);
+            const promise = controller.getVersion.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.get('/solc/list',
@@ -400,7 +402,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.getAvailableVersions.apply(controller, validatedArgs);
+            const promise = controller.getAvailableVersions.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/solc',
@@ -422,7 +424,7 @@ export function RegisterRoutes(app: any) {
             }
 
 
-            const promise = controller.changeVersion.apply(controller, validatedArgs);
+            const promise = controller.changeVersion.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 
@@ -461,15 +463,15 @@ export function RegisterRoutes(app: any) {
                 case 'request':
                     return request;
                 case 'query':
-                    return ValidateParam(args[key], request.query[name], models, name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.query[name], name, fieldErrors);
                 case 'path':
-                    return ValidateParam(args[key], request.params[name], models, name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.params[name], name, fieldErrors);
                 case 'header':
-                    return ValidateParam(args[key], request.header(name), models, name, fieldErrors);
+                    return validationService.ValidateParam(args[key], request.header(name), name, fieldErrors);
                 case 'body':
-                    return ValidateParam(args[key], request.body, models, name, fieldErrors, name + '.');
+                    return validationService.ValidateParam(args[key], request.body, name, fieldErrors, name + '.');
                 case 'body-prop':
-                    return ValidateParam(args[key], request.body[name], models, name, fieldErrors, 'body.');
+                    return validationService.ValidateParam(args[key], request.body[name], name, fieldErrors, 'body.');
             }
         });
         if (Object.keys(fieldErrors).length > 0) {

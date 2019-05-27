@@ -2,12 +2,13 @@ import React from 'react';
 
 import TransactionDebugger from '../../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../../Disassembler/Disassembler';
-import ControlFlowGraph from '../../ControlFlowGraph/ControlFlowGraph';
+import ControlFlowGraphRuntime from '../../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
 import StorageViewer from '../../StorageViewer/StorageViewer';
 
 import styles from './InnerTabPanel.scss';
 
 import classnames from 'classnames/bind';
+import ControlFlowGraphConstructor from '../../ControlFlowGraphConstructor/ControlFlowGraphConstructor';
 
 const cx = classnames.bind(styles);
 
@@ -31,8 +32,16 @@ const InnerTabPanel = ({ type, active, contractName, contractCode, contractPath,
           disassemblerResponse={disassemblerResponse}
         />
       }
-      {type === 'Control Flow Graph' &&
-        <ControlFlowGraph 
+      {type === 'Control Flow Graph Runtime' &&
+        <ControlFlowGraphRuntime 
+          contractPath={contractPath} 
+          contractName={contractName} 
+          contractCode={contractCode}
+          graphResponse={graphResponse}
+        />
+      }
+      {type === 'Control Flow Graph Constructor' &&
+        <ControlFlowGraphConstructor 
           contractPath={contractPath} 
           contractName={contractName} 
           contractCode={contractCode}
