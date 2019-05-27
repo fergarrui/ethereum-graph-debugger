@@ -93,10 +93,12 @@ Current `solc` version is `0.5.8`, if you want to use an earlier version, for no
   * **Settings**: right now, there are settings to point to a different chain (by default it connects to http://127.0.0.1:8545) and basic authentication can be configured, so the RPC endpoint can be accessed if authentication is needed (to be compatible with platforms like [Kaleido](http://kaleido.io))
   * When building the CFG a basic dynamic execution is made to calculate jumps and to remove most of orphan blocks (this will be improved in the future, probably with SymExec)
   * To debug directly bytecode, use `.evm` extension files
+  * Constructor CFG is supported
+  * Debugging constructor transactions is supported
 
 # Limitations/Considerations
 
   * Only Solidity is supported at the moment
-  * Only runtime debugging is supported for now (no constructor)
+  * ~~Only runtime debugging is supported for now (no constructor)~~
   * You must run it against a node that supports `debug_traceTransaction`, like Geth or Ganache, therefore, Infura is not supported
   * It was rewritten, so new bugs may appear
