@@ -77,7 +77,7 @@ Current `solc` version is `0.5.8`, if you want to use an earlier version, for no
     (... truncated ...)
     ```
   * Select a commit, for example: `v0.5.6+commit.b259423e`
-  * Set the version to that commit: `curl -X POST --data '{"version": "v0.5.8+commit.23d335f2"}' http://localhost:9090/solc`
+  * Set the version to that commit: `curl -X POST --data '{"version": "v0.5.8+commit.23d335f2"}' http://localhost:9090/solc -H 'Content-Type: application/json'`
   * Check what version is loaded: `curl http://localhost:9090/solc`
 
 # Features
