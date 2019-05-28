@@ -11,3 +11,4 @@ export const GET_PROTOCOL = 'GET_PROTOCOL';
 export const GET_USERNAME = 'GET_USERNAME';
 export const GET_PASSWORD = 'GET_PASSWORD';
 export const GET_VERSION_NUM = 'GET_VERSION_NUM'; 
+export const GET_ACTIVE_INDEX = 'GET_ACTIVE_INDEX';

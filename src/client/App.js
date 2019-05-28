@@ -8,9 +8,8 @@ import TopNavBar from './components/TopNavBar/TopNavBar';
 import Form from './components/Form/Form';
 import Tab from './components/Tab/Tab';
 import MessageComp from './components/MessageComp/MessageComp';
-import SettingsBar from './components/SettingsBar/SettingsBar';
-import Dropdown from './components/Dropdown/Dropdown';
-import Version from './components/Version/Version';
+import TabPanel from './components/Tab/TabPanel/TabPanel';
+import Main from './components/Main/Main';
 
 import styles from './styles/App.scss';
 import fade from './styles/transitions/fade.scss';
@@ -21,6 +20,7 @@ const mapStateToProps = state => {
     showLoadingMessage: state.toggleLoadingMessage,
     showErrorMessage: state.toggleErrorMessage,
     errorMessage: state.toggleErrorMessage,
+    currentTabIndex: state.setActiveIndex
   }
 }
 
@@ -43,6 +43,8 @@ class App extends React.Component {
       fetchRequestStatus: undefined,
       contracts: [],
     }
+
+    this.handleMenuItemIconClick = this.handleMenuItemIconClick.bind(this);
   }
 
   componentDidMount() {
@@ -124,7 +126,7 @@ class App extends React.Component {
   render() {
 
     const { fetchRequestStatus, contracts, versions } = this.state;
-    const { children, showLoadingMessage, showErrorMessage, errorMessage } = this.props;
+    const { showLoadingMessage, showErrorMessage, errorMessage } = this.props;
 
     return (
       <div className={styles['app']}>
@@ -174,8 +176,22 @@ class App extends React.Component {
             transitionLeaveTimeout={300}
             >
           {fetchRequestStatus === 'success' && contracts.length &&
-          <Tab data={contracts} onMenuItemIconClick={this.handleMenuItemIconClick}>
-            {children}
+          <Tab onMenuItemIconClick={this.handleMenuItemIconClick}>
+            {contracts.map((item, i) => {
+              return (
+                <TabPanel
+                  key={`id--${item.name}--${i}`}
+                  name={item.name}
+                  >
+                  <Main 
+                    name={item.name}
+                    code={item.code}
+                    path={item.path}
+                    index={i}
+                    />
+                </TabPanel>
+              )
+            })}    
           </Tab>        
           }
           </CSSTransitionGroup>

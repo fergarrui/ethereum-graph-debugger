@@ -100,7 +100,7 @@ class TopNavBar extends React.Component {
           }
           {
             fetchRequestStatus === 'fail' && 
-            <div><span>{`Couldn't load versions`}</span></div>
+            <div><span style={{ color: '#fff'}}>{`Couldn't load versions`}</span></div>
           }
           </Dropdown>
         </div>
