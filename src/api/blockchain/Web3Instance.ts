@@ -8,10 +8,10 @@ export class Web3Instance implements IWeb3 {
   constructor(config: Web3Configuration) {
     const isEmpty = Object.values(config).every(x => (!x) || x === '')
     if (isEmpty) {
-      this.web3Instance = new Web3('http://127.0.0.1:8545')  
+      this.web3Instance = new Web3(process.env.BLOCKCHAIN_HOST? `http://${process.env.BLOCKCHAIN_HOST }`:'http://127.0.0.1:8545')  
     } else {
       const protocol = config.blockchainProtocol || 'http'
-      const url = config.blockchainHost || '127.0.0.1:8545'
+      const url = config.blockchainHost || process.env.BLOCKCHAIN_HOST || '127.0.0.1:8545'
       let blockchainUrl = `${protocol}://`
       if (config.blockchainBasicAuthUsername && config.blockchainBasicAuthPassword) {
         blockchainUrl += `${config.blockchainBasicAuthUsername}:${config.blockchainBasicAuthPassword}@`

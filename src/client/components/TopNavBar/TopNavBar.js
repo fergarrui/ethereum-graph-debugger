@@ -97,7 +97,7 @@ class TopNavBar extends React.Component {
             </div>
           }
           <button className={styles['top-navbar__versions-dropdown__toggler']} onClick={() => this.handleVersionsButtonClick()}>
-            <span>Solc Version</span>
+            <span>Change solc version</span>
           </button>
           <Dropdown active={!!versionsVisible}>
           { fetchRequestStatus === 'success' && versions.length &&

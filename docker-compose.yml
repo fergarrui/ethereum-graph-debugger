@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  debugger:
+    image: ethereum-graph-debugger
+    build:
+      context: ./
+    environment:
+      - BLOCKCHAIN_HOST=ganache:8545
+    ports:
+      - 9090:9090
+    volumes:
+      - ./src:/opt/app/src:delegated
+      - ./contracts:/opt/app/contracts:delegated
+
+  ganache:
+    image: trufflesuite/ganache-cli:v6.1.6
+    container_name: ganache
+    restart: always
+    command: -l 804247552 -h 0.0.0.0 -d
+    ports:
+      - 8545:8545

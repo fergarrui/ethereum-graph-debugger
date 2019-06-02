@@ -8,7 +8,6 @@ import { GFCResponse } from '../response/CFGResponse'
 import { OperationResponse } from '../response/OperationResponse'
 import { logger } from '../../../Logger'
 import { StringBodyRequest } from '../request/StringBodyRequest';
-const fs = require('fs')
 
 @Route('cfg')
 @provideSingleton(ControlFlowGraphController)
@@ -33,7 +32,6 @@ export class ControlFlowGraphController extends Controller {
         throw new Error('Constructor is true but no constructor found in bytecode')
       }
       const cfg = this.createCFG(contractBlocks, constructor)
-      await fs.writeFileSync('cfg', cfg)
       return this.buildResponse(contractBlocks, constructor, cfg)
     } catch (err) {
       logger.error(err)

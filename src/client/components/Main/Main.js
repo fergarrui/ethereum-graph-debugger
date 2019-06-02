@@ -203,8 +203,6 @@ class Main extends React.Component {
 
   handleControlFlowGraphClick(isConstructor) {
     const { name, path, code } = this.props;
-    console.log('isConstructor aaaaaaaaaaaaaaaa')
-    console.log(isConstructor)
     const params = {
       name: name.replace('.sol', '').replace('.evm', ''),
       path: encodeURIComponent(path),
