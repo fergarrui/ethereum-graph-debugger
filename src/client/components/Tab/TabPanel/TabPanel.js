@@ -334,7 +334,7 @@ class TabPanel extends React.Component {
             />
           </div>
           <div className={styles['tab-panel__left__data']}>
-              <Editor code={code} index={index} />
+              <Editor code={code} name={name} path={path} index={index} />
               {
                 evm && 
                 <EVMTab data={evm}>
