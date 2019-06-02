@@ -1,25 +1,21 @@
 import React from 'react';
 
-import TransactionDebugger from '../../TransactionDebugger/TransactionDebugger';
-import Disassembler from '../../Disassembler/Disassembler';
-import ControlFlowGraphRuntime from '../../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
-import StorageViewer from '../../StorageViewer/StorageViewer';
+import TransactionDebugger from '../TransactionDebugger/TransactionDebugger';
+import Disassembler from '../Disassembler/Disassembler';
+import ControlFlowGraphRuntime from '../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
+import ControlFlowGraphConstructor from '../ControlFlowGraphConstructor/ControlFlowGraphConstructor';
+import StorageViewer from '../StorageViewer/StorageViewer';
 
-import styles from './InnerTabPanel.scss';
+import styles from './Panel.scss';
 
 import classnames from 'classnames/bind';
-import ControlFlowGraphConstructor from '../../ControlFlowGraphConstructor/ControlFlowGraphConstructor';
 
 const cx = classnames.bind(styles);
 
-const InnerTabPanel = ({ type, active, contractName, contractCode, contractPath, debuggerResponse, graphResponse, disassemblerResponse, storageResponse }) => {
-  const tabPanelClasses = cx({
-    'inner-tab-panel': true,
-    'inner-tab-panel--active': !!active,
-  });
+const Panel = ({ type, contractName, contractCode, contractPath, debuggerResponse, graphResponse, disassemblerResponse, storageResponse }) => {
 
   return (
-    <div className={tabPanelClasses}>
+    <div className={styles['panel']}>
       {type === 'Transaction Debugger' && 
         <TransactionDebugger 
           contractPath={contractPath} 
@@ -55,6 +51,6 @@ const InnerTabPanel = ({ type, active, contractName, contractCode, contractPath,
   );
 }
 
-InnerTabPanel.displayName = 'InnerTabPanel';
+Panel.displayName = 'Panel';
 
-export default InnerTabPanel;
+export default Panel;

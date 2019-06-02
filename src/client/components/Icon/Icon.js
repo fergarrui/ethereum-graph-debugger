@@ -11,12 +11,12 @@ import Cogs from './SVG/cogs.svg';
 
 import styles from './Icon.scss';
 
-const Icon = ({ iconName }) => {
+const Icon = ({ iconName, onClick }) => {
 
   const icons = { CircleLeft, CircleRight, Menu, Cross, Spinner, Cogs };
 
   return (
-    <div className={styles['icon']}>
+    <div onClick={onClick} className={styles['icon']}>
       <SVGInline svg={icons[iconName]} />
     </div>
   );

@@ -1,47 +1,47 @@
 .tab-panel {
   display: none;
-  width: 100%;
-  padding: 34px 0 20px 0;
-  background: $color-black;
+  // width: 100%;
+  // padding: 34px 0 20px 0;
+  // background: $color-black;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-
-  &__left {
-    width: 40%;
-    position: relative;
-    padding-top: 30px;
-    padding-left: 10px;
-
-    &__control {
-      position: absolute;
-      top: -14px;
-      left: 10px;
-      z-index: 4;
-
-      button {
-        background: transparent;
-        outline: transparent;
-        cursor: pointer;
-      }
-    }
-
-    &__side-bar {
-      position: absolute;
-      top: 30px;
-      left: -400px;
-      transition: left 0.2s;
-      pointer-events: none;
-    }
-  }
-
-  &__right {
-    flex: 1 1 auto;
-    width: 100%;
-    height: 100%;
-    padding: 0 20px;
-    overflow-x: auto;
-  }
 }
+//   &__left {
+//     width: 40%;
+//     position: relative;
+//     padding-top: 30px;
+//     padding-left: 10px;
+
+//     &__control {
+//       position: absolute;
+//       top: -14px;
+//       left: 10px;
+//       z-index: 4;
+
+//       button {
+//         background: transparent;
+//         outline: transparent;
+//         cursor: pointer;
+//       }
+//     }
+
+//     &__side-bar {
+//       position: absolute;
+//       top: 30px;
+//       left: -262px;
+//       transition: left 0.2s;
+//       pointer-events: none;
+//     }
+//   }
+
+//   &__right {
+//     flex: 1 1 auto;
+//     width: 100%;
+//     height: 100%;
+//     padding: 0 20px;
+//     overflow-x: auto;
+//   }
+// }
 
 //State
 .tab-panel {
@@ -50,15 +50,15 @@
     display: flex;
   }
 
-  &__left {
+  // &__left {
 
-    &__side-bar {
+  //   &__side-bar {
 
-      &--open {
-        left: 0;
-        z-index: 6;
-        pointer-events: auto;
-      }
-    }
-  }
+  //     &--open {
+  //       left: 0;
+  //       z-index: 6;
+  //       pointer-events: auto;
+  //     }
+  //   }
+  // }
 }

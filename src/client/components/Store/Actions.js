@@ -1,60 +1,99 @@
-import { SELECT_EDITOR_LINES, SHOW_EVM_STATE, 
-  SHOW_LOADING_MESSAGE, HIDE_LOADING_MESSAGE, 
-  SHOW_ERROR_MESSAGE, HIDE_ERROR_MESSAGE, 
-  HIDE_EVM_STATE, GET_ERROR_MESSAGE } from './Constants.js';
+import * as ActionTypes from './Constants.js';
 
-export function selectEditorLines(lines) {
+  import { baseUrl } from '../../utils/baseUrl';
+
+export const selectEditorLines = lines => {
   return {
-    type: SELECT_EDITOR_LINES,
+    type: ActionTypes.SELECT_EDITOR_LINES,
     lines,
   }
 }
 
-export function showEVMState(evmState) {
+export const showEVMState = evmState => {
   return {
-    type: SHOW_EVM_STATE,
+    type: ActionTypes.SHOW_EVM_STATE,
     evmState,
   }
 }
 
-export function hideEVMState() {
+export const hideEVMState = () => {
   return {
-    type: HIDE_EVM_STATE,
+    type: ActionTypes.HIDE_EVM_STATE,
     empty: '',
   }
 }
 
-export function showLoadingMessage() {
+export const showLoadingMessage = (message) => {
   return {
-    type: SHOW_LOADING_MESSAGE,
-    show: true,
+    type: ActionTypes.SHOW_LOADING_MESSAGE,
+    message
   }
 }
 
-export function hideLoadingMessage() {
+export const hideLoadingMessage = () => {
   return {
-    type: HIDE_LOADING_MESSAGE,
-    show: false,
+    type: ActionTypes.HIDE_LOADING_MESSAGE,
   }
 }
 
-export function showErrorMessage() {
+export const showErrorMessage = message => {
   return {
-    type: SHOW_ERROR_MESSAGE,
-    show: true,
+    type: ActionTypes.SHOW_ERROR_MESSAGE,
+    message
   }
 }
 
-export function hideErrorMessage() {
+export const hideErrorMessage = () => {
   return {
-    type: HIDE_ERROR_MESSAGE,
-    show: false,
+    type: ActionTypes.HIDE_ERROR_MESSAGE,
   }
 }
 
-export function getErrorMessage(message) {
+export const getVersionNumber = versionNum => {
   return {
-    type: GET_ERROR_MESSAGE,
-    message,
+    type: ActionTypes.GET_VERSION_NUM,
+    versionNum,
   }
 }
+
+export const addVersion = version => {
+  return {
+    type: ActionTypes.ADD_VERSION,
+    version
+  }
+}
+
+export const postVersion = version => dispatch => {
+  dispatch(showLoadingMessage('Loading... This might take a while'));
+
+  return fetch(baseUrl + 'solc', {
+    method: 'POST',
+    body: JSON.stringify(version),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+      var errmess = new Error(error.message);
+      throw errmess; 
+    })
+    .then(response => response.json())
+    .then(response => {
+      dispatch(hideLoadingMessage());
+      dispatch(addVersion(response));
+    })
+    .catch(error => {
+      alert('Your version could not be posted\nError: ' + error.message)
+    });    
+};

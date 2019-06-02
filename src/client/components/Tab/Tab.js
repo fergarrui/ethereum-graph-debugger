@@ -1,7 +1,6 @@
 import React from 'react';
 
 import TabMenuItem from './TabMenuItem/TabMenuItem';
-import TabPanel from './TabPanel/TabPanel';
 
 import styles from './Tab.scss';
 
@@ -23,12 +22,12 @@ class Tab extends React.Component {
   handleIconClick(event, index) {
     event.stopPropagation();
 
-    const { data } = this.props;
+    const { children } = this.props;
 
     this.setState({
       currentTabIndex:
-      index === data.length - 1  && index === this.state.currentTabIndex ? 0 
-      : index === this.state.currentTabIndex ? index  
+      index === children.length - 1  && index === this.state.currentTabIndex ? 0 
+      : index === this.state.currentTabIndex ? index
       : this.state.currentTabIndex,
     });
 
@@ -36,38 +35,32 @@ class Tab extends React.Component {
   }
 
   render() {
-    const { data } = this.props;
     const { currentTabIndex } = this.state;
+
+    const children = React.Children.map(this.props.children, (child, index) => {
+      return React.cloneElement(child, {
+        index,
+        active: index === currentTabIndex,
+      });
+    });
 
     return (
       <div className={styles['tab']}>
         <div className={styles['tab__navigation']}>
-          {data.map((item, i) => {
+          {React.Children.map(children, (child, i) => {
             return (
               <TabMenuItem
-                key={`id--${item.name}`}
-                name={item.name}
+                key={`id--${child.props.name}`}
+                name={child.props.name}
                 active={currentTabIndex === i}
-                onClick={() => this.setActiveTab(i)}
+                onMenuItemClick={() => this.setActiveTab(i)}
                 onIconClick={(e) => this.handleIconClick(e, i)}
               />
             )
           })}        
         </div>
         <div className={styles['tab__panels']}>
-          {data.map((item, i) => {
-            return (
-              <TabPanel
-                key={`id--${item.name}`}
-                name={item.name}
-                code={item.code}
-                index={i}
-                active={currentTabIndex === i}
-                path={item.path}>
-              </TabPanel>
-            )
-          })}    
-
+          { children }
         </div>
       </div>
     );

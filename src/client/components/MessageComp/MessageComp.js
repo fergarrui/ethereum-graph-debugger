@@ -7,13 +7,15 @@ import Icon from '../Icon/Icon';
 
 import styles from './MessageComp.scss';
 
-const mapDispatchToProps = dispatch => {
-  return {
-    errorMessageOff: () => dispatch(hideErrorMessage()),
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  errorMessageOff: () => dispatch(hideErrorMessage()),
+});
 
-class ConnectedMessageComp extends React.Component {
+const mapStateToProps = state => ({
+  errorMessage: state.errorMessage.message
+});
+
+class MessageComp extends React.Component {
   constructor(props) {
     super(props);
 
@@ -36,17 +38,17 @@ class ConnectedMessageComp extends React.Component {
   }
 
   render() {
-    const { message, errorMessageOff } = this.props;
+    const { message, errorMessageOff, errorMessage } = this.props;
 
     return (
       <div className={styles['message-comp']}>
         <div className={styles['message-comp__main']}>
           <div className={styles['message-comp__main__text']}>
-            <h1>{message}</h1>
+            <h1>{`${message}`}</h1>
           </div>
           <div className={styles['message-comp__main__button']}>
           {
-            message === 'Loading...' 
+            !errorMessage
             ?  <Icon iconName='Spinner' />
             :  <div className={styles['message-comp__main__button__item']}>
                   <button onClick={errorMessageOff}><span>Close</span></button>
@@ -60,8 +62,6 @@ class ConnectedMessageComp extends React.Component {
   }
 }
 
-const MessageComp = connect(null, mapDispatchToProps)(ConnectedMessageComp);
-
 MessageComp.displayName = 'MessageComp';
 
-export default MessageComp;
+export default connect(mapStateToProps, mapDispatchToProps)(MessageComp);
