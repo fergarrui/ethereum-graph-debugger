@@ -12,7 +12,6 @@ const TabPanel = ({ children, active }) => {
     'tab-panel': true,
     'tab-panel--active': !!active,
   });
-
   return (
     <div className={tabPanelClasses}>
       {children}
