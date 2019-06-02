@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import  { CSSTransitionGroup } from 'react-transition-group';
 
 import { showLoadingMessage, hideLoadingMessage, showErrorMessage } from '../Store/Actions.js';
-
-import baseurl, { baseUrl } from '../../utils/baseUrl';
-
+import { baseUrl } from '../../utils/baseUrl';
 import Editor from '../Editor/Editor';
 import SideBar from '../SideBar/SideBar';
 import Tab from '../Tab/Tab';
@@ -33,7 +31,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadingMessageOn: () => dispatch(showLoadingMessage()),
+    loadingMessageOn: message => dispatch(showLoadingMessage(message)),
     loadingMessageOff: () => dispatch(hideLoadingMessage()),
     errorMessageOn: message => dispatch(showErrorMessage(message)),
   }

@@ -82,7 +82,7 @@ class TopNavBar extends React.Component {
 
   render() {
     const { settingsVisible, versionsVisible } = this.state;
-    const { versions, fetchRequestStatus, children, versionNumber, hasFetched, postedVersions } = this.props;
+    const { versions, fetchRequestStatus, children, versionNumber, hasFetched } = this.props;
 
     return (
       <div className={styles['top-navbar']}>
