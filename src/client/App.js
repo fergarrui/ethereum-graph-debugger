@@ -2,7 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { CSSTransitionGroup } from 'react-transition-group';
 
-import { showLoadingMessage, showErrorMessage, hideLoadingMessage, getErrorMessage } from './components/Store/Actions.js';
+import { showLoadingMessage, showErrorMessage, hideLoadingMessage } from './components/Store/Actions.js';
+
+import { baseUrl } from './utils/baseUrl';
 
 import TopNavBar from './components/TopNavBar/TopNavBar';
 import Form from './components/Form/Form';
@@ -17,19 +19,18 @@ import scale from './styles/transitions/scale.scss';
 
 const mapStateToProps = state => {
   return {
-    showLoadingMessage: state.toggleLoadingMessage,
-    showErrorMessage: state.toggleErrorMessage,
-    errorMessage: state.toggleErrorMessage,
-    currentTabIndex: state.setActiveIndex
+    showLoadingMessage: state.loadingMessage.isLoading,
+    loadingMessage: state.loadingMessage.message,
+    showErrorMessage: state.errorMessage.hasError,
+    errorMessage: state.errorMessage.message
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadingMessageOn: () => dispatch(showLoadingMessage()),
+    loadingMessageOn: message => dispatch(showLoadingMessage(message)),
     loadingMessageOff: () => dispatch(hideLoadingMessage()),
-    errorMessageOn: () => dispatch(showErrorMessage()),
-    getErrorMessage: message => dispatch(getErrorMessage(message)),
+    errorMessageOn: message => dispatch(showErrorMessage(message)),
   }
 }
 
@@ -48,7 +49,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchData('http://localhost:9090/solc/list');
+    this.fetchData(baseUrl + 'solc/list');
   }
 
   handleMenuItemIconClick(index) {
@@ -97,7 +98,7 @@ class App extends React.Component {
   }
 
   handleRequestPending() {
-    this.props.loadingMessageOn();
+    this.props.loadingMessageOn('Loading...');
   }
 
   handleRequestSuccess(response) {
@@ -119,14 +120,13 @@ class App extends React.Component {
 
   handleRequestFail(message) {
     this.props.loadingMessageOff();
-    this.props.errorMessageOn();
-    this.props.getErrorMessage(message);
+    this.props.errorMessageOn(message);
   }
 
   render() {
 
     const { fetchRequestStatus, contracts, versions } = this.state;
-    const { showLoadingMessage, showErrorMessage, errorMessage } = this.props;
+    const { showLoadingMessage, showErrorMessage, errorMessage, loadingMessage } = this.props;
 
     return (
       <div className={styles['app']}>
@@ -146,18 +146,18 @@ class App extends React.Component {
           transitionName={fade}
           transitionAppear={true}
           transitionAppearTimeout={300}
-          trnasitionEnterTimeout={300}
+          transitionEnterTimeout={300}
           transitionLeaveTimeout={300}
           >
           { showLoadingMessage &&
-            <MessageComp message='Loading...' />
+            <MessageComp message={loadingMessage} />
           }
         </CSSTransitionGroup>
         <CSSTransitionGroup
           transitionName={fade}
           transitionAppear={true}
           transitionAppearTimeout={300}
-          trnasitionEnterTimeout={300}
+          transitionEnterTimeout={300}
           transitionLeaveTimeout={300}
           >
           { showErrorMessage &&
@@ -172,7 +172,7 @@ class App extends React.Component {
             transitionName={scale}
             transitionAppear={true}
             transitionAppearTimeout={300}
-            trnasitionEnterTimeout={300}
+            transitionEnterTimeout={300}
             transitionLeaveTimeout={300}
             >
           {fetchRequestStatus === 'success' && contracts.length &&

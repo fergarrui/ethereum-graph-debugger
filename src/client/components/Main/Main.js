@@ -3,7 +3,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import  { CSSTransitionGroup } from 'react-transition-group';
 
-import { showLoadingMessage, hideLoadingMessage, showErrorMessage, getErrorMessage } from '../Store/Actions.js';
+import { showLoadingMessage, hideLoadingMessage, showErrorMessage } from '../Store/Actions.js';
+
+import baseurl from '../../utils/baseUrl';
 
 import Editor from '../Editor/Editor';
 import SideBar from '../SideBar/SideBar';
@@ -33,8 +35,7 @@ const mapDispatchToProps = dispatch => {
   return {
     loadingMessageOn: () => dispatch(showLoadingMessage()),
     loadingMessageOff: () => dispatch(hideLoadingMessage()),
-    errorMessageOn: () => dispatch(showErrorMessage()),
-    getErrorMessage: message => dispatch(getErrorMessage(message)),
+    errorMessageOn: message => dispatch(showErrorMessage(message)),
   }
 }
 
@@ -62,7 +63,7 @@ class Main extends React.Component {
   }
 
   getUrl(endPoint, parameters) {
-    let url = `http://localhost:9090/${endPoint}`;
+    let url = baseurl + endPoint;
     const paramKeys = Object.keys(parameters);
 
     if (paramKeys.length) {
@@ -74,13 +75,13 @@ class Main extends React.Component {
 
  fetchData(url, type, body) {
    this.handleRequestPending();
-  fetch(url, body? {
+  fetch(url, body ? {
       body: JSON.stringify({request: body}),
       method: 'POST',
       headers:{
         'Content-Type': 'application/json'
       }
-    }: {})
+    } : {})
     .then(res => res.json())
     .then(data => {
       data.error
@@ -96,7 +97,7 @@ class Main extends React.Component {
       sideBarOpen: false,
     });
 
-    this.props.loadingMessageOn();
+    this.props.loadingMessageOn('Loading...');
   }
 
 
@@ -137,10 +138,8 @@ class Main extends React.Component {
   }
 
   handleRequestFail(data) {
-    const message = data.message;
     this.props.loadingMessageOff();
-    this.props.errorMessageOn();
-    this.props.getErrorMessage(message);
+    this.props.errorMessageOn(data.message);
   }
 
   handleTransactionFormSubmit() {

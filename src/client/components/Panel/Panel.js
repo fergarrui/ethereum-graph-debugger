@@ -1,14 +1,14 @@
 import React from 'react';
 
-import TransactionDebugger from '../../TransactionDebugger/TransactionDebugger';
-import Disassembler from '../../Disassembler/Disassembler';
-import ControlFlowGraphRuntime from '../../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
-import StorageViewer from '../../StorageViewer/StorageViewer';
+import TransactionDebugger from '../TransactionDebugger/TransactionDebugger';
+import Disassembler from '../Disassembler/Disassembler';
+import ControlFlowGraphRuntime from '../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
+import ControlFlowGraphConstructor from '../ControlFlowGraphConstructor/ControlFlowGraphConstructor';
+import StorageViewer from '../StorageViewer/StorageViewer';
 
 import styles from './Panel.scss';
 
 import classnames from 'classnames/bind';
-import ControlFlowGraphConstructor from '../../ControlFlowGraphConstructor/ControlFlowGraphConstructor';
 
 const cx = classnames.bind(styles);
 

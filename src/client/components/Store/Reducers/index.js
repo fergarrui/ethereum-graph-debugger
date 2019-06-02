@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 
-import { selectLines, selectEVMState, toggleLoadingMessage, toggleErrorMessage, displayVersionNumber, setActiveIndex } from './Reducers.js';
+import { selectLines, selectEVMState, loadingMessage, errorMessage, displayVersionNumber, versions } from './Reducers.js';
 
 export default combineReducers({
   selectLines,
   selectEVMState,
-  toggleLoadingMessage,
-  toggleErrorMessage,
+  loadingMessage,
+  errorMessage,
   displayVersionNumber,
-  setActiveIndex,
+  versions
 });

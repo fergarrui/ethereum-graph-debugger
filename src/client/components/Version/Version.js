@@ -1,44 +1,39 @@
 import React from 'react';
-import classnames from 'classnames/bind';
 import { connect } from 'react-redux';
 
-import { getVersionNumber } from '../Store/Actions';
+import { getVersionNumber, postVersion } from '../Store/Actions';
 
 import styles from './Version.scss';
 
-const cx = classnames.bind(styles);
-
 const mapDispatchToProps = dispatch => ({
-  getVersionNumber: version => dispatch(getVersionNumber(version))
+  getVersionNumber: version => dispatch(getVersionNumber(version)),
+  postVersion: version => dispatch(postVersion(version))
 });
 
-class Version extends React.Component {
+const Version = ({ data, getVersionNumber, onVersionItemClick, postVersion }) => {
 
-  handleSelect(event) {
-    this.props.getVersionNumber(event.target.innerText);
-    this.props.onVersionItemClick();
+  const handleSelect = (item) => {
+    postVersion({ version: item.commit });
+    onVersionItemClick();
+    getVersionNumber(item.version);
   }
 
-  render() {
-    const { data } = this.props;
-
-    return (
-      <div className={styles['version']}>
-        {
-          data.map((item, i) => {
-              return (
-                <div 
-                  key={`id--${item.version}`}
-                  className={styles['version__item']}
-                  onClick={(e) => this.handleSelect(e)}
-                  >
-                  <span>{item.version}</span>
-                </div>
-          )})
-        }
-      </div>
-    )
-  }
+  return (
+    <div className={styles['version']}>
+      {
+        data.map(item => {
+          return (
+            <div 
+              key={`id--${item.version}`}
+              className={styles['version__item']}
+              onClick={() => handleSelect(item)}
+              >
+              <span>{item.version}</span>
+            </div>
+        )})
+      }
+    </div>
+  )
 }
 
 export default connect(null, mapDispatchToProps)(Version);

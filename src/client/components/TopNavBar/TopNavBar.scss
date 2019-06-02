@@ -27,9 +27,9 @@
   }
 
   &__versions-dropdown {
-    flex: 0 1 250px;
+    flex: 0 1 200px;
     position: relative;
-    margin-left: 10px;
+    padding-left: 10px;
     padding: 24.5px 20px;
     height: 88px;
     background: $color-dark-grey;
@@ -37,7 +37,7 @@
     &__text {
       position: absolute;
       top: 50%;
-      left: 0;
+      left: 20px;
       transform: translate(0, -50%);
 
       span {

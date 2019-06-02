@@ -9,7 +9,9 @@ import Dropdown from '../Dropdown/Dropdown';
 import styles from './TopNavBar.scss';
 
 const mapStateToProps = state => ({
-  version: state.displayVersionNumber,
+  versionNumber: state.versions.versionNumber,
+  postedVersions: state.versions.versions,
+  hasFetched: state.versions.hasFetched,
 });
 
 class TopNavBar extends React.Component {
@@ -18,7 +20,7 @@ class TopNavBar extends React.Component {
 
     this.state = {
       settingsVisible: false,
-      versionsVisible: false,
+      versionsVisible: false
     }
 
     this.handleOutsideClick = this.handleOutsideClick.bind(this);
@@ -80,7 +82,7 @@ class TopNavBar extends React.Component {
 
   render() {
     const { settingsVisible, versionsVisible } = this.state;
-    const { versions, fetchRequestStatus, children, version } = this.props;
+    const { versions, fetchRequestStatus, children, versionNumber, hasFetched, postedVersions } = this.props;
 
     return (
       <div className={styles['top-navbar']}>
@@ -88,11 +90,14 @@ class TopNavBar extends React.Component {
           {children}
         </div>
         <div className={styles['top-navbar__versions-dropdown']}>
-          <div className={styles['top-navbar__versions-dropdown__text']}>
-            <span>{version}</span>
-          </div>
+          {
+            hasFetched &&
+            <div className={styles['top-navbar__versions-dropdown__text']}>
+              <span>{versionNumber}</span>
+            </div>
+          }
           <button className={styles['top-navbar__versions-dropdown__toggler']} onClick={() => this.handleVersionsButtonClick()}>
-            <span>Versions</span>
+            <span>Solc Version</span>
           </button>
           <Dropdown active={!!versionsVisible}>
           { fetchRequestStatus === 'success' && versions.length &&

@@ -1,50 +1,47 @@
-import { SELECT_EDITOR_LINES, SHOW_EVM_STATE, SHOW_LOADING_MESSAGE, 
-  HIDE_LOADING_MESSAGE, SHOW_ERROR_MESSAGE, HIDE_ERROR_MESSAGE, 
-  HIDE_EVM_STATE, GET_ERROR_MESSAGE, GET_VERSION_NUM, IS_ACTIVE, GET_ACTIVE_INDEX } from '../Constants.js';
+import * as ActionTypes from '../Constants.js';
 
 
-export function selectLines(state = [0, 0], action) {
+export const selectLines = (state = [0, 0], action) => {
   switch (action.type) {
-    case SELECT_EDITOR_LINES: return action.lines;
+    case ActionTypes.SELECT_EDITOR_LINES: return action.lines;
     default: return state;
   }
 }
 
-export function selectEVMState(state = '', action) {
+export const selectEVMState = (state = '', action) => {
   switch(action.type) {
-    case SHOW_EVM_STATE: return action.evmState;
-    case HIDE_EVM_STATE: return action.empty;
+    case ActionTypes.SHOW_EVM_STATE: return action.evmState;
+    case ActionTypes.HIDE_EVM_STATE: return action.empty;
     default: return state;
   }
 }
 
-export function toggleLoadingMessage(state = false, action) {
+export const loadingMessage = (state = { isLoading: false, message: '' }, action) => {
   switch(action.type) {
-    case SHOW_LOADING_MESSAGE: return action.show;
-    case HIDE_LOADING_MESSAGE: return action.show;
+    case ActionTypes.SHOW_LOADING_MESSAGE: 
+      return { ...state, isLoading: true, message: action.message };
+    case ActionTypes.HIDE_LOADING_MESSAGE: 
+      return { ...state, isLoading: false, message: '' };
     default: return state;
   }
 }
 
-export function toggleErrorMessage(state = false, action) {
+export const errorMessage = (state = { hasError: false, message: ''}, action) => {
   switch(action.type) {
-    case SHOW_ERROR_MESSAGE: return action.show;
-    case HIDE_ERROR_MESSAGE: return action.show;
-    case GET_ERROR_MESSAGE: return action.message;
+    case ActionTypes.SHOW_ERROR_MESSAGE: 
+      return { ...state, hasError: true, message: action.message };
+    case ActionTypes.HIDE_ERROR_MESSAGE: 
+      return { ...state, hasError: false, message: '' };
     default: return state;
   }
 }
 
-export function displayVersionNumber(state = '', action) {
+export const versions = (state = { versions: [], versionNumber: null, hasFetched: false }, action) => {
   switch(action.type) {
-    case GET_VERSION_NUM: return action.version;
-    default: return state;
-  }
-}
-
-export function setActiveIndex(state = 0, action) {
-  switch(action.type) {
-    case GET_ACTIVE_INDEX: return action.index;
+    case ActionTypes.ADD_VERSION:
+      return { ...state, versions: action.version, hasFetched: true };
+    case ActionTypes.GET_VERSION_NUM:
+      return { ...state, versions: action.version, versionNumber: action.versionNum, hasFetched: false }; 
     default: return state;
   }
 }
