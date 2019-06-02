@@ -50,6 +50,7 @@ const models: TsoaRoute.Models = {
     "SaveFileRequest": {
         "properties": {
             "path": { "dataType": "string", "required": true },
+            "name": { "dataType": "string", "required": true },
             "content": { "dataType": "string", "required": true },
         },
     },
@@ -322,10 +323,10 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.getStorage.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
-    app.get('/contract/abi',
+    app.post('/contract/abi',
         function(request: any, response: any, next: any) {
             const args = {
-                source: { "in": "query", "name": "source", "required": true, "dataType": "string" },
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
                 name: { "in": "query", "name": "name", "required": true, "dataType": "string" },
                 path: { "in": "query", "name": "path", "required": true, "dataType": "string" },
             };
@@ -344,6 +345,30 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.getAbi.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/contract/functions',
+        function(request: any, response: any, next: any) {
+            const args = {
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
+                name: { "in": "query", "name": "name", "required": true, "dataType": "string" },
+                path: { "in": "query", "name": "path", "required": true, "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<ContractController>(ContractController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.getFunctions.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/contract/deploy',

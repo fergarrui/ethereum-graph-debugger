@@ -16,7 +16,11 @@ export class FileController extends Controller {
   @Get('{dir}')
   async findContractsInDir(@Path() dir: string, @Query('extension') extension: string): Promise<ContractFile[]> {
     try {
-      const contracts = await this.fileService.findContractssWithExtension(dir, extension)
+      let directory = dir
+      if (!dir || dir === '' || dir === ' ') {
+        directory = './contracts'
+      }
+      const contracts = await this.fileService.findContractssWithExtension(directory, extension)
       if (contracts.length === 0) {
         throw new Error(`No contracts found at ${dir} with extension ${extension}`)
       }
