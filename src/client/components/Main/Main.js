@@ -5,7 +5,11 @@ import  { CSSTransitionGroup } from 'react-transition-group';
 
 import { showLoadingMessage, hideLoadingMessage, showErrorMessage } from '../Store/Actions.js';
 
+<<<<<<< Updated upstream
 import baseurl from '../../utils/baseUrl';
+=======
+import { baseUrl } from '../../utils/baseUrl';
+>>>>>>> Stashed changes
 
 import Editor from '../Editor/Editor';
 import SideBar from '../SideBar/SideBar';
@@ -33,7 +37,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadingMessageOn: () => dispatch(showLoadingMessage()),
+    loadingMessageOn: message => dispatch(showLoadingMessage(message)),
     loadingMessageOff: () => dispatch(hideLoadingMessage()),
     errorMessageOn: message => dispatch(showErrorMessage(message)),
   }

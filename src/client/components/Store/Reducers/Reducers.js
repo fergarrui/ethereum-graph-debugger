@@ -41,7 +41,7 @@ export const versions = (state = { versions: [], versionNumber: null, hasFetched
     case ActionTypes.ADD_VERSION:
       return { ...state, versions: action.version, hasFetched: true };
     case ActionTypes.GET_VERSION_NUM:
-      return { ...state, versions: action.version, versionNumber: action.versionNum, hasFetched: false }; 
+      return { ...state, versionNumber: action.versionNum, hasFetched: false }; 
     default: return state;
   }
 }
