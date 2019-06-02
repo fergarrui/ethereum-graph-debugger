@@ -47,6 +47,12 @@ const models: TsoaRoute.Models = {
             "path": { "dataType": "string", "required": true },
         },
     },
+    "SaveFileRequest": {
+        "properties": {
+            "path": { "dataType": "string", "required": true },
+            "content": { "dataType": "string", "required": true },
+        },
+    },
     "DisassembledContractResponse": {
         "properties": {
             "hasConstructor": { "dataType": "boolean", "required": true },
@@ -165,6 +171,28 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.findContractsInDir.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/files',
+        function(request: any, response: any, next: any) {
+            const args = {
+                saveFileRequest: { "in": "body", "name": "saveFileRequest", "required": true, "ref": "SaveFileRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<FileController>(FileController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.saveFile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
     app.post('/disassemble',

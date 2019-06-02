@@ -22,12 +22,13 @@ class ConnectedCodeEditor extends React.Component {
         setReadOnly,
         setValue,
         theme,
+        path,
+        name,
         mode,
         setUseWorker,
         index,
         selectedLines
       } = this.props;
-
       require(`brace/mode/${mode}`);
       require(`brace/theme/${theme}`);
       const editor = ace.edit(`ace-editor-${index}`);
@@ -35,7 +36,7 @@ class ConnectedCodeEditor extends React.Component {
       editor.getSession().setMode(`ace/mode/${mode}`);
       editor.getSession().setUseWorker(setUseWorker);
       editor.setTheme(`ace/theme/${theme}`);
-      editor.on('change', e => onChange(editor.getValue(), e));
+      editor.on('change', e => onChange(editor.getValue(),path,name, e));
       editor.setReadOnly(setReadOnly);
       editor.setValue(setValue);
       this.selectLines(selectedLines);
@@ -43,8 +44,7 @@ class ConnectedCodeEditor extends React.Component {
   }
 
   componentDidUpdate() {
-    const { selectedLines } = this.props;
-
+    const { selectedLines, path } = this.props;
     this.selectLines(selectedLines);
   }
 

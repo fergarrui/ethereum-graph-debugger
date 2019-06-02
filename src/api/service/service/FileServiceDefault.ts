@@ -22,4 +22,9 @@ export class FileServiceDefault implements FileService {
       })
       .sort((a, b) => (a.name > b.name ? 1 : -1))
   }
+
+  async saveFile(dir: string, name: string, content: string) {
+    const filePath = path.join(dir, name)
+    return fs.writeFileSync(filePath, content)
+  }
 }
