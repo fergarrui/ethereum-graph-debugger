@@ -20,6 +20,11 @@ export class ContractService {
     return contract.abi
   }
 
+  getFunctions(contractName: string, source: string, path: string): any {
+    const contract = this.compileContract(contractName, source, path)
+    return contract.abi.filter(abi => abi.type === 'function' || abi.type === 'constructor')
+  }
+
   compileContract(contractName: string, source: string, path: string): any {
     const compileJson = this.generateCompileObject(contractName, source, path)
     const compiledContract = JSON.parse(this.solc.getInstance().compileStandardWrapper(JSON.stringify(compileJson)))
