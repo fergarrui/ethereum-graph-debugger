@@ -5,7 +5,7 @@ import  { CSSTransitionGroup } from 'react-transition-group';
 
 import { showLoadingMessage, hideLoadingMessage, showErrorMessage } from '../Store/Actions.js';
 
-import baseurl from '../../utils/baseUrl';
+import baseurl, { baseUrl } from '../../utils/baseUrl';
 
 import Editor from '../Editor/Editor';
 import SideBar from '../SideBar/SideBar';
@@ -63,7 +63,7 @@ class Main extends React.Component {
   }
 
   getUrl(endPoint, parameters) {
-    let url = baseurl + endPoint;
+    let url = baseUrl + endPoint;
     const paramKeys = Object.keys(parameters);
 
     if (paramKeys.length) {
@@ -75,12 +75,13 @@ class Main extends React.Component {
 
  fetchData(url, type, body) {
    this.handleRequestPending();
+
   fetch(url, body ? {
-      body: JSON.stringify({request: body}),
-      method: 'POST',
-      headers:{
-        'Content-Type': 'application/json'
-      }
+    body: JSON.stringify({ request: body }),
+    method: 'POST',
+    headers:{
+      'Content-Type': 'application/json'
+    }
     } : {})
     .then(res => res.json())
     .then(data => {
@@ -89,7 +90,7 @@ class Main extends React.Component {
       : this.handleRequestSuccess(data, type);
     })
     .catch(err => this.handleRequestFail(err));
- }
+  }
 
   handleRequestPending() {
     this.setState({
@@ -116,7 +117,7 @@ class Main extends React.Component {
       });
     }
 
-    if(type === 'Control Flow Graph') {
+    if(type === 'Control Flow Graph Constructor' || 'Control Flow Graph Runtime') {
       this.setState({
         graphResponse: response,
       });
@@ -200,15 +201,16 @@ class Main extends React.Component {
     });
   }
 
-  handleControlFlowGraphClick() {
+  handleControlFlowGraphClick(isConstructor) {
     const { name, path, code } = this.props;
-
+    console.log('isConstructor aaaaaaaaaaaaaaaa')
+    console.log(isConstructor)
     const params = {
       name: name.replace('.sol', '').replace('.evm', ''),
       path: encodeURIComponent(path),
-      'constructor': 'false'
+      'constructor': `${isConstructor}`
     }
-    this.fetchData(this.getUrl('cfg/source', params), 'Control Flow Graph', code);
+    this.fetchData(this.getUrl('cfg/source', params), `Control Flow Graph ${isConstructor ? 'Constructor' : 'Runtime'}`, code);
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
@@ -303,7 +305,8 @@ class Main extends React.Component {
           <SideBar 
             onDisassemblerClick={() => this.handleDisassemblerClick()}
             onTransactionDebuggerClick={() => this.handleTransactionDebuggerClick()}
-            onControlFlowGraphClick={() => this.handleControlFlowGraphClick()}
+            onControlFlowGraphRuntimeClick={() => this.handleControlFlowGraphClick(false)}
+            onControlFlowGraphConstructorClick={() => this.handleControlFlowGraphClick(true)}
             onViewStorageClick={() => this.handleViewStorageClick()}
           />
         </div>
