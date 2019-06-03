@@ -2,8 +2,8 @@ import React from 'react';
 
 import TransactionDebugger from '../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../Disassembler/Disassembler';
-import ControlFlowGraphRuntime from '../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
-import ControlFlowGraphConstructor from '../ControlFlowGraphConstructor/ControlFlowGraphConstructor';
+//import ControlFlowGraphRuntime from '../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
+import ControlFlowGraph from '../ControlFlowGraph/ControlFlowGraph';
 import StorageViewer from '../StorageViewer/StorageViewer';
 
 import styles from './Panel.scss';
@@ -29,7 +29,8 @@ const Panel = ({ type, contractName, contractCode, contractPath, debuggerRespons
         />
       }
       {type === 'Control Flow Graph Runtime' &&
-        <ControlFlowGraphRuntime 
+        <ControlFlowGraph
+          type='cfgruntime'
           contractPath={contractPath} 
           contractName={contractName} 
           contractCode={contractCode}
@@ -37,7 +38,8 @@ const Panel = ({ type, contractName, contractCode, contractPath, debuggerRespons
         />
       }
       {type === 'Control Flow Graph Constructor' &&
-        <ControlFlowGraphConstructor 
+        <ControlFlowGraph
+          type='cfgconstructor' 
           contractPath={contractPath} 
           contractName={contractName} 
           contractCode={contractCode}

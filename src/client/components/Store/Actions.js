@@ -23,7 +23,7 @@ export const hideEVMState = () => {
   }
 }
 
-export const showLoadingMessage = (message) => {
+export const showLoadingMessage = message => {
   return {
     type: ActionTypes.SHOW_LOADING_MESSAGE,
     message
@@ -94,6 +94,6 @@ export const postVersion = version => dispatch => {
       dispatch(addVersion(response));
     })
     .catch(error => {
-      alert('Your version could not be posted\nError: ' + error.message)
+      dispatch(showErrorMessage(error.message));
     });    
 };
