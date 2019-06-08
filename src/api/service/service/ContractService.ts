@@ -22,7 +22,7 @@ export class ContractService {
 
   getFunctions(contractName: string, source: string, path: string): any {
     const contract = this.compileContract(contractName, source, path)
-    return contract.abi.filter(abi => abi.type === 'function' || abi.type === 'constructor')
+    return this.prepareFunctions(contract.abi)
   }
 
   compileContract(contractName: string, source: string, path: string): any {
@@ -58,6 +58,22 @@ export class ContractService {
     const web3 = iWeb3.getInstance()
     const functionCallEncoded: string = web3.eth.abi.encodeFunctionCall(abi, params)
     return this.sendTx(web3, to, functionCallEncoded, txBase.from, txBase.gas, txBase.gasPrice, txBase.value)
+  }
+
+  private prepareFunctions(abi: any[]): any[] {
+    const functions = abi.filter(abi => abi.type === 'function')
+    let constructor = abi.find(f => f.type === 'constructor')
+    if (!constructor) {
+      constructor = [
+        {
+          inputs: [],
+          payable: false,
+          stateMutability: "nonpayable",
+          type: "constructor"
+        }
+      ]
+    }
+    return [constructor].concat(functions)
   }
 
   private async sendTx(web3: any, to: string, input: string, from?: string, gas?: number, gasPrice?: number, value?: number): Promise<any> {
