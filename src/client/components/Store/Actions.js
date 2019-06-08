@@ -141,3 +141,46 @@ export const postContract = contract => dispatch => {
       dispatch(showErrorMessage(error.message));
     });    
 };
+
+export const addContractAddress = contractAddress => {
+  return {
+    type: ActionTypes.ADD_VERSION,
+    contractAddress
+  }
+}
+
+export const postContractAddress = (contract, contractAddress) => dispatch => {
+  dispatch(showLoadingMessage('Loading... This might take a while'));
+
+  return fetch(`${baseUrl}contract/run/${contractAddress}`, {
+    method: 'POST',
+    body: JSON.stringify(contract),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+      var errmess = new Error(error.message);
+      throw errmess; 
+    })
+    .then(response => response.json())
+    .then(response => {
+      dispatch(hideLoadingMessage());
+      dispatch(addContractAddress(response));
+    })
+    .catch(error => {
+      dispatch(hideLoadingMessage());
+      dispatch(showErrorMessage(error.message));
+    });    
+};

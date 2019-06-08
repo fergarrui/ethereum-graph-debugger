@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { postContract } from '../Store/Actions';
+import { postContract, postContractAddress } from '../Store/Actions';
 import classnames from 'classnames/bind';
 
 import Form from '../Form/Form';
@@ -10,11 +10,13 @@ import styles from './Execute.scss';
 const cx = classnames.bind(styles);
 
 const mapStateToProps = state => ({
-  contracts: state.contracts.contracts
+  contracts: state.contracts.contracts,
+  contractAddress: state.contracts.contractAddress
 })
 
 const mapDispatchToProps = dispatch => ({
-  postContract: contract => dispatch(postContract(contract))
+  postContract: contract => dispatch(postContract(contract)),
+  postContractAddress: (contract, contractAddress) => dispatch(postContractAddress(contract, contractAddress))
 });
 
 class Execute extends React.Component {
@@ -46,20 +48,31 @@ class Execute extends React.Component {
     this.handleSubmit(event);
   }
 
-  handleSubmit(event) {    
-    const { name, gasPrice, value, gas } = this.state;
-    const { contractPath, contractCode, postContract } = this.props;
+  handleSubmit(event, item) {    
+    const { name, gasPrice, value, gas, contractAddress } = this.state;
+    const { contractPath, contractCode, postContract, postContractAddress } = this.props;
 
+    console.log(contracts);
+    console.log(contractAddress)
     event.preventDefault();
 
-    postContract({ 
-      name, 
-      path: contractPath,
-      gasPrice,
-      value,
-      gas,
-      source: contractCode 
-    });
+    if(item.type === 'constructor') {
+      postContract({ 
+        name, 
+        path: contractPath,
+        gasPrice,
+        value,
+        gas,
+        source: contractCode 
+      });
+    } else {
+      postContractAddress({
+        abi: { constant: item.constant, inputs: [ ...item.inputs ] },
+        params: [].concat(name),
+        gas: gas ? gas : null,
+        gasPrice: gasPrice ? gasPrice : null
+      }, contractAddress);
+    }
   }
 
 
@@ -67,7 +80,7 @@ class Execute extends React.Component {
 
     const { executeResponse, contracts } = this.props;
 
-    console.log(contracts);
+    console.log(contracts)
 
     const types = item => {
       let type;
@@ -121,10 +134,13 @@ class Execute extends React.Component {
                     name={item.name} 
                     placeholder={item.inputs.map(input => input.type).join(', ')}
                     onChange={(e) => this.handleInputChange(e)}
+                  />
+                  <button 
+                    className={styles['execute__form__submit']} 
+                    onClick={(e) => this.handleSumbit(e, item)}
                     onKeyUp={(e) => this.handleKeyUp(e)}
                     onKeyDown={(e) => this.handleKeyDown(e)} 
-                  />
-                  <button className={styles['execute__form__submit']}>
+                    >
                     <span>{item.type === 'constructor' ? 'constructor' : item.name}</span>
                   </button>
                 </div>

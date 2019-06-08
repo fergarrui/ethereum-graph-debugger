@@ -40,10 +40,12 @@ export const versions = (state = { version: '', versionNumber: null, hasFetched:
   }
 }
 
-export const contracts = (state = { contracts: [] }, action) => {
+export const contracts = (state = { contracts: [], contractAddress: '' }, action) => {
   switch(action.type) {
     case ActionTypes.ADD_CONTRACT:
       return { ...state, contracts: action.contract };
+    case ActionTypes.ADD_CONTRACT_ADDRESS:
+      return { ...state, contractAddress: '' };
     default: return state;
   }
 }

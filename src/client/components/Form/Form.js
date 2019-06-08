@@ -49,7 +49,7 @@ class Form extends React.Component {
 
   render() {
 
-    const { inputTypes, submitButton, buttonValue, row, blue, yellow } = this.props;
+    const { inputTypes, submitButton, buttonValue, row } = this.props;
 
     const inputsClasses = cx({
       'form__inputs': true,
