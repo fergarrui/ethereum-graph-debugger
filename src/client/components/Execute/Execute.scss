@@ -2,10 +2,14 @@
 
   &__form {
     margin-top: 40px;
-    display: flex;
     padding: 0 10px;
 
+    &__block {
+      display: flex;
+    }
+
     &__input {
+      margin: 0 5px 0 5px;
       width: 100%;
       padding: 10px;
       font-size: 14px;
@@ -13,6 +17,7 @@
       color: $color-light-grey;
       border-bottom: 1px dotted $color-light-grey;
       transition: border-color 0.2s;
+      
 
       &:-webkit-autofill,
       &:-webkit-autofill:hover, 
@@ -59,6 +64,106 @@
         color: $color-light-grey;
         font-size: 14px;
         transition: color 0.2s;
+      }
+    }
+  }
+}
+
+
+//Themes
+$parent: '.execute__form';
+
+.execute {
+
+  &__form {
+
+    &__block {
+      padding: 10px 0;
+
+      &--constant {
+
+        #{$parent}__input {
+          &:focus {
+            border-color: $color-yellow;
+            outline: 0 none;
+          }
+        }
+  
+        #{$parent}__submit {
+          &:focus {
+            border-color: $color-yellow;
+            outline: 0 none;
+      
+            span {
+              color: $color-yellow;
+            }
+          }
+      
+          &:hover {
+            border-color: $color-yellow;
+      
+            span {
+              color: $color-yellow;
+            }
+          }
+        }
+      }
+  
+      &--constructor {
+  
+        #{$parent}__input {
+          &:focus {
+            border-color: $color-light-blue;
+            outline: 0 none;
+          }
+        }
+  
+        #{$parent}__submit {
+          &:focus {
+            border-color: $color-light-blue;
+            outline: 0 none;
+      
+            span {
+              color: $color-light-blue;
+            }
+          }
+      
+          &:hover {
+            border-color: $color-light-blue;
+      
+            span {
+              color: $color-light-blue;
+            }
+          }
+        }
+      }
+  
+      &--default {
+        #{$parent}__input {
+          &:focus {
+            border-color: $color-green;
+            outline: 0 none;
+          }
+        }
+  
+        #{$parent}__submit {
+          &:focus {
+            border-color: $color-green;
+            outline: 0 none;
+      
+            span {
+              color: $color-green;
+            }
+          }
+      
+          &:hover {
+            border-color: $color-green;
+      
+            span {
+              color: $color-green;
+            }
+          }
+        }
       }
     }
   }

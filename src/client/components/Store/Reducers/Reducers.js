@@ -16,22 +16,16 @@ export const selectEVMState = (state = '', action) => {
   }
 }
 
-export const loadingMessage = (state = { isLoading: false, message: '' }, action) => {
+export const dataFetch = (state = { isLoading: false, hasErrored: false, message: '' }, action) => {
   switch(action.type) {
     case ActionTypes.SHOW_LOADING_MESSAGE: 
-      return { ...state, isLoading: true, message: action.message };
+      return { ...state, isLoading: true, message: action.message, hasErrored: false };
     case ActionTypes.HIDE_LOADING_MESSAGE: 
       return { ...state, isLoading: false, message: '' };
-    default: return state;
-  }
-}
-
-export const errorMessage = (state = { hasError: false, message: '' }, action) => {
-  switch(action.type) {
     case ActionTypes.SHOW_ERROR_MESSAGE: 
-      return { ...state, hasError: true, message: action.message };
+      return { ...state, hasErrored: true, message: action.message, isLoading: false };
     case ActionTypes.HIDE_ERROR_MESSAGE: 
-      return { ...state, hasError: false };
+      return { ...state, hasErrored: false, message: '' };
     default: return state;
   }
 }

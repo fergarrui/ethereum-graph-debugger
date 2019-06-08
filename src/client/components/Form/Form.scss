@@ -12,6 +12,7 @@
 
     &__item {
       padding: 5px 10px;
+      flex: 1 1 auto;
 
       input {
         width: 100%;
@@ -72,79 +73,6 @@
       color: $color-light-grey;
       font-size: 14px;
       transition: color 0.2s;
-    }
-  }
-}
-
-
-//Styles
-.form__inputs__item {
-  
-  &--yellow & {
-
-    input {
-      &:focus {
-        border-color: $color-yellow;
-        outline: 0 none;
-      }
-    }
-
-  }
-
-  &--blue & {
-
-    input {
-      &:focus {
-        border-color: $color-light-blue;
-        outline: 0 none;
-      }
-    }
-  }
-}
-
-.form__button {
-
-  &--yellow {
-
-    button {
-      &:focus {
-        border-color: $color-yellow;
-        outline: 0 none;
-  
-        span {
-          color: $color-yellow;
-        }
-      }
-  
-      &:hover {
-        border-color: $color-yellow;
-  
-        span {
-          color: $color-yellow;
-        }
-      }
-    }
-  }
-
-  &--blue {
-
-    button {
-      &:focus {
-        border-color: $color-light-blue;
-        outline: 0 none;
-  
-        span {
-          color: $color-light-blue;
-        }
-      }
-  
-      &:hover {
-        border-color: $color-light-blue;
-  
-        span {
-          color: $color-light-blue;
-        }
-      }
     }
   }
 }

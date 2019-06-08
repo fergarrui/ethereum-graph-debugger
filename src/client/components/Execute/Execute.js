@@ -1,10 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { postContract } from '../Store/Actions';
+import classnames from 'classnames/bind';
 
 import Form from '../Form/Form';
 
 import styles from './Execute.scss';
+
+const cx = classnames.bind(styles);
 
 const mapStateToProps = state => ({
   contracts: state.contracts.contracts
@@ -40,18 +43,20 @@ class Execute extends React.Component {
       return;
     }
 
-    this.handleSubmit();
+    this.handleSubmit(event);
   }
 
-  handleSubmit() {    
-    const { name, gas } = this.state;
+  handleSubmit(event) {    
+    const { name, gasPrice, value, gas } = this.state;
     const { contractPath, contractCode, postContract } = this.props;
 
-    console.log('submitted');
+    event.preventDefault();
 
     postContract({ 
       name, 
       path: contractPath,
+      gasPrice,
+      value,
       gas,
       source: contractCode 
     });
@@ -61,40 +66,72 @@ class Execute extends React.Component {
   render() {
 
     const { executeResponse, contracts } = this.props;
+
     console.log(contracts);
+
+    const types = item => {
+      let type;
+
+      if(item.type === 'constructor') {
+        type = 'constructor';
+      } else if (item.constant) {
+        type = 'constant';
+      } else {
+        type = 'default';
+      }
+
+      return type;
+    }
 
     const inputTypes = [
       { name: 'contractAddress', placeholder: 'Contract Address' },
       { name: 'gas', placeholder: 'Gas' },
-      { name: 'gasValue', placeholder: 'Gas Value' },
-      { name: 'price', placeholder: 'Price' }
+      { name: 'value', placeholder: 'Value' },
+      { name: 'gasPrice', placeholder: 'Gas Price' }
     ];
 
     return (
       <div className={styles['execute']}>
-        <Form 
-          inputTypes={inputTypes}
-          onInputChange={(e) => this.handleInputChange(e)}
-          onInputKeyUp={() => this.handleSubmit()}
-          row
-        />
-        {
-          executeResponse.map(item => {
-            return (
-              <Form 
-                key={`id--${item.name}`} 
-                inputTypes={executeResponse}
-                submitButton
-                blue={item.type === 'constructor'}
-                yellow={!!item.constant}
-                buttonValue={item.type === 'constructor' ? 'constructor' : item.name}
-                onInputChange={(e) => this.handleInputChange(e)} 
-                onSubmitForm={() => this.handleSubmit()}
-                onInputKeyUp={() => this.handleSubmit()}
-              />
-            )
-          })
-        }
+        <form
+          className={styles['execute__form']}
+          onSubmit={(e) => this.handleSubmit(e)}>
+          <div className={styles['execute__form__block']}>
+            {
+              inputTypes.map(type => {
+                return (
+                  <input 
+                      className={styles['execute__form__input']} 
+                      name={type.name} 
+                      placeholder={type.placeholder}
+                      onChange={(e) => this.handleInputChange(e)}
+                      onKeyUp={(e) => this.handleKeyUp(e)}
+                      onKeyDown={(e) => this.handleKeyDown(e)} 
+                    />
+                )
+              })
+            }
+          </div>
+          {
+            executeResponse.map(item => {
+
+              return (
+                <div key={`id--${item.name}`} className={cx('execute__form__block', [`execute__form__block--${types(item)}`])}>
+                  <input 
+                    className={styles['execute__form__input']} 
+                    name={item.name} 
+                    placeholder={item.inputs.map(input => input.type).join(', ')}
+                    onChange={(e) => this.handleInputChange(e)}
+                    onKeyUp={(e) => this.handleKeyUp(e)}
+                    onKeyDown={(e) => this.handleKeyDown(e)} 
+                  />
+                  <button className={styles['execute__form__submit']}>
+                    <span>{item.type === 'constructor' ? 'constructor' : item.name}</span>
+                  </button>
+                </div>
+              )
+            })
+          }
+        </form>
       </div>
     )
   }

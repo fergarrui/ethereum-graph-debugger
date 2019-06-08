@@ -56,25 +56,13 @@ class Form extends React.Component {
       'form__inputs--row': !!row
     });
 
-    const inputClasses = cx({
-      'form__inputs__item': true,
-      'form__inputs__items--yellow': !!yellow,
-      'form__inputs__item--blue': !!blue
-    });
-
-    const buttonClasses = cx({
-      'form__button': true,
-      'form__button--yellow': !!yellow,
-      'form__button--blue': !!blue
-    });
-
     return (
       <form className={styles['form']} onSubmit={(e) => this.handleSubmit(e)}>
         <div className={inputsClasses}>
           {
             inputTypes.map(item => {
               return (
-                <div key={item.name} className={inputClasses}>
+                <div key={item.name} className={styles['form__inputs__item']}>
                   <input 
                     name={item.name}
                     placeholder={item.placeholder}
@@ -89,7 +77,7 @@ class Form extends React.Component {
         </div>
         {
           submitButton &&
-          <div className={buttonClasses}>
+          <div className={styles['form__button']}>
             <button type='submit'><span>{buttonValue}</span></button>
           </div>
         }

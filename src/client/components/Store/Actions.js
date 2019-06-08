@@ -94,6 +94,7 @@ export const postVersion = version => dispatch => {
       dispatch(addVersion(response));
     })
     .catch(error => {
+      dispatch(hideLoadingMessage());
       dispatch(showErrorMessage(error.message));
     });    
 };
@@ -134,9 +135,9 @@ export const postContract = contract => dispatch => {
     .then(response => {
       dispatch(hideLoadingMessage());
       dispatch(addContract(response));
-      console.log(response);
     })
     .catch(error => {
+      dispatch(hideLoadingMessage());
       dispatch(showErrorMessage(error.message));
     });    
 };

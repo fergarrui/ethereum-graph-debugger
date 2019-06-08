@@ -19,10 +19,10 @@ import scale from './styles/transitions/scale.scss';
 
 const mapStateToProps = state => {
   return {
-    showLoadingMessage: state.loadingMessage.isLoading,
-    loadingMessage: state.loadingMessage.message,
-    showErrorMessage: state.errorMessage.hasError,
-    errorMessage: state.errorMessage.message
+    showLoadingMessage: state.dataFetch.isLoading,
+    loadingMessage: state.dataFetch.message,
+    showErrorMessage: state.dataFetch.hasErrored,
+    errorMessage: state.dataFetch.message
   }
 }
 
