@@ -40,6 +40,7 @@ class MessageComp extends React.Component {
   render() {
     const { message, errorMessageOff, errorMessage } = this.props;
 
+    console.log(/^Loading.../.test(message));
     return (
       <div className={styles['message-comp']}>
         <div className={styles['message-comp__main']}>
@@ -48,7 +49,7 @@ class MessageComp extends React.Component {
           </div>
           <div className={styles['message-comp__main__button']}>
           {
-            !errorMessage
+            /^Loading.../.test(message)            
             ?  <Icon iconName='Spinner' />
             :  <div className={styles['message-comp__main__button__item']}>
                   <button onClick={errorMessageOff}><span>Close</span></button>

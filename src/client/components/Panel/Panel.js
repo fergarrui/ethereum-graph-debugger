@@ -2,17 +2,15 @@ import React from 'react';
 
 import TransactionDebugger from '../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../Disassembler/Disassembler';
-//import ControlFlowGraphRuntime from '../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
 import ControlFlowGraph from '../ControlFlowGraph/ControlFlowGraph';
 import StorageViewer from '../StorageViewer/StorageViewer';
+import Execute from '../Execute/Execute';
 
 import styles from './Panel.scss';
 
-import classnames from 'classnames/bind';
-
-const cx = classnames.bind(styles);
-
-const Panel = ({ type, contractName, contractCode, contractPath, debuggerResponse, graphResponse, disassemblerResponse, storageResponse }) => {
+const Panel = ({ type, contractName, contractCode, contractPath, 
+  debuggerResponse, graphResponse, disassemblerResponse, 
+  storageResponse, executeResponse }) => {
 
   return (
     <div className={styles['panel']}>
@@ -30,7 +28,7 @@ const Panel = ({ type, contractName, contractCode, contractPath, debuggerRespons
       }
       {type === 'Control Flow Graph Runtime' &&
         <ControlFlowGraph
-          type='cfgruntime'
+          graphType='cfgruntime'
           contractPath={contractPath} 
           contractName={contractName} 
           contractCode={contractCode}
@@ -39,7 +37,7 @@ const Panel = ({ type, contractName, contractCode, contractPath, debuggerRespons
       }
       {type === 'Control Flow Graph Constructor' &&
         <ControlFlowGraph
-          type='cfgconstructor' 
+          graphType='constructor' 
           contractPath={contractPath} 
           contractName={contractName} 
           contractCode={contractCode}
@@ -48,6 +46,14 @@ const Panel = ({ type, contractName, contractCode, contractPath, debuggerRespons
       }
       {type === 'Storage Viewer' &&
         <StorageViewer storageResponse={storageResponse} />
+      }
+      {
+        type === 'Execute' &&
+        <Execute 
+          executeResponse={executeResponse}
+          contractPath={contractPath}
+          contractCode={contractCode}
+         />
       }
     </div>
   );

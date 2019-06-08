@@ -6,18 +6,18 @@ const Operations = ({ items }) => {
   return (
     <div>
       <div className={styles['operations']}>
-          <div className={styles['operations__item']}>
-            <span>[Offset]</span>
-          </div>
-          <div className={styles['operations__item']}>
-            <span>[Opcode hex]</span>
-          </div>  
-          <div className={styles['operations__item']}>
-            <span>[Opcode]</span>
-          </div>          
-              <div className={styles['operations__item']}>
-                <span>[Argument]</span>
-              </div>
+        <div className={styles['operations__item']}>
+          <span>[Offset]</span>
+        </div>
+        <div className={styles['operations__item']}>
+          <span>[Opcode hex]</span>
+        </div>  
+        <div className={styles['operations__item']}>
+          <span>[Opcode]</span>
+        </div>          
+        <div className={styles['operations__item']}>
+          <span>[Argument]</span>
+        </div>
       </div>
     {items.map((item, i) => {
       return (

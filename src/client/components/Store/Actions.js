@@ -97,3 +97,46 @@ export const postVersion = version => dispatch => {
       dispatch(showErrorMessage(error.message));
     });    
 };
+
+export const addContract = contract => {
+  return {
+    type: ActionTypes.ADD_VERSION,
+    contract
+  }
+}
+
+export const postContract = contract => dispatch => {
+  dispatch(showLoadingMessage('Loading... This might take a while'));
+
+  return fetch(baseUrl + 'contract/deploy', {
+    method: 'POST',
+    body: JSON.stringify(contract),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+    .then(response => {
+      if (response.ok) {
+        return response;
+      } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+      var errmess = new Error(error.message);
+      throw errmess; 
+    })
+    .then(response => response.json())
+    .then(response => {
+      dispatch(hideLoadingMessage());
+      dispatch(addContract(response));
+      console.log(response);
+    })
+    .catch(error => {
+      dispatch(showErrorMessage(error.message));
+    });    
+};

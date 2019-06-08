@@ -1,0 +1,65 @@
+.execute {
+
+  &__form {
+    margin-top: 40px;
+    display: flex;
+    padding: 0 10px;
+
+    &__input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      background: transparent;
+      color: $color-light-grey;
+      border-bottom: 1px dotted $color-light-grey;
+      transition: border-color 0.2s;
+
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover, 
+      &:-webkit-autofill:focus {
+        border-bottom: 1px dotted $color-green;
+        -webkit-text-fill-color: $color-light-grey;
+        box-shadow: 0 0 0px 1000px $color-dark-grey inset;
+        transition: background-color 5000s ease-in-out 0s;
+      }
+
+      &:focus {
+        border-color: $color-green;
+        outline: 0 none;
+      }
+    }
+
+    &__submit {
+      padding: 10px;
+      border-radius: 5px;
+      background: transparent;
+      border: 1px solid $color-light-grey;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      margin-left: 10px;
+  
+      &:focus {
+        border-color: $color-green;
+        outline: 0 none;
+  
+        span {
+          color: $color-green;
+        }
+      }
+  
+      &:hover {
+        border-color: $color-green;
+  
+        span {
+          color: $color-green;
+        }
+      }
+  
+      span {
+        color: $color-light-grey;
+        font-size: 14px;
+        transition: color 0.2s;
+      }
+    }
+  }
+}

@@ -10,7 +10,6 @@ import styles from './TopNavBar.scss';
 
 const mapStateToProps = state => ({
   versionNumber: state.versions.versionNumber,
-  postedVersions: state.versions.versions,
   hasFetched: state.versions.hasFetched,
 });
 

@@ -1,9 +1,10 @@
 import React from 'react';
+
 import classnames from 'classnames/bind';
 
-const cx = classnames.bind(styles);
-
 import styles from './Form.scss';
+
+const cx = classnames.bind(styles);
 
 class Form extends React.Component {
   constructor(props) {
@@ -48,19 +49,32 @@ class Form extends React.Component {
 
   render() {
 
-    const { inputTypes, submitButton, settingsBarForm, buttonValue } = this.props;
+    const { inputTypes, submitButton, buttonValue, row, blue, yellow } = this.props;
+
+    const inputsClasses = cx({
+      'form__inputs': true,
+      'form__inputs--row': !!row
+    });
 
     const inputClasses = cx({
-      'settings-bar__item': !!settingsBarForm
+      'form__inputs__item': true,
+      'form__inputs__items--yellow': !!yellow,
+      'form__inputs__item--blue': !!blue
+    });
+
+    const buttonClasses = cx({
+      'form__button': true,
+      'form__button--yellow': !!yellow,
+      'form__button--blue': !!blue
     });
 
     return (
       <form className={styles['form']} onSubmit={(e) => this.handleSubmit(e)}>
-        <div className={styles['form__inputs']}>
+        <div className={inputsClasses}>
           {
             inputTypes.map(item => {
               return (
-                <div key={item.name} className={styles['form__inputs__item']}>
+                <div key={item.name} className={inputClasses}>
                   <input 
                     name={item.name}
                     placeholder={item.placeholder}
@@ -75,7 +89,7 @@ class Form extends React.Component {
         </div>
         {
           submitButton &&
-          <div className={styles['form__button']}>
+          <div className={buttonClasses}>
             <button type='submit'><span>{buttonValue}</span></button>
           </div>
         }

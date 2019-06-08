@@ -127,6 +127,12 @@ class Main extends React.Component {
       });
     }
 
+    if(type === 'Execute') {
+      this.setState({
+        executeResponse: response
+      });
+    }
+
     this.setState({
       fetchRequestStatus: 'success',
       tabs: newTabs,
@@ -223,6 +229,17 @@ class Main extends React.Component {
     document.removeEventListener('click', this.handleOutsideClick);
   }
 
+  handleExecuteClick() {
+    const { name, path, code } = this.props;
+    const params = {
+      name: name.replace('.sol', '').replace('.evm', ''),
+      path: encodeURIComponent(path),
+    }
+    this.fetchData(this.getUrl('contract/functions', params), `Execute`, code);
+
+    document.removeEventListener('click', this.handleOutsideClick);
+  }
+
   handleViewStorageClick() {
     this.setState({
       modalOpen: {...this.state.modalOpen, viewStorage: true },
@@ -231,6 +248,7 @@ class Main extends React.Component {
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
+
 
   handleMenuItemIconClick(index) {
     const newTabs = this.state.tabs.filter((item, i) => i !== index);
@@ -264,7 +282,7 @@ class Main extends React.Component {
 
   render() {
     const { code, name, path, index, evm } = this.props;
-    const { tabs, sideBarOpen, disassemblerResponse, graphResponse, debuggerResponse, storageResponse, modalOpen, } = this.state;
+    const { tabs, sideBarOpen, disassemblerResponse, graphResponse, debuggerResponse, storageResponse, modalOpen, executeResponse } = this.state;
 
     const inputTypes = [
       {
@@ -304,6 +322,7 @@ class Main extends React.Component {
             onControlFlowGraphRuntimeClick={() => this.handleControlFlowGraphClick(false)}
             onControlFlowGraphConstructorClick={() => this.handleControlFlowGraphClick(true)}
             onViewStorageClick={() => this.handleViewStorageClick()}
+            onExecuteClick={() => this.handleExecuteClick()}
           />
         </div>
         <div className={styles['main-comp__left__data']}>
@@ -348,7 +367,8 @@ class Main extends React.Component {
                     disassemblerResponse={disassemblerResponse}
                     debuggerResponse={debuggerResponse}
                     graphResponse={graphResponse}
-                    storageResponse={storageResponse} />
+                    storageResponse={storageResponse}
+                    executeResponse={executeResponse} />
                 </TabPanel>
               )
             })}
@@ -366,7 +386,7 @@ class Main extends React.Component {
           modalOpen.transactionDebugger &&  
             <Modal onIconClick={() => this.handleModalIconClick()}>          
               <Form
-                submitButton={true}
+                submitButton
                 inputTypes={[{ name: 'transactionHash', placeholder: 'Transaction Hash' }]}
                 buttonValue='Debug'
                 onInputChange={(e) => this.handleFormInputChange(e)}

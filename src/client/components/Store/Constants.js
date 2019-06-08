@@ -13,3 +13,4 @@ export const GET_PASSWORD = 'GET_PASSWORD';
 export const GET_VERSION_NUM = 'GET_VERSION_NUM'; 
 export const ADD_VERSION = 'ADD_VERSION';
 export const VERSIONS_FETCHED = 'VERSIONS_FETCHED';
+export const ADD_CONTRACT = 'ADD_CONTRACT';

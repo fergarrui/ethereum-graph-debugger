@@ -10,7 +10,7 @@ class SideBar extends React.Component {
 
   render() {
 
-    const { onTransactionDebuggerClick, onControlFlowGraphRuntimeClick, onControlFlowGraphConstructorClick, onDisassemblerClick, onViewStorageClick } = this.props;
+    const { onTransactionDebuggerClick, onControlFlowGraphRuntimeClick, onControlFlowGraphConstructorClick, onDisassemblerClick, onViewStorageClick, onExecuteClick } = this.props;
 
     return (
       <div className={styles['side-bar']}>
@@ -28,6 +28,9 @@ class SideBar extends React.Component {
         </div>
         <div className={styles['side-bar__item']} onClick={onViewStorageClick}>
           <span>View Storage</span>
+        </div>
+        <div className={styles['side-bar__item']} onClick={onExecuteClick}>
+          <span>Execute</span>
         </div>
       </div>
     )
