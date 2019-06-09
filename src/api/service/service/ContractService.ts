@@ -73,7 +73,7 @@ export class ContractService {
         }
       ]
     }
-    return [constructor].concat(functions)
+    return constructor.concat(functions)
   }
 
   private async sendTx(web3: any, to: string, input: string, from?: string, gas?: number, gasPrice?: number, value?: number): Promise<any> {

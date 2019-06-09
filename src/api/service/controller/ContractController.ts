@@ -64,7 +64,7 @@ export class ContractController extends Controller {
       blockchainBasicAuthUsername: deployRequest.blockchainBasicAuthUsername,
       blockchainBasicAuthPassword: deployRequest.blockchainBasicAuthPassword
     } as Web3Configuration
-    return this.contractService.deployContract(config, deployRequest.name, deployRequest.source, deployRequest.path, deployRequest)
+    return this.contractService.deployContract(config, deployRequest.name.replace('.sol', ''), deployRequest.source, deployRequest.path, deployRequest)
   }
 
   @Post('run/{contractAddress}')
