@@ -13,3 +13,5 @@ export const GET_PASSWORD = 'GET_PASSWORD';
 export const GET_VERSION_NUM = 'GET_VERSION_NUM'; 
 export const ADD_VERSION = 'ADD_VERSION';
 export const VERSIONS_FETCHED = 'VERSIONS_FETCHED';
+export const ADD_TAB = 'ADD_TAB';
+export const DELETE_TAB = 'DELETE_TAB';

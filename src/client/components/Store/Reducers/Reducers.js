@@ -45,3 +45,14 @@ export const versions = (state = { versions: [], versionNumber: null, hasFetched
     default: return state;
   }
 }
+
+export const tabs = (state = [], action ) => {
+  switch(action.type) {
+    case ActionTypes.ADD_TAB:
+      return [ ...state, action.tab ];
+    case ActionTypes.DELETE_TAB:
+      return state.filter((item, i) => i !== index);
+    default:
+      return state;
+  }
+}

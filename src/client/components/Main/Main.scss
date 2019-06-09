@@ -10,16 +10,67 @@
     padding-top: 30px;
     padding-left: 10px;
 
-    &__control {
+    &__controls {
       position: absolute;
       top: -14px;
       left: 10px;
       z-index: 4;
+      display: flex;
 
       button {
         background: transparent;
         outline: transparent;
         cursor: pointer;
+
+        &:not(:first-of-type) {
+          margin-left: 20px;
+        } 
+      }
+    }
+
+    &__popup {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+
+      input {
+        background: transparent;
+        border-bottom: 1px dotted $color-light-grey;
+        color: $color-light-grey;
+        padding: 10px;
+        transition: border-color 0.1s;
+
+        &::placeholder {
+          color: $color-light-grey;
+        }
+
+        &:focus {
+          outline: transparent;
+          border-color: $color-green;
+        }
+      }
+
+      button {
+        background: transparent;
+        border: 0.5px solid $color-light-grey;
+        padding: 0 10px;
+        border-radius: 3px;
+        margin-left: 20px;
+        transition: border-color 0.1s;
+
+        span {
+          color: $color-light-grey;
+          transition: color 0.1s;
+        }
+
+        &:hover, &:focus {
+          outline: transparent;
+          border-color: $color-green; 
+          
+          span {
+            color: $color-green;
+          };
+        }
       }
     }
 

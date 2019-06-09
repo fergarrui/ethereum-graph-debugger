@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import  { CSSTransitionGroup } from 'react-transition-group';
 
-import { showLoadingMessage, hideLoadingMessage, showErrorMessage } from '../Store/Actions.js';
+import { showLoadingMessage, hideLoadingMessage, showErrorMessage, addTab } from '../Store/Actions.js';
 import { baseUrl } from '../../utils/baseUrl';
 import Editor from '../Editor/Editor';
 import SideBar from '../SideBar/SideBar';
@@ -14,6 +14,8 @@ import TabPanel from '../Tab/TabPanel/TabPanel';
 import Panel from '../Panel/Panel';
 import EVMState from '../EVMState/EVMState';
 import Form from '../Form/Form';
+import Icon from '../Icon/Icon';
+import Popup from '../Popup/Popup';
 
 import styles from './Main.scss';
 import fade from '../../styles/transitions/fade.scss';
@@ -34,6 +36,7 @@ const mapDispatchToProps = dispatch => {
     loadingMessageOn: message => dispatch(showLoadingMessage(message)),
     loadingMessageOff: () => dispatch(hideLoadingMessage()),
     errorMessageOn: message => dispatch(showErrorMessage(message)),
+    addTab: tab => dispatch(addTab(tab))
   }
 }
 
@@ -47,6 +50,7 @@ class Main extends React.Component {
         transactionDebugger: false,
         viewStorage: false
       },
+      popupActive: false,
       inputValue: '',
       prameter: '',
       tabs: [],
@@ -240,6 +244,12 @@ class Main extends React.Component {
     });
   }
 
+  handlePlusClick() {
+    this.setState({
+      popupActive: true
+    });
+  }
+
   handleModalIconClick() {
 
     this.setState({
@@ -262,9 +272,19 @@ class Main extends React.Component {
     });
   }
 
+  handleContractAddressSubmit() {
+
+    const { tabs, contractAddress } = this.state;
+
+    this.setState({
+      popupActive: false,
+      tabs: [ ...tabs, { title: contractAddress, type: contractAddress } ]
+    });
+  }
+
   render() {
     const { code, name, path, index, evm } = this.props;
-    const { tabs, sideBarOpen, disassemblerResponse, graphResponse, debuggerResponse, storageResponse, modalOpen, } = this.state;
+    const { tabs, sideBarOpen, disassemblerResponse, graphResponse, debuggerResponse, storageResponse, modalOpen, popupActive } = this.state;
 
     const inputTypes = [
       {
@@ -289,10 +309,22 @@ class Main extends React.Component {
     return (
       <div className={styles['main-comp']}>
         <div className={styles['main-comp__left']}>
-        <div className={styles['main-comp__left__control']}>
+        <div className={styles['main-comp__left__controls']}>
+          <button onClick={() => this.handlePlusClick()}>
+            <Icon iconName='Plus' />
+          </button>
           <button onClick={() => this.handleMenuIconClick()}>
             <Hamburger clicked={!!sideBarOpen} />
           </button>
+          {
+            popupActive &&
+              <Popup>
+                <div className={styles['main-comp__left__popup']}>
+                  <input name='contractName' placeholder='Contract Name' onChange={(e) => this.handleFormInputChange(e)}/>
+                  <button onClick={() => this.handleContractAddressSubmit()}><span>OK</span></button>
+                </div>
+              </Popup>
+          }
         </div>
         <div 
           className={sideBarClasses}

@@ -8,12 +8,13 @@ import Cross from './SVG/cross.svg';
 import Menu from './SVG/menu.svg';
 import Spinner from './SVG/spinner.svg';
 import Cogs from './SVG/cogs.svg';
+import Plus from './SVG/plus.svg';
 
 import styles from './Icon.scss';
 
 const Icon = ({ iconName, onClick }) => {
 
-  const icons = { CircleLeft, CircleRight, Menu, Cross, Spinner, Cogs };
+  const icons = { CircleLeft, CircleRight, Menu, Cross, Spinner, Cogs, Plus };
 
   return (
     <div onClick={onClick} className={styles['icon']}>

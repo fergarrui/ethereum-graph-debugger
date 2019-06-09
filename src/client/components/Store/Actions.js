@@ -97,3 +97,17 @@ export const postVersion = version => dispatch => {
       dispatch(showErrorMessage(error.message));
     });    
 };
+
+export const addTab = tab => {
+  return {
+    type: ActionTypes.ADD_TAB,
+    tab,
+  }
+}
+
+export const deleteTab = tabIndex => {
+  return {
+    type: ActionTypes.DELETE_TAB,
+    tabIndex
+  }
+}

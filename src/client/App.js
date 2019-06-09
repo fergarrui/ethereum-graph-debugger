@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { CSSTransitionGroup } from 'react-transition-group';
 
-import { showLoadingMessage, showErrorMessage, hideLoadingMessage } from './components/Store/Actions.js';
+import { showLoadingMessage, showErrorMessage, hideLoadingMessage, deleteTab } from './components/Store/Actions.js';
 
 import { baseUrl } from './utils/baseUrl';
 
@@ -22,7 +22,8 @@ const mapStateToProps = state => {
     showLoadingMessage: state.loadingMessage.isLoading,
     loadingMessage: state.loadingMessage.message,
     showErrorMessage: state.errorMessage.hasError,
-    errorMessage: state.errorMessage.message
+    errorMessage: state.errorMessage.message,
+    tab: state.tabs
   }
 }
 
@@ -31,6 +32,7 @@ const mapDispatchToProps = dispatch => {
     loadingMessageOn: message => dispatch(showLoadingMessage(message)),
     loadingMessageOff: () => dispatch(hideLoadingMessage()),
     errorMessageOn: message => dispatch(showErrorMessage(message)),
+    deleteTab: index => dispatch(deleteTab(index))
   }
 }
 
@@ -53,12 +55,11 @@ class App extends React.Component {
   }
 
   handleMenuItemIconClick(index) {
-    const { contracts } = this.state;
-    const newTabs = contracts.filter((item, i) => i !== index);
+    this.props.deleteTab(index);
 
-    this.setState({
-      contracts: newTabs,
-    });
+    // this.setState({
+    //   contracts: [ ...tabs ]
+    // });
   }
 
   handleInputChange(event) {
@@ -102,6 +103,7 @@ class App extends React.Component {
   }
 
   handleRequestSuccess(response) {
+    const { tabs } = this.props;
 
     if(response.some(item => item.version)) {
       this.setState({
@@ -111,7 +113,7 @@ class App extends React.Component {
     } else {
       this.setState({
         fetchRequestStatus: 'success',
-        contracts: response,
+        contracts: [ ...tabs, response ],
       });
     }
 

@@ -11,10 +11,6 @@ const mapDispatchToProps = dispatch => ({
   errorMessageOff: () => dispatch(hideErrorMessage()),
 });
 
-const mapStateToProps = state => ({
-  errorMessage: state.errorMessage.message
-});
-
 class MessageComp extends React.Component {
   constructor(props) {
     super(props);
@@ -38,7 +34,7 @@ class MessageComp extends React.Component {
   }
 
   render() {
-    const { message, errorMessageOff, errorMessage } = this.props;
+    const { message, errorMessageOff } = this.props;
 
     return (
       <div className={styles['message-comp']}>
@@ -48,7 +44,7 @@ class MessageComp extends React.Component {
           </div>
           <div className={styles['message-comp__main__button']}>
           {
-            !errorMessage
+            /^Loading.../.test(message)            
             ?  <Icon iconName='Spinner' />
             :  <div className={styles['message-comp__main__button__item']}>
                   <button onClick={errorMessageOff}><span>Close</span></button>
@@ -64,4 +60,4 @@ class MessageComp extends React.Component {
 
 MessageComp.displayName = 'MessageComp';
 
-export default connect(mapStateToProps, mapDispatchToProps)(MessageComp);
+export default connect(null, mapDispatchToProps)(MessageComp);
