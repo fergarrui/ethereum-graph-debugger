@@ -10,6 +10,8 @@ const TYPES = {
   StorageRecover: Symbol.for('StorageRecover'),
   OpcodeExecutor: Symbol.for('OpcodeExecutor'),
   ContractService: Symbol.for('ContractService'),
+  EwasmService: Symbol.for('EwasmService'),
+  WasmBinaryParser: Symbol.for('WasmBinaryParser'),
   Solc: Symbol.for('Solc')
 }
 

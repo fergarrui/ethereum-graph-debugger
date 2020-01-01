@@ -9,6 +9,7 @@ import { ControlFlowGraphController } from './api/service/controller/ControlFlow
 import { StorageRecoverController } from './api/service/controller/StorageRecoverController';
 import { ContractController } from './api/service/controller/ContractController';
 import { SolcController } from './api/service/controller/SolcController';
+import { EwasmController } from './api/service/controller/EwasmController';
 import * as express from 'express';
 
 const models: TsoaRoute.Models = {
@@ -116,6 +117,25 @@ const models: TsoaRoute.Models = {
     "SolcChangeVersionRequest": {
         "properties": {
             "version": { "dataType": "string", "required": true },
+        },
+    },
+    "EwasmFunction": {
+        "properties": {
+            "name": { "dataType": "string", "required": true },
+            "params": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
+            "results": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
+            "bodyInHex": { "dataType": "string", "required": true },
+        },
+    },
+    "EwasmExport": {
+        "properties": {
+            "name": { "dataType": "string", "required": true },
+        },
+    },
+    "EwasmDisassembledContract": {
+        "properties": {
+            "functions": { "dataType": "array", "array": { "ref": "EwasmFunction" }, "required": true },
+            "exports": { "dataType": "array", "array": { "ref": "EwasmExport" }, "required": true },
         },
     },
 };
@@ -478,6 +498,72 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.changeVersion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/ewasm/toWat',
+        function(request: any, response: any, next: any) {
+            const args = {
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<EwasmController>(EwasmController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.wasmToWat.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/ewasm/decompile',
+        function(request: any, response: any, next: any) {
+            const args = {
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<EwasmController>(EwasmController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.decompile.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/ewasm/analyze',
+        function(request: any, response: any, next: any) {
+            const args = {
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<EwasmController>(EwasmController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.analyze.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 
