@@ -1,15 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { hideErrorMessage } from '../Store/Actions.js';
+import * as actions from '../../_redux/Actions.js';
 
 import Icon from '../Icon/Icon';
 
 import styles from './MessageComp.scss';
 
-const mapDispatchToProps = dispatch => ({
-  errorMessageOff: () => dispatch(hideErrorMessage()),
-});
+const mapDispatchToProps = {
+  toggleErrorMessage: actions.toggleErrorMessage
+}
 
 const mapStateToProps = state => ({
   errorMessage: state.errorMessage.message
@@ -34,11 +34,11 @@ class MessageComp extends React.Component {
     if(event.keyCode !== 27) {
       return;
     }
-    this.props.errorMessageOff();
+    this.props.toggleErrorMessage(false);
   }
 
   render() {
-    const { message, errorMessageOff, errorMessage } = this.props;
+    const { message, toggleErrorMessage, errorMessage } = this.props;
 
     return (
       <div className={styles['message-comp']}>
@@ -51,7 +51,7 @@ class MessageComp extends React.Component {
             !errorMessage
             ?  <Icon iconName='Spinner' />
             :  <div className={styles['message-comp__main__button__item']}>
-                  <button onClick={errorMessageOff}><span>Close</span></button>
+                  <button onClick={toggleErrorMessage(false)}><span>Close</span></button>
                   <span className={styles['escape']}>{`/ ESC`}</span>
               </div>
           }

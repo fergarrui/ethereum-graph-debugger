@@ -2,7 +2,6 @@ import React from 'react';
 
 import TransactionDebugger from '../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../Disassembler/Disassembler';
-//import ControlFlowGraphRuntime from '../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
 import ControlFlowGraph from '../ControlFlowGraph/ControlFlowGraph';
 import StorageViewer from '../StorageViewer/StorageViewer';
 

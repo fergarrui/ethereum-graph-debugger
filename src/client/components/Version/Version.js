@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { getVersionNumber, postVersion } from '../Store/Actions';
+import * as actions from '../../_redux/Actions';
 
 import styles from './Version.scss';
 
-const mapDispatchToProps = dispatch => ({
-  getVersionNumber: version => dispatch(getVersionNumber(version)),
-  postVersion: version => dispatch(postVersion(version))
-});
+const mapDispatchToProps = {
+  getVersionNumber: actions.getVersionNumber,
+  postVersion: actions.postVersion
+};
 
 const Version = ({ data, getVersionNumber, onVersionItemClick, postVersion }) => {
 

@@ -10,7 +10,7 @@ import styles from './TopNavBar.scss';
 
 const mapStateToProps = state => ({
   versionNumber: state.versions.versionNumber,
-  postedVersions: state.versions.versions,
+  postedVersions: state.versions.postedVersions,
   hasFetched: state.versions.hasFetched,
 });
 
@@ -82,7 +82,7 @@ class TopNavBar extends React.Component {
 
   render() {
     const { settingsVisible, versionsVisible } = this.state;
-    const { versions, fetchRequestStatus, children, versionNumber, hasFetched } = this.props;
+    const { versions, children, versionNumber, hasFetched } = this.props;
 
     return (
       <div className={styles['top-navbar']}>
@@ -100,12 +100,9 @@ class TopNavBar extends React.Component {
             <span>Change solc version</span>
           </button>
           <Dropdown active={!!versionsVisible}>
-          { fetchRequestStatus === 'success' && versions.length &&
-            <Version data={versions} onVersionItemClick={() => this.handleVersionItemClick()} />
-          }
-          {
-            fetchRequestStatus === 'fail' && 
-            <div><span style={{ color: '#fff'}}>{`Couldn't load versions`}</span></div>
+          { !!versions.length 
+            ? <Version data={versions} onVersionItemClick={() => this.handleVersionItemClick()} />
+            : <div><span style={{ color: '#fff'}}>{`Couldn't load versions`}</span></div>
           }
           </Dropdown>
         </div>

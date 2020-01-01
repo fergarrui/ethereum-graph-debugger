@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import  { CSSTransitionGroup } from 'react-transition-group';
 
-import { showLoadingMessage, hideLoadingMessage, showErrorMessage } from '../Store/Actions.js';
+import * as actions from '../../_redux/Actions.js';
 import { baseUrl } from '../../utils/baseUrl';
 import Editor from '../Editor/Editor';
 import SideBar from '../SideBar/SideBar';
@@ -23,18 +23,13 @@ import classnames from 'classnames/bind';
 
 const cx = classnames.bind(styles);
 
-const mapStateToProps = state => {
-  return {
-    evm: state.selectEVMState,
-  }
-}
+const mapStateToProps = state => ({
+  evm: state.selectEVMState,
+})
 
-const mapDispatchToProps = dispatch => {
-  return {
-    loadingMessageOn: message => dispatch(showLoadingMessage(message)),
-    loadingMessageOff: () => dispatch(hideLoadingMessage()),
-    errorMessageOn: message => dispatch(showErrorMessage(message)),
-  }
+const mapDispatchToProps = {
+  toggleLoadingMessage: actions.toggleLoadingMessage,
+  toggleErrorMessage: actions.toggleErrorMessage,
 }
 
 class Main extends React.Component {
@@ -96,7 +91,7 @@ class Main extends React.Component {
       sideBarOpen: false,
     });
 
-    this.props.loadingMessageOn('Loading...');
+    this.props.toggleLoadingMessage(true, 'Loading...');
   }
 
 
@@ -133,12 +128,12 @@ class Main extends React.Component {
       sideBarOpen: false,
     }); 
 
-    this.props.loadingMessageOff();
+    this.props.toggleLoadingMessage(false);
   }
 
   handleRequestFail(data) {
-    this.props.loadingMessageOff();
-    this.props.errorMessageOn(data.message);
+    this.props.toggleLoadingMessage(false);
+    this.props.toggleErrorMessage(true, data.message);
   }
 
   handleTransactionFormSubmit() {
