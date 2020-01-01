@@ -17,11 +17,14 @@ function* versionsWatcher() {
 function* fetchSolcVersions() {
   const endpoint = `${baseUrl}solc/list`;
   try {
+    yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: true, message: 'Loading...' } })
     const versions = yield call(fetchData, endpoint);
     yield put({ type: 'FETCH_VERSIONS_SUCCESS', payload: { versions: versions } });
+    yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: false } })
   }
   catch(error) {
     yield put({ type: 'FETCH_VERSIONS_FAIL', payload: { message: error } });
+    yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: false } })
   }
 }
 

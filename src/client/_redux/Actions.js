@@ -13,13 +13,13 @@ export const getParameter = parameter => dispatch => {
 
 export const fetchContracts = () => dispatch => {
   dispatch({
-    type: 'FETCH_CONTRACTS'
+    type: ActionTypes.FETCH_CONTRACTS
   })
 }
 
 export const fetchSolcVersions = () => dispatch => {
   dispatch({
-    type: 'FETCH_SOLC_VERSIONS'
+    type: ActionTypes.FETCH_SOLC_VERSIONS
   })
 }
 
