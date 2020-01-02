@@ -3,6 +3,7 @@ import { provideSingleton, inject } from "../../../inversify/ioc";
 import { StringBodyRequest } from "../request/StringBodyRequest";
 import { TYPES } from "../../../inversify/types";
 import { EwasmService } from "../service/EwasmService";
+import { WasmBinary } from "../../bytecode/ewasm/WasmBinary";
 
 @Route('ewasm')
 @provideSingleton(EwasmController)
@@ -23,10 +24,7 @@ export class EwasmController extends Controller {
   }
 
   @Post('analyze')
-  async analyze(@Body() source: StringBodyRequest ): Promise<string> {
+  async analyze(@Body() source: StringBodyRequest ): Promise<WasmBinary> {
     return this.ewasmService.analyze(source.request)
   }
-
-
-
 }

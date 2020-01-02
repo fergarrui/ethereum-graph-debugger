@@ -4,7 +4,9 @@ import { BytesReader } from "./BytesReader";
 import { WasmSection, WasmTypeSectionPayload, WasmSectionPayload, WasmExportSectionPayload, WasmCodeSectionPayload } from "./WasmSection";
 import { WasmSectionType, WasmType, WasmValueType, getWasmValueType, getExternalType } from "./wasmTypes";
 import { FuncType } from "./FuncType";
-import { FunctionBody, FunctionLocal } from "./FunctionBody";
+import { FunctionBody, FunctionLocal, formatOpcodes } from "./FunctionBody";
+import { WasmOpcode, WasmOpcodeDefinition, WasmOpcodes, Immediate } from "./WasmOpcodes";
+import { OpcodeImmediateType } from "./OpcodeImmediateType";
 
 
 @injectable()
@@ -35,7 +37,7 @@ export class WasmBinaryParser {
       throw new Error(`WASM binary version=${version}, supported=${this.WASM_V1}`)
     }
 
-    const wasmSections: WasmSection[] = []
+    const sections: WasmSection[] = []
     while(!reader.finished()) {
       const sectionId = reader.readBytesToNumber(1)
       const sectionType = WasmSectionType[sectionId.toString()]
@@ -43,16 +45,26 @@ export class WasmBinaryParser {
       const payloadData = reader.readBytes(payloadLength)
       const payloadHex = payloadData.toString('hex')
       const payload = this.parseSectionPayload(payloadData, sectionId)
-      wasmSections.push({
+      sections.push({
         sectionType,
-        payloadLength,
-        payloadData,
         payloadHex,
         payload
       })
     }
-    console.log(JSON.stringify(wasmSections))
-    return
+
+    // removeme
+    const sec = sections.find(section =>  {
+      return section.sectionType.toString() == WasmSectionType[WasmSectionType.Code.toString()]
+    });
+    const outp: WasmCodeSectionPayload = sec.payload as WasmCodeSectionPayload;
+    // console.log(JSON.stringify(outp.functions[1]))
+    const mapp = outp.functions[3].opcodes.map(p => `[0x${p.opcode.code.toString(16)}] ${p.opcode.name} ${p.immediates}`)
+    // console.log(mapp)
+    console.log(outp.functions[2].formattedOpcodes)
+    // console.log(JSON.stringify(wasmSections))
+    return {
+      sections
+    }
   }
 
   parseSectionPayload(payload: Buffer, sectionId: number): WasmSectionPayload {
@@ -142,12 +154,54 @@ export class WasmBinaryParser {
       })
       localsCounter++
     }
-    const functionInstructions = reader.readBytes(body.length - reader.getPointer())
-    const bytecodeHex = functionInstructions.toString('hex')
+    const bytecodeBuffer: Buffer = reader.readBytes(body.length - reader.getPointer())
+    const opcodes: WasmOpcode[] = this.parseFunctionBytecode(bytecodeBuffer)
+    const bytecodeHex: string = bytecodeBuffer.toString('hex')
+    const formattedOpcodes = formatOpcodes(opcodes)
     return {
       bytecodeHex,
-      locals
+      locals,
+      opcodes,
+      formattedOpcodes
     }
+  }
+
+  parseFunctionBytecode(bytecode: Buffer): WasmOpcode[] {
+    const reader = new BytesReader(bytecode)
+    const opcodes: WasmOpcode[] = []
+    while(!reader.finished()) {
+      const opcodeByte = reader.readBytesToNumber(1)
+      const immediates: string[] = []
+      const opcodeDefinition: WasmOpcodeDefinition = WasmOpcodes.getDefinition(opcodeByte)
+      if(!opcodeDefinition) {
+        throw new Error(`Opcode not implemented: ${opcodeByte} [${opcodeByte.toString(16)}]`)
+      }
+      for(const immediate of opcodeDefinition.immediates) {
+        // TODO refactor
+        if (immediate.type === OpcodeImmediateType.U32) {
+          const immediateValue = reader.readVarUint32()
+          const valueFormatted = immediateValue < 0? `-0x${(immediateValue * -1).toString(16)}`: `0x${immediateValue.toString(16)}`
+          immediates.push(valueFormatted)
+        } else if (immediate.type === OpcodeImmediateType.I32) {
+          const immediateValue = reader.readVarInt32()
+          const valueFormatted = immediateValue < 0? `-0x${(immediateValue * -1).toString(16)}`: `0x${immediateValue.toString(16)}`
+          immediates.push(valueFormatted)
+        } else if (immediate.type === OpcodeImmediateType.I64) {
+          const immediateValue = reader.readVarInt64()
+          const valueFormatted = immediateValue < 0? `-0x${(immediateValue * -1).toString(16)}`: `0x${immediateValue.toString(16)}`
+          immediates.push(valueFormatted)
+        } else if (immediate.type === OpcodeImmediateType.BYTE) {
+          const immediateValue = reader.readBytesToNumber(1)
+          const valueFormatted = immediateValue < 0? `-0x${(immediateValue * -1).toString(16)}`: `0x${immediateValue.toString(16)}`
+          immediates.push(valueFormatted)
+        }
+      }
+      opcodes.push({
+        opcode: opcodeDefinition,
+        immediates
+      })
+    }
+    return opcodes
   }
 
   parseFuncType(reader: BytesReader, index: number): FuncType {

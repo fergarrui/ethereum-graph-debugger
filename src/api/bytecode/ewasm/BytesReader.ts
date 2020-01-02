@@ -1,3 +1,5 @@
+import { Int64 } from "./Int64";
+
 export class BytesReader {
 
   private pointer: number
@@ -43,7 +45,7 @@ export class BytesReader {
     return result
   }
 
-  private readVarInt32(): number {
+  readVarInt32(): number {
     var result = 0
     var shift = 0
     while (true) {
@@ -59,6 +61,32 @@ export class BytesReader {
     }
     var ashift = (32 - shift)
     return (result << ashift) >> ashift
+  }
+
+  readVarInt64(): number {
+    var result = new Uint8Array(8);
+    var i = 0;
+    var c = 0;
+    var shift = 0;
+    while (true) {
+      var byte = parseInt(this.readBytesToHex(1), 16)
+      c |= (byte & 0x7F) << shift;
+      shift += 7;
+      if (shift > 8) {
+        result[i++] = c & 0xFF;
+        c >>= 8;
+        shift -= 8;
+      }
+      if ((byte & 0x80) === 0)
+        break;
+    }
+    var ashift = (32 - shift);
+    c = (c << ashift) >> ashift;
+    while (i < 8) {
+      result[i++] = c & 0xFF;
+      c >>= 8;
+    }
+    return new Int64(result).toDouble();
   }
 
   getPointer(): number {

@@ -5,8 +5,6 @@ import { FunctionBody } from "./FunctionBody";
 
 export interface WasmSection {
   sectionType: WasmSectionType
-  payloadLength: number,
-  payloadData: Buffer,
   payloadHex: string,
   payload: WasmSectionPayload
 }
