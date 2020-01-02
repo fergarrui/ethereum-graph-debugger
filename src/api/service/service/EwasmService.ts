@@ -9,7 +9,6 @@ const execSync = require('child_process').execSync
 var tmp = require('tmp')
 var fs = require('fs')
 
-
 @injectable()
 export class EwasmService {
 

@@ -1,8 +1,8 @@
 import { injectable } from "inversify";
 import { WasmBinary } from "./WasmBinary";
 import { BytesReader } from "./BytesReader";
-import { WasmSection, WasmTypeSectionPayload, WasmSectionPayload, WasmExportSectionPayload, WasmCodeSectionPayload } from "./WasmSection";
-import { WasmSectionType, WasmType, WasmValueType, getWasmValueType, getExternalType } from "./wasmTypes";
+import { WasmSection, WasmTypeSectionPayload, WasmSectionPayload, WasmExportSectionPayload, WasmCodeSectionPayload, WasmImportSectionPayload } from "./WasmSection";
+import { WasmSectionType, WasmType, WasmValueType, getWasmValueType, getExternalType, WasmExternalKind } from "./wasmTypes";
 import { FuncType } from "./FuncType";
 import { FunctionBody, FunctionLocal, formatOpcodes } from "./FunctionBody";
 import { WasmOpcode, WasmOpcodeDefinition, WasmOpcodes, Immediate } from "./WasmOpcodes";
@@ -21,6 +21,7 @@ export class WasmBinaryParser {
     this.sectionParsers.set(WasmSectionType.Type, this.parseTypeSection)
     this.sectionParsers.set(WasmSectionType.Export, this.parseExportSection)
     this.sectionParsers.set(WasmSectionType.Code, this.parseCodeSection)
+    this.sectionParsers.set(WasmSectionType.Import, this.parseImportSection)
   }
 
   parse(binary: Buffer): WasmBinary {
@@ -56,11 +57,16 @@ export class WasmBinaryParser {
     const sec = sections.find(section =>  {
       return section.sectionType.toString() == WasmSectionType[WasmSectionType.Code.toString()]
     });
-    const outp: WasmCodeSectionPayload = sec.payload as WasmCodeSectionPayload;
+
+    const imp = sections.find(section =>  {
+      return section.sectionType.toString() == WasmSectionType[WasmSectionType.Import.toString()]
+    });
+    console.log(JSON.stringify(imp))
+    // const outp: WasmCodeSectionPayload = sec.payload as WasmCodeSectionPayload;
     // console.log(JSON.stringify(outp.functions[1]))
-    const mapp = outp.functions[3].opcodes.map(p => `[0x${p.opcode.code.toString(16)}] ${p.opcode.name} ${p.immediates}`)
+    // const mapp = outp.functions[3].opcodes.map(p => `[0x${p.opcode.code.toString(16)}] ${p.opcode.name} ${p.immediates}`)
     // console.log(mapp)
-    console.log(outp.functions[2].formattedOpcodes)
+    // console.log(outp.functions[2].formattedOpcodes)
     // console.log(JSON.stringify(wasmSections))
     return {
       sections
@@ -114,6 +120,69 @@ export class WasmBinaryParser {
       exportsCounter++
     }
     return exportSection
+  }
+
+  parseImportSection(payload: Buffer, self: any): WasmImportSectionPayload {
+    const reader = new BytesReader(payload)
+    const numberOfElements = reader.readVarUint32()
+    let importsCounter = 0
+    const importsSection: WasmImportSectionPayload = {
+      imports: []
+    }
+    while(importsCounter < numberOfElements) {
+      const moduleNameLength = reader.readVarUint32()
+      const moduleName = reader.readBytesToUtf8String(moduleNameLength)
+      const fieldNameLength = reader.readVarUint32()
+      const fieldName = reader.readBytesToUtf8String(fieldNameLength)
+      const importKind = reader.readBytesToNumber(1)
+      const kind = getExternalType(importKind.toString())
+      let kindType: any
+      if (kind === getExternalType(WasmExternalKind.Function.toString())) {
+        kindType = reader.readVarUint32()
+      } else if (kind === getExternalType(WasmExternalKind.Table.toString())) {
+        const tableElemType = reader.readVarUint32()
+        const limits = self.parseLimits(reader)
+        kindType = {
+          tableElemType,
+          limits
+        }
+      } else if (kind === getExternalType(WasmExternalKind.Table.toString())) {
+        kindType = self.parseLimits(reader)
+      } else if (kind === getExternalType(WasmExternalKind.Table.toString())) {
+        const globalValType = reader.readBytesToNumber(1)
+        const mutability = reader.readBytesToNumber(1)
+        kindType = {
+          globalValType,
+          mutability
+        }
+      }
+      
+      importsSection.imports.push({
+        moduleName,
+        fieldName,
+        kind,
+        kindType
+      })
+      importsCounter++
+    }
+    return importsSection
+  }
+
+  // improve limits
+  parseLimits(reader: BytesReader): any {
+    const limitsHasMax = reader.readBytesToNumber(1)
+    const limitMin = reader.readVarUint32()
+    let limits: any = {
+      limitMin
+    }
+    if(limitsHasMax === 1) {
+      const limitMax = reader.readVarUint32()
+      limits = {
+        ...limits,
+        limitMax
+      }
+    }
+    return limits
   }
 
   parseCodeSection(payload: Buffer, self: any): WasmCodeSectionPayload {

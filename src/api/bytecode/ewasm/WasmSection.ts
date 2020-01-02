@@ -2,6 +2,7 @@ import { WasmSectionType } from "./wasmTypes";
 import { FuncType } from "./FuncType";
 import { ExportEntry } from "./ExportEntry";
 import { FunctionBody } from "./FunctionBody";
+import { ImportEntry } from "./ImportEntry";
 
 export interface WasmSection {
   sectionType: WasmSectionType
@@ -19,6 +20,10 @@ export interface WasmTypeSectionPayload extends WasmSectionPayload {
 
 export interface WasmExportSectionPayload extends WasmSectionPayload {
   exports: ExportEntry[]
+}
+
+export interface WasmImportSectionPayload extends WasmSectionPayload {
+  imports: ImportEntry[]
 }
 
 export interface WasmCodeSectionPayload extends WasmSectionPayload {
