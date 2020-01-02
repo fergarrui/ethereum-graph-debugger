@@ -1,5 +1,3 @@
-import sinon from 'sinon';
-
 import { call, put, select } from 'redux-saga/effects';
 import { baseUrl, fetchData } from './utils';
 

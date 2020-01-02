@@ -23,6 +23,15 @@ export const fetchSolcVersions = () => dispatch => {
   })
 }
 
+export const postVersion = version => dispatch => {
+  dispatch({
+    type: ActionTypes.POST_VERSION,
+    payload: {
+      version
+    }
+  });
+}
+
 export const selectEditorLines = lines => dispatch => {
   dispatch({
     type: ActionTypes.SELECT_EDITOR_LINES,
@@ -69,41 +78,8 @@ export const getVersionNumber = versionNum => dispatch => {
 export const addVersion = version => dispatch => {
   dispatch({
     type: ActionTypes.ADD_VERSION,
-    version
+    payload: {
+      version
+    }
   }) 
 }
-
-export const postVersion = version => dispatch => {
-  dispatch(toggleLoadingMessage(true, 'Loading... This might take a while'));
-
-  return fetch(baseUrl + 'solc', {
-    method: 'POST',
-    body: JSON.stringify(version),
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    credentials: 'same-origin'
-  })
-    .then(response => {
-      if (response.ok) {
-        return response;
-      } else {
-        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-
-        error.response = response;
-        throw error;
-      }
-    },
-    error => {
-      var errmess = new Error(error.message);
-      throw errmess; 
-    })
-    .then(response => response.json())
-    .then(response => {
-      dispatch(toggleLoadingMessage(false));
-      dispatch(addVersion(response));
-    })
-    .catch(error => {
-      dispatch(toggleErrorMessage(true, error.message));
-    });    
-};

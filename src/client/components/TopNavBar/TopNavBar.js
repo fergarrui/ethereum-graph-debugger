@@ -74,7 +74,6 @@ class TopNavBar extends React.Component {
   }
 
   handleVersionItemClick() {
-
     this.setState({
       versionsVisible: false,
     });
