@@ -38,8 +38,6 @@ export const versions = (state = { postedVersions: [], versionNumber: null, hasF
   switch(action.type) {
     case ActionTypes.FETCH_VERSIONS_SUCCESS: 
       return { ...state, versionsList: action.payload.versions }
-    case ActionTypes.FETCH_VERSIONS_FAIL:
-      return { ...state, errorMessage: action.payload.message }
     case ActionTypes.ADD_VERSION:
       return { ...state, versions: action.version, hasFetched: true };
     case ActionTypes.GET_VERSION_NUM:
