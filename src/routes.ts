@@ -119,23 +119,21 @@ const models: TsoaRoute.Models = {
             "version": { "dataType": "string", "required": true },
         },
     },
-    "EwasmFunction": {
+    "WasmSectionType": {
+        "enums": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+    },
+    "WasmSectionPayload": {
+    },
+    "WasmSection": {
         "properties": {
-            "name": { "dataType": "string", "required": true },
-            "params": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
-            "results": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
-            "bodyInHex": { "dataType": "string", "required": true },
+            "sectionType": { "ref": "WasmSectionType", "required": true },
+            "payloadHex": { "dataType": "string", "required": true },
+            "payload": { "ref": "WasmSectionPayload", "required": true },
         },
     },
-    "EwasmExport": {
+    "WasmBinary": {
         "properties": {
-            "name": { "dataType": "string", "required": true },
-        },
-    },
-    "EwasmDisassembledContract": {
-        "properties": {
-            "functions": { "dataType": "array", "array": { "ref": "EwasmFunction" }, "required": true },
-            "exports": { "dataType": "array", "array": { "ref": "EwasmExport" }, "required": true },
+            "sections": { "dataType": "array", "array": { "ref": "WasmSection" }, "required": true },
         },
     },
 };
@@ -564,6 +562,32 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.analyze.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/ewasm/analyze/:address',
+        function(request: any, response: any, next: any) {
+            const args = {
+                address: { "in": "path", "name": "address", "required": true, "dataType": "string" },
+                blockchainHost: { "in": "query", "name": "blockchainHost", "dataType": "string" },
+                blockchainProtocol: { "in": "query", "name": "blockchainProtocol", "dataType": "string" },
+                blockchainBasicAuthUsername: { "in": "query", "name": "blockchainBasicAuthUsername", "dataType": "string" },
+                blockchainBasicAuthPassword: { "in": "query", "name": "blockchainBasicAuthPassword", "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<EwasmController>(EwasmController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.analyzeAddress.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 

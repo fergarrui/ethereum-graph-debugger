@@ -2,6 +2,9 @@ import { injectable, inject } from "inversify";
 import { TYPES } from "../../../inversify/types";
 import { WasmBinaryParser } from "../../bytecode/ewasm/WasmBinaryParser";
 import { WasmBinary } from "../../bytecode/ewasm/WasmBinary";
+import { Web3Configuration } from "../../blockchain/Web3Configuration";
+import { IWeb3 } from "../../blockchain/IWeb3";
+import { Web3Instance } from "../../blockchain/Web3Instance";
 
 const wabt = require("wabt")()
 const commandExists = require('command-exists').sync
@@ -25,6 +28,16 @@ export class EwasmService {
     }
   }
 
+  async analyzeAddress(address: string, config: Web3Configuration): Promise<WasmBinary> {
+    const iWeb3: IWeb3 = new Web3Instance(config)
+    const web3 = iWeb3.getInstance()
+    let contractCode = await web3.eth.getCode(address)
+    if(contractCode.startsWith('0x')) {
+      contractCode = contractCode.substring(2, contractCode.length)
+    }
+    return this.analyze(contractCode)
+  }
+
   wasmToWat(codeInHex: string): string {
     const codeArray: Uint8Array = this.HexToUint8Array(codeInHex)
     try {
@@ -46,12 +59,10 @@ export class EwasmService {
     }
     const tmpObj = tmp.fileSync()
     const fileName = tmpObj.name
-    console.log(`Created temp file: ${fileName}`)
     fs.writeSync(tmpObj.fd, codeArray)
 
     const decompiledWasm = execSync(`wasm2c ${fileName}`)
     tmpObj.removeCallback();
-    console.log(decompiledWasm.toString('utf-8'))
     return decompiledWasm.toString('utf-8')
   }
 

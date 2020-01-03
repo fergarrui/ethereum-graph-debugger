@@ -29,3 +29,13 @@ export interface WasmImportSectionPayload extends WasmSectionPayload {
 export interface WasmCodeSectionPayload extends WasmSectionPayload {
   functions: FunctionBody[]
 }
+
+export interface WasmFunctionSectionPayload extends WasmSectionPayload {
+  functionsTypes: number[]
+}
+
+export const findSection = (sections: WasmSection[], sectionType: WasmSectionType): WasmSection => {
+  return sections.find(section =>  {
+    return section.sectionType.toString() == WasmSectionType[sectionType.toString()]
+  }); 
+}

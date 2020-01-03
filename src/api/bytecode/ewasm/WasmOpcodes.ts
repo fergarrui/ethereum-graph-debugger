@@ -13,6 +13,7 @@ export class WasmOpcodes {
     
     this.opcodes.set(0xc, {code: 0xc, name: 'br', immediates: [{type: OpcodeImmediateType.U32}]})
     this.opcodes.set(0xd, {code: 0xd, name: 'br_if', immediates: [{type: OpcodeImmediateType.U32}]})
+    this.opcodes.set(0xe, {code: 0xe, name: 'br_table', immediates: [{type: OpcodeImmediateType.VECTOR_U32},{type: OpcodeImmediateType.U32}]})
     
     this.opcodes.set(0xf, {code: 0xf, name: 'return', immediates: []})
     this.opcodes.set(0x10, {code: 0x10, name: 'call', immediates: [{type: OpcodeImmediateType.U32}]})
@@ -209,6 +210,10 @@ export class WasmOpcodes {
 
   static isBlockEnd(opcode: WasmOpcode): boolean {
     return opcode.opcode.name === 'end'
+  }
+
+  static isCall(opcode: WasmOpcode): boolean {
+    return opcode.opcode.name === 'call'
   }
 }
 
