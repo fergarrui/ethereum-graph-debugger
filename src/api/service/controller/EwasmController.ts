@@ -6,6 +6,7 @@ import { EwasmService } from "../service/EwasmService";
 import { WasmBinary } from "../../bytecode/ewasm/WasmBinary";
 import { Web3Configuration } from "../../blockchain/Web3Configuration";
 import { logger } from '../../../Logger'
+import { EWasmModule } from "../../bytecode/ewasm/EWasmModule";
 
 @Route('ewasm')
 @provideSingleton(EwasmController)
@@ -36,7 +37,7 @@ export class EwasmController extends Controller {
   }
 
   @Post('analyze')
-  async analyze(@Body() source: StringBodyRequest ): Promise<WasmBinary> {
+  async analyze(@Body() source: StringBodyRequest ): Promise<EWasmModule> {
     try {
       return this.ewasmService.analyze(source.request)
     } catch(error) {

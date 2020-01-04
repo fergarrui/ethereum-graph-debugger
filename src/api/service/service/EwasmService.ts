@@ -5,6 +5,13 @@ import { WasmBinary } from "../../bytecode/ewasm/WasmBinary";
 import { Web3Configuration } from "../../blockchain/Web3Configuration";
 import { IWeb3 } from "../../blockchain/IWeb3";
 import { Web3Instance } from "../../blockchain/Web3Instance";
+import { findSection, WasmCodeSectionPayload } from "../../bytecode/ewasm/WasmSection";
+import { WasmSectionType } from "../../bytecode/ewasm/wasmTypes";
+import { WasmCFGCreator } from "../../bytecode/ewasm/cfg/WasmCFGCreator";
+import { EWasmModule } from "../../bytecode/ewasm/EWasmModule";
+import { WasmCallgraphCreator } from "../../bytecode/ewasm/callgraph/WasmCallgraphCreator";
+import { WasmCallGraph } from "../../bytecode/ewasm/callgraph/WasmCallGraph";
+import { WasmGraphVizService } from "../../bytecode/ewasm/callgraph/WasmGraphVizService";
 
 const wabt = require("wabt")()
 const commandExists = require('command-exists').sync
@@ -15,20 +22,37 @@ var fs = require('fs')
 @injectable()
 export class EwasmService {
 
-  constructor(@inject(TYPES.WasmBinaryParser) private wasmParser: WasmBinaryParser) {}
+  constructor(
+    @inject(TYPES.WasmBinaryParser) private wasmParser: WasmBinaryParser,
+    @inject(TYPES.WasmCFGCreator) private cfgCreator: WasmCFGCreator,
+    @inject(TYPES.WasmCallgraphCreator) private callGraphCreator: WasmCallgraphCreator,
+    @inject(TYPES.WasmGraphVizService) private wasmGraphVizService: WasmGraphVizService
+    ) {}
 
-  analyze(codeInHex: string): WasmBinary {
+  analyze(codeInHex: string): EWasmModule {
     const wasm: Buffer = this.hexToBuffer(codeInHex)
     try {
       const binary: WasmBinary = this.wasmParser.parse(wasm)
-      return binary
+      const callGraph: WasmCallGraph = this.callGraphCreator.createCallgraph(binary)
+      const dotCallGraph: string = this.wasmGraphVizService.convertToDot(callGraph)
+
+      // removeme
+      // const sec = findSection(binary.sections, WasmSectionType.Code)
+      // const pay: WasmCodeSectionPayload = sec.payload as WasmCodeSectionPayload
+      // const f2 = pay.functions[2]
+      // this.cfgCreator.createFunctionCfg(f2.opcodes)
+      // end removeme
+      return {
+        binary,
+        dotCallGraph
+      }
     } catch (error) {
       console.log(error)
       throw new Error(`Error when analyzing ewasm bytecode: ${error.message}`)
     }
   }
 
-  async analyzeAddress(address: string, config: Web3Configuration): Promise<WasmBinary> {
+  async analyzeAddress(address: string, config: Web3Configuration): Promise<EWasmModule> {
     const iWeb3: IWeb3 = new Web3Instance(config)
     const web3 = iWeb3.getInstance()
     let contractCode = await web3.eth.getCode(address)

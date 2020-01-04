@@ -12,6 +12,9 @@ const TYPES = {
   ContractService: Symbol.for('ContractService'),
   EwasmService: Symbol.for('EwasmService'),
   WasmBinaryParser: Symbol.for('WasmBinaryParser'),
+  WasmCFGCreator: Symbol.for('WasmCFGCreator'),
+  WasmCallgraphCreator: Symbol.for('WasmCallgraphCreator'),
+  WasmGraphVizService: Symbol.for('WasmGraphVizService'),
   Solc: Symbol.for('Solc')
 }
 

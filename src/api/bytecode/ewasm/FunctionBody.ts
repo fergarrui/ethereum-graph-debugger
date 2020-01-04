@@ -23,13 +23,13 @@ export const formatOpcodes = (opcodes: WasmOpcode[], importsPayload: WasmImportS
   let formattedCode = ''
   let indentation = 0
   for (const op of opcodes) {
-    formattedCode += `${tab.repeat(indentation)}${op.opcode.name} ${op.immediates}`
+    formattedCode += `${tab.repeat(indentation)} <${op.depth}> ${op.opcode.name} ${op.immediates}`
     if (WasmOpcodes.isCall(op)) {
       const callIdx: number = parseInt(op.immediates[0], 16)
       let functionCalledName = ''
       if (callIdx < importsPayload.imports.length) {
         const imp = importsPayload.imports[callIdx];
-        functionCalledName = `${imp.moduleName}.${imp.fieldName}`
+        functionCalledName = `${imp.moduleName}_${imp.fieldName}`
       } else {
         const fun = codePayload.functions[callIdx]
         if (fun) {

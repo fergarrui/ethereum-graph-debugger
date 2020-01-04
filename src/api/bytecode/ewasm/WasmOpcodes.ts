@@ -215,6 +215,11 @@ export class WasmOpcodes {
   static isCall(opcode: WasmOpcode): boolean {
     return opcode.opcode.name === 'call'
   }
+
+  static isDirectBranch(opcode: WasmOpcode): boolean {
+    return opcode.opcode.name === 'br' ||
+      opcode.opcode.name === 'br_if'
+  }
 }
 
 export interface WasmOpcodeDefinition {
@@ -227,10 +232,20 @@ export interface Immediate {
   type: OpcodeImmediateType
 }
 
+export enum BlockType {
+  NONE,
+  BLOCK,
+  LOOP,
+  IF,
+  ELSE
+}
+
 
 export interface WasmOpcode {
   opcode: WasmOpcodeDefinition
   immediates: string[]
+  depth: number
+  blockType?: BlockType
 }
 
 WasmOpcodes.populate()

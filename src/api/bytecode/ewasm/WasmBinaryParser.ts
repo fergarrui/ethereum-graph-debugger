@@ -5,7 +5,7 @@ import { WasmSection, WasmTypeSectionPayload, WasmSectionPayload, WasmExportSect
 import { WasmSectionType, WasmType, WasmValueType, getWasmValueType, getExternalType, WasmExternalKind } from "./wasmTypes";
 import { FuncType, printSignature } from "./FuncType";
 import { FunctionBody, FunctionLocal, formatOpcodes } from "./FunctionBody";
-import { WasmOpcode, WasmOpcodeDefinition, WasmOpcodes, Immediate } from "./WasmOpcodes";
+import { WasmOpcode, WasmOpcodeDefinition, WasmOpcodes, Immediate, BlockType } from "./WasmOpcodes";
 import { OpcodeImmediateType } from "./OpcodeImmediateType";
 
 
@@ -59,6 +59,16 @@ export class WasmBinaryParser {
     };
     const wasmPostProcessed = this.postProcess(wasmBinary);
     // console.log(JSON.stringify(wasmPostProcessed))
+    const cod: WasmCodeSectionPayload = findSection(wasmPostProcessed.sections, WasmSectionType.Code).payload as WasmCodeSectionPayload
+    let i = 0
+    let outp = ''
+    for (const o of cod.functions) {
+      outp += `== ${i} == \n`
+      outp += o.formattedOpcodes
+      i++
+    }
+    const fs = require('fs')
+    fs.writeFileSync('./output.txt', outp)
     return wasmPostProcessed
   }
 
@@ -99,8 +109,6 @@ export class WasmBinaryParser {
     for(const fun of codeSectionPayload.functions) {
       const formattedOpcodes = formatOpcodes(fun.opcodes, importSectionPayload, codeSectionPayload)
       fun.formattedOpcodes = formattedOpcodes
-      // deleting opcodes for now, not really needed in the response, maybe in the future
-      delete fun.opcodes
     }
     return wasmBinary
   }
@@ -282,6 +290,8 @@ export class WasmBinaryParser {
   parseFunctionBytecode(bytecode: Buffer): WasmOpcode[] {
     const reader = new BytesReader(bytecode)
     const opcodes: WasmOpcode[] = []
+    let depth = 0
+    let blockType: BlockType = BlockType.NONE
     while(!reader.finished()) {
       const opcodeByte = reader.readBytesToNumber(1)
       const immediates: string[] = []
@@ -321,10 +331,35 @@ export class WasmBinaryParser {
           immediates.push(valueFormatted)
         }
       }
-      opcodes.push({
+      const newOpcode = {
         opcode: opcodeDefinition,
-        immediates
-      })
+        immediates,
+        depth,
+        blockType
+      };
+      opcodes.push(newOpcode)
+      if(WasmOpcodes.isBlockEnd(newOpcode)) {
+        depth--
+      }
+      if(WasmOpcodes.isBlockStart(newOpcode)) {
+        depth++
+      }
+      // if(newOpcode.opcode.name === 'block') {
+      //   blockType = BlockType.BLOCK
+      // }
+      // if (newOpcode.opcode.name === 'loop') {
+      //   blockType = BlockType.LOOP
+      // }
+      // if(newOpcode.opcode.name === 'if') {
+      //   blockType = BlockType.IF
+      // }
+      // if(newOpcode.opcode.name === 'else') {
+      //   blockType = BlockType.ELSE
+      // }
+      // if(depth === 0) {
+      //   blockType = BlockType.NONE
+      // }
+      
     }
     return opcodes
   }
