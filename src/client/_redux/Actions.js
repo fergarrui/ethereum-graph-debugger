@@ -1,6 +1,47 @@
 import * as ActionTypes from './Constants.js';
 
-import { baseUrl } from '../utils/baseUrl';
+export const fetchTransactionDebugger = (url, type, body) => dispatch => {
+  dispatch({
+    type: ActionTypes.FETCH_TRANSACTION_DEBUGGER,
+    payload: {
+      url,
+      type,
+      body,
+    }
+  });
+}
+
+export const fetchStorage = (url, type) => dispatch => {
+  dispatch({
+    type: ActionTypes.FETCH_STORAGE,
+    payload: {
+      url,
+      type
+    }
+  });
+}
+
+export const fetchDisassembler = (url, type, body) => dispatch => {
+  dispatch({
+    type: ActionTypes.FETCH_DISASSEMBLER,
+    payload: {
+      url,
+      type,
+      body,
+    }
+  });
+}
+
+export const fetchControlFlowGraph = (url, type, body) => dispatch => {
+  dispatch({
+    type: ActionTypes.FETCH_GRAPH,
+    payload: {
+      url,
+      type,
+      body
+    }
+  });
+}
 
 export const getParameter = parameter => dispatch => {
   dispatch({

@@ -3,7 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import  { CSSTransitionGroup } from 'react-transition-group';
 
-import * as actions from '../../_redux/Actions.js';
+import * as actions from '../../_redux/actions.js';
+import * as selectors from '../../_redux/selectors';
 import { baseUrl } from '../../utils/baseUrl';
 import Editor from '../Editor/Editor';
 import SideBar from '../SideBar/SideBar';
@@ -25,11 +26,20 @@ const cx = classnames.bind(styles);
 
 const mapStateToProps = state => ({
   evm: state.selectEVMState,
+  transactionDebugger: selectors.getTransactionDebugger(state),
+  disassembler: selectors.getDisassembler(state),
+  storage: selectors.getStorage(state),
+  graph: selectors.getGraph(state),
+  tabs: selectors.getTabs(state),
+  hasFetched: selectors.getHasToolFetched(state),
+  isLoading: selectors.getToolIsLoading(state)
 })
 
 const mapDispatchToProps = {
-  toggleLoadingMessage: actions.toggleLoadingMessage,
-  toggleErrorMessage: actions.toggleErrorMessage,
+  fetchTransactionDebugger: actions.fetchTransactionDebugger,
+  fetchStorage: actions.fetchStorage,
+  fetchControlFlowGraph: actions.fetchControlFlowGraph,
+  fetchDisassembler: actions.fetchDisassembler 
 }
 
 class Main extends React.Component {
@@ -37,18 +47,11 @@ class Main extends React.Component {
     super(props);
 
     this.state = {
-      sideBarOpen: false,
-      modalOpen: {
+      isSideBarOpen: false,
+      isModalOpen: {
         transactionDebugger: false,
         viewStorage: false
       },
-      inputValue: '',
-      prameter: '',
-      tabs: [],
-      cfg: '',
-      operations: [],
-      trace: {},
-      fetchRequestStatus: undefined,
     }
 
     this.handleMenuItemIconClick = this.handleMenuItemIconClick.bind(this);
@@ -66,78 +69,9 @@ class Main extends React.Component {
     return url;
   }
 
- fetchData(url, type, body) {
-   this.handleRequestPending();
-
-  fetch(url, body ? {
-    body: JSON.stringify({ request: body }),
-    method: 'POST',
-    headers:{
-      'Content-Type': 'application/json'
-    }
-    } : {})
-    .then(res => res.json())
-    .then(data => {
-      data.error
-      ? this.handleRequestFail(data)
-      : this.handleRequestSuccess(data, type);
-    })
-    .catch(err => this.handleRequestFail(err));
-  }
-
-  handleRequestPending() {
-    this.setState({
-      modalOpen: {...this.state.modalOpen, transactionDebugger: false, viewStorage: false },
-      sideBarOpen: false,
-    });
-
-    this.props.toggleLoadingMessage(true, 'Loading...');
-  }
-
-
-  handleRequestSuccess(response, type) {
-    const newTabs = [...this.state.tabs, {'title': type, 'type': type}];
-    
-    if(type === 'Disassembler') {
-      this.setState({
-        disassemblerResponse: response,
-      });
-    }
-
-    if(type === 'Transaction Debugger') {
-      this.setState({
-        debuggerResponse: response,
-      });
-    }
-
-    if(type === 'Control Flow Graph Constructor' || 'Control Flow Graph Runtime') {
-      this.setState({
-        graphResponse: response,
-      });
-    }
-
-    if(type === 'Storage Viewer') {
-      this.setState({
-        storageResponse: response,
-      });
-    }
-
-    this.setState({
-      fetchRequestStatus: 'success',
-      tabs: newTabs,
-      sideBarOpen: false,
-    }); 
-
-    this.props.toggleLoadingMessage(false);
-  }
-
-  handleRequestFail(data) {
-    this.props.toggleLoadingMessage(false);
-    this.props.toggleErrorMessage(true, data.message);
-  }
-
   handleTransactionFormSubmit() {
     const { name, path, code } = this.props;
+    const { isModalOpen } = this.state;
 
     const params = {
       name: name.replace('.sol', '').replace('.evm', ''),
@@ -148,7 +82,10 @@ class Main extends React.Component {
       blockchainBasicAuthPassword: localStorage.getItem('password')
     }
 
-    this.fetchData(this.getUrl(`debug/${this.state.transactionHash}/`, params), 'Transaction Debugger', code);
+    this.props.fetchTransactionDebugger(this.getUrl(`debug/${this.state.transactionHash}/`, params), 'Transaction Debugger', code);
+    this.setState({
+      isModalOpen: { ...isModalOpen, transactionDebugger: false }
+    });
   }
 
   handleFormInputChange(event) {    
@@ -165,20 +102,23 @@ class Main extends React.Component {
       endBlock: encodeURIComponent(this.state.endBlock)
     }
 
-    this.fetchData(this.getUrl(`storage/${this.state.contractAddress}/`, params), 'Storage Viewer');
+    this.props.fetchStorage(this.getUrl(`storage/${this.state.contractAddress}/`, params), 'Storage Viewer');
+    this.setState({
+      isModalOpen: { ...this.state.isModalOpen, viewStorage: false }
+    })
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
 
   handleMenuIconClick() {
-    if (!this.state.sideBarOpen) {
+    if (!this.state.isSideBarOpen) {
       document.addEventListener('click', this.handleOutsideClick);
     } else {
       document.removeEventListener('click', this.handleOutsideClick);
     }
 
     this.setState(prevState => ({
-      sideBarOpen: !prevState.sideBarOpen,
+      isSideBarOpen: !prevState.isSideBarOpen,
     }));
   }
 
@@ -190,7 +130,7 @@ class Main extends React.Component {
     document.removeEventListener('click', this.handleOutsideClick);
   
     this.setState({
-      sideBarOpen: false,
+      isSideBarOpen: false,
     });
   }
 
@@ -201,7 +141,8 @@ class Main extends React.Component {
       path: encodeURIComponent(path),
       'constructor': `${isConstructor}`
     }
-    this.fetchData(this.getUrl('cfg/source', params), `Control Flow Graph ${isConstructor ? 'Constructor' : 'Runtime'}`, code);
+
+    this.props.fetchControlFlowGraph(this.getUrl('cfg/source', params), `Control Flow Graph ${isConstructor ? 'Constructor' : 'Runtime'}`, code);
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
@@ -213,39 +154,36 @@ class Main extends React.Component {
       name: name.replace('.sol', '').replace('.evm', ''),
       path: encodeURIComponent(path)
     }
-    this.fetchData(this.getUrl('disassemble', params), 'Disassembler', code);
+
+    this.props.fetchDisassembler(this.getUrl('disassemble', params), 'Disassembler', code);
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
 
   handleViewStorageClick() {
     this.setState({
-      modalOpen: {...this.state.modalOpen, viewStorage: true },
-      sideBarOpen: false,
+      isModalOpen: {...this.state.isModalOpen, viewStorage: true },
+      isSideBarOpen: false,
     });
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
 
   handleMenuItemIconClick(index) {
-    const newTabs = this.state.tabs.filter((item, i) => i !== index);
-
-    this.setState({
-      tabs: newTabs,
-    });
+    return this.props.tabs.filter((item, i) => i !== index);
   }
 
   handleModalIconClick() {
 
     this.setState({
-      modalOpen: { ...this.state.modalOpen, transactionDebugger: false, viewStorage: false } 
+      isModalOpen: { ...this.state.isModalOpen, transactionDebugger: false, viewStorage: false } 
     });
   }
 
   handleTransactionDebuggerClick() {
     this.setState({
-      modalOpen: {...this.state.modalOpen, transactionDebugger: true},
-      sideBarOpen: false,
+      isModalOpen: {...this.state.isModalOpen, transactionDebugger: true},
+      isSideBarOpen: false,
     });
 
     document.removeEventListener('click', this.handleOutsideClick);
@@ -258,8 +196,8 @@ class Main extends React.Component {
   }
 
   render() {
-    const { code, name, path, index, evm } = this.props;
-    const { tabs, sideBarOpen, disassemblerResponse, graphResponse, debuggerResponse, storageResponse, modalOpen, } = this.state;
+    const { code, name, path, index, evm, transactionDebugger, disassembler, storage, graph, tabs, hasFetched } = this.props;
+    const { isSideBarOpen, isModalOpen, } = this.state;
 
     const inputTypes = [
       {
@@ -278,7 +216,7 @@ class Main extends React.Component {
 
     const sideBarClasses = cx({
       'main-comp__left__side-bar': true,
-      'main-comp__left__side-bar--open': !!sideBarOpen,
+      'main-comp__left__side-bar--open': !!isSideBarOpen,
     });
 
     return (
@@ -286,7 +224,7 @@ class Main extends React.Component {
         <div className={styles['main-comp__left']}>
         <div className={styles['main-comp__left__control']}>
           <button onClick={() => this.handleMenuIconClick()}>
-            <Hamburger clicked={!!sideBarOpen} />
+            <Hamburger clicked={!!isSideBarOpen} />
           </button>
         </div>
         <div 
@@ -328,9 +266,8 @@ class Main extends React.Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={300}
           >
-            <Tab onMenuItemIconClick={this.handleMenuItemIconClick} 
-            >
-            {tabs.map((item, i) => {
+            <Tab onMenuItemIconClick={this.handleMenuItemIconClick}>
+            {!!hasFetched && !!tabs.length && tabs.map((item, i) => {
               return (
                 <TabPanel
                   key={`id--${item.name}`}
@@ -340,10 +277,10 @@ class Main extends React.Component {
                     contractCode={code}
                     contractPath={path}
                     type={item.type}
-                    disassemblerResponse={disassemblerResponse}
-                    debuggerResponse={debuggerResponse}
-                    graphResponse={graphResponse}
-                    storageResponse={storageResponse} />
+                    disassemblerResponse={disassembler}
+                    debuggerResponse={transactionDebugger}
+                    graphResponse={graph}
+                    storageResponse={storage} />
                 </TabPanel>
               )
             })}
@@ -358,7 +295,7 @@ class Main extends React.Component {
         transitionLeaveTimeout={300}
         >
         {
-          modalOpen.transactionDebugger &&  
+          isModalOpen.transactionDebugger &&  
             <Modal onIconClick={() => this.handleModalIconClick()}>          
               <Form
                 submitButton={true}
@@ -379,7 +316,7 @@ class Main extends React.Component {
         transitionLeaveTimeout={300}
         >
           {
-            modalOpen.viewStorage &&  
+            isModalOpen.viewStorage &&  
               <Modal onIconClick={() => this.handleModalIconClick()}>          
                 <Form
                   buttonValue='Submit'

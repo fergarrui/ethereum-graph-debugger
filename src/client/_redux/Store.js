@@ -4,7 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 
-import rootReducer from './Reducers';
+import rootReducer from './reducers';
 import rootSaga from './sagas/sagas';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -16,14 +16,4 @@ const store = createStore(
   sagaMiddleware.run(rootSaga);
 
 export default store;
-
-// export default function configureStore(initialState) {
-//   return createStore(
-//     rootReducer,
-//     initialState,
-//     composeWithDevTools(
-//       applyMiddleware(sagaMiddleware)
-//     )
-//   );
-// };
 

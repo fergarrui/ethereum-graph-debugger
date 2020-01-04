@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import { selectLines, selectEVMState, loadingMessage, errorMessage, displayVersionNumber, versions, contracts } from './Reducers';
+import { selectLines, selectEVMState, loadingMessage, errorMessage, displayVersionNumber, versions, contracts, tools } from './reducers';
 
 export default combineReducers({
   selectLines,
@@ -9,5 +9,6 @@ export default combineReducers({
   errorMessage,
   displayVersionNumber,
   versions,
-  contracts
+  contracts,
+  tools
 });

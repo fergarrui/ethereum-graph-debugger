@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 import * as d3Graphviz from 'd3-graphviz';
 
 import { connect } from 'react-redux';
-import * as actions from '../../_redux/Actions.js';
+import * as actions from '../../_redux/actions.js';
 
 const mapDispatchToProps = {
   selectLines: actions.selectEditorLines,

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { CSSTransitionGroup } from 'react-transition-group';
 
-import * as actions from './_redux/Actions.js';
+import * as actions from './_redux/actions.js';
 import * as selectors from './_redux/selectors';
 
 import TopNavBar from './components/TopNavBar/TopNavBar';

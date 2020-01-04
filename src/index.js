@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import "regenerator-runtime/runtime";
 
-import store from './client/_redux/Store.js';
+import store from './client/_redux/store.js';
 
 import App from './client/App';
 

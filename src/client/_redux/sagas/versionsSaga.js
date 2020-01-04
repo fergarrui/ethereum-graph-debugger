@@ -35,7 +35,6 @@ export function* postVersion(action) {
     }
 
     const version = yield call(postData, endpoint, headers);
-    console.log(version)
     yield put({ type: 'ADD_VERSION', payload: { version: version } });
     yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: false } })
   } catch(error) {
