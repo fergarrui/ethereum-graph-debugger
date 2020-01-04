@@ -31,7 +31,7 @@ export const formatOpcodes = (opcodes: WasmOpcode[], importsPayload: WasmImportS
         const imp = importsPayload.imports[callIdx];
         functionCalledName = `${imp.moduleName}_${imp.fieldName}`
       } else {
-        const fun = codePayload.functions[callIdx]
+        const fun = codePayload.functions[callIdx - importsPayload.imports.length]
         if (fun) {
           functionCalledName = `${fun.exportedName? fun.exportedName: fun.name}`
         }

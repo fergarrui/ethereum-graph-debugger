@@ -53,7 +53,7 @@ export class EwasmController extends Controller {
     @Query('blockchainProtocol') blockchainProtocol?: string,
     @Query('blockchainBasicAuthUsername') blockchainBasicAuthUsername?: string,
     @Query('blockchainBasicAuthPassword') blockchainBasicAuthPassword?: string
-  ): Promise<WasmBinary> {
+  ): Promise<EWasmModule> {
     try {
       const config = {
         blockchainHost,

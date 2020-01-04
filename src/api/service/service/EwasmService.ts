@@ -31,6 +31,10 @@ export class EwasmService {
 
   analyze(codeInHex: string): EWasmModule {
     const wasm: Buffer = this.hexToBuffer(codeInHex)
+    return this.analyzeBuffer(wasm)
+  }
+
+  analyzeBuffer(wasm: Buffer): EWasmModule {
     try {
       const binary: WasmBinary = this.wasmParser.parse(wasm)
       const callGraph: WasmCallGraph = this.callGraphCreator.createCallgraph(binary)

@@ -7,7 +7,7 @@ export class WasmGraphVizService {
   convertToDot(callGraph: WasmCallGraph): string {
     let graph = `digraph " " {
       graph [splines=ortho]
-      node[shape=plain style=filled fontname="Courier"]
+      node[shape=box style=filled fontname="Courier"]
       `
 
     graph+= `
@@ -19,18 +19,17 @@ export class WasmGraphVizService {
 
   private createBody(callGraph: WasmCallGraph): string {
     let body = ''
-    callGraph.functions.forEach((value, key) => {
-      body += `${key} [label=${value.name}]
-        ${this.createRelations(value.calling, key)}
+    callGraph.nodes.forEach((node, key) => {
+      body += `N${key} [label=${node.name}]
+        ${this.createRelations(key, node.callees)}
         `
-      
     })
     return body
   }
 
-  private createRelations(calling: number[], index: number): string {
+  private createRelations(caller: string, callees: string[]): string {
     let relations = ''
-    relations += calling.map(c => `${index} -> ${c}`).join('\n')
+    relations += callees.map(c => `N${caller} -> N${c}`).join('\n')
     return relations
   }
 }

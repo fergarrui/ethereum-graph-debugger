@@ -8,7 +8,6 @@ import StorageViewer from '../StorageViewer/StorageViewer';
 import styles from './Panel.scss';
 
 const Panel = ({ type, contractName, contractCode, contractPath, debuggerResponse, graphResponse, disassemblerResponse, storageResponse }) => {
-console.log(disassemblerResponse)
   return (
     <div className={styles['panel']}>
       {type === 'Transaction Debugger' && 

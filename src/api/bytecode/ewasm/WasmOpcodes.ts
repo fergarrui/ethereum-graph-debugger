@@ -216,6 +216,10 @@ export class WasmOpcodes {
     return opcode.opcode.name === 'call'
   }
 
+  static isIndirectCall(opcode: WasmOpcode): boolean {
+    return opcode.opcode.name === 'call_indirect'
+  }
+
   static isDirectBranch(opcode: WasmOpcode): boolean {
     return opcode.opcode.name === 'br' ||
       opcode.opcode.name === 'br_if'
