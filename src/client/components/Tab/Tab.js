@@ -38,10 +38,12 @@ class Tab extends React.Component {
     const { currentTabIndex } = this.state;
 
     const children = React.Children.map(this.props.children, (child, index) => {
-      return React.cloneElement(child, {
-        index,
-        active: index === currentTabIndex,
-      });
+      if(!!child) {
+        return React.cloneElement(child, {
+          index,
+          active: index === currentTabIndex,
+        });
+      }
     });
 
     return (

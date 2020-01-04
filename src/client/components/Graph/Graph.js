@@ -6,14 +6,11 @@ import * as d3 from 'd3';
 import * as d3Graphviz from 'd3-graphviz';
 
 import { connect } from 'react-redux';
-import { selectEditorLines, showEVMState, hideEVMState } from '../Store/Actions.js';
+import * as actions from '../../_redux/actions.js';
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    selectLines: lines => dispatch(selectEditorLines(lines)),
-    selectEVMState: evmState => dispatch(showEVMState(evmState)),
-    unselectEVMState: () => dispatch(hideEVMState()),
-  }
+const mapDispatchToProps = {
+  selectLines: actions.selectEditorLines,
+  toggleEVMState: actions.toggleEVMState,
 }
 
 const previousPolygons = []
@@ -36,7 +33,7 @@ class ConnectedGraph extends React.Component {
   }
 
   handleClick(event) {
-    const { operations, selectLines, trace, selectEVMState, unselectEVMState } = this.props;
+    const { operations, selectLines, trace, toggleEVMState } = this.props;
     
     if (event.target.tagName === 'text') {
       const elem = d3.select(event.target.parentElement.parentElement);
@@ -44,9 +41,9 @@ class ConnectedGraph extends React.Component {
       const id = domId.replace('a_', '');
       const idNum = parseInt(id, 16);
       if(trace && trace[idNum]) {
-        selectEVMState(trace[idNum]);
+        toggleEVMState(trace[idNum]);
       } else {
-        unselectEVMState();
+        toggleEVMState('');
       }
       const polygon = document.getElementById(domId).getElementsByTagName("polygon")[0];
       polygon.setAttribute('fill', 'white');

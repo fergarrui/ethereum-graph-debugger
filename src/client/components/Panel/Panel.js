@@ -2,18 +2,13 @@ import React from 'react';
 
 import TransactionDebugger from '../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../Disassembler/Disassembler';
-//import ControlFlowGraphRuntime from '../ControlFlowGraphRuntime/ControlFlowGraphRuntime';
 import ControlFlowGraph from '../ControlFlowGraph/ControlFlowGraph';
 import StorageViewer from '../StorageViewer/StorageViewer';
 
 import styles from './Panel.scss';
 
-import classnames from 'classnames/bind';
-
-const cx = classnames.bind(styles);
-
 const Panel = ({ type, contractName, contractCode, contractPath, debuggerResponse, graphResponse, disassemblerResponse, storageResponse }) => {
-
+console.log(disassemblerResponse)
   return (
     <div className={styles['panel']}>
       {type === 'Transaction Debugger' && 

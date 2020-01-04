@@ -2,9 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { CSSTransitionGroup } from 'react-transition-group';
 
-import { showLoadingMessage, showErrorMessage, hideLoadingMessage } from './components/Store/Actions.js';
-
-import { baseUrl } from './utils/baseUrl';
+import * as actions from './_redux/actions.js';
+import * as selectors from './_redux/selectors';
 
 import TopNavBar from './components/TopNavBar/TopNavBar';
 import Form from './components/Form/Form';
@@ -16,23 +15,6 @@ import Main from './components/Main/Main';
 import styles from './styles/App.scss';
 import fade from './styles/transitions/fade.scss';
 import scale from './styles/transitions/scale.scss';
-
-const mapStateToProps = state => {
-  return {
-    showLoadingMessage: state.loadingMessage.isLoading,
-    loadingMessage: state.loadingMessage.message,
-    showErrorMessage: state.errorMessage.hasError,
-    errorMessage: state.errorMessage.message
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    loadingMessageOn: message => dispatch(showLoadingMessage(message)),
-    loadingMessageOff: () => dispatch(hideLoadingMessage()),
-    errorMessageOn: message => dispatch(showErrorMessage(message)),
-  }
-}
 
 class App extends React.Component {
   constructor(props) {
@@ -49,7 +31,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchData(baseUrl + 'solc/list');
+    this.props.fetchSolcVersions();
   }
 
   handleMenuItemIconClick(index) {
@@ -79,60 +61,16 @@ class App extends React.Component {
       settingsVisible: false,
     });
 
-    const url = `http://localhost:9090/files/${encodeURIComponent(parameter) || ' '}?extension=sol`;
-    this.fetchData(url);
-  }
-
-  fetchData(url) {
-    this.handleRequestPending();
-
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        data.error 
-        ? this.handleRequestFail(data.message) 
-        : this.handleRequestSuccess(data);      
-      })
-      .catch(err => this.handleRequestFail(err))
-      ;
-  }
-
-  handleRequestPending() {
-    this.props.loadingMessageOn('Loading...');
-  }
-
-  handleRequestSuccess(response) {
-
-    if(response.some(item => item.version)) {
-      this.setState({
-        fetchRequestStatus: 'success',
-        versions: response,
-      });
-    } else {
-      this.setState({
-        fetchRequestStatus: 'success',
-        contracts: response,
-      });
-    }
-
-    this.props.loadingMessageOff();
-  }
-
-  handleRequestFail(message) {
-    this.props.loadingMessageOff();
-    this.props.errorMessageOn(message);
+    this.props.getParameter(parameter);
+    this.props.fetchContracts();
   }
 
   render() {
-
-    const { fetchRequestStatus, contracts, versions } = this.state;
-    const { showLoadingMessage, showErrorMessage, errorMessage, loadingMessage } = this.props;
+    const { isLoadingMessageOn, isErrorMessageOn, errorMessage, loadingMessage, versions, contracts } = this.props;
 
     return (
       <div className={styles['app']}>
-        <TopNavBar
-          fetchRequestStatus={fetchRequestStatus}
-          versions={versions}>
+        <TopNavBar versions={versions}>
           <Form 
             submitButton={true}
             inputTypes={[{ name: 'contractsPath', placeholder: 'Insert contracts path'}]}
@@ -149,7 +87,7 @@ class App extends React.Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={300}
           >
-          { showLoadingMessage &&
+          { isLoadingMessageOn &&
             <MessageComp message={loadingMessage} />
           }
         </CSSTransitionGroup>
@@ -160,7 +98,7 @@ class App extends React.Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={300}
           >
-          { showErrorMessage &&
+          { isErrorMessageOn &&
             <MessageComp 
               message={errorMessage}
               onMessageButtonClick={() => this.handleMessageButtonClick()}
@@ -175,7 +113,7 @@ class App extends React.Component {
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}
             >
-          {fetchRequestStatus === 'success' && contracts.length &&
+          {!!contracts.length &&
           <Tab onMenuItemIconClick={this.handleMenuItemIconClick}>
             {contracts.map((item, i) => {
               return (
@@ -202,5 +140,23 @@ class App extends React.Component {
 }
 
 App.displayName = 'App';
+
+const mapStateToProps = state => ({
+  isLoadingMessageOn: state.loadingMessage.isLoading,
+  loadingMessage: state.loadingMessage.message,
+  isErrorMessageOn: state.errorMessage.hasError,
+  errorMessage: state.errorMessage.message,
+  datafromsaga: state.contracts.contracts,
+  versions: selectors.getVersions(state),
+  contracts: selectors.getContracts(state)
+})
+
+const mapDispatchToProps = {
+  toggleLoadingMessage: actions.toggleLoadingMessage,
+  toggleErrorMessage: actions.toggleErrorMessage,
+  getParameter: actions.getParameter,
+  fetchContracts: actions.fetchContracts,
+  fetchSolcVersions: actions.fetchSolcVersions
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);;
