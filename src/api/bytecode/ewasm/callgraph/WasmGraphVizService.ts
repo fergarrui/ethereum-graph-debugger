@@ -13,7 +13,7 @@ export class WasmGraphVizService {
     graph+= `
     ${this.createBody(callGraph)}
     }`
-    console.log(graph)
+    // console.log(graph)
     return graph
   }
 

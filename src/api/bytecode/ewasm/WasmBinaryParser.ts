@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { WasmBinary } from "./WasmBinary";
 import { BytesReader } from "./BytesReader";
-import { WasmSection, WasmTypeSectionPayload, WasmSectionPayload, WasmExportSectionPayload, WasmCodeSectionPayload, WasmImportSectionPayload, WasmFunctionSectionPayload, findSection } from "./WasmSection";
+import { WasmSection, WasmTypeSectionPayload, WasmSectionPayload, WasmExportSectionPayload, WasmCodeSectionPayload, WasmImportSectionPayload, WasmFunctionSectionPayload, findSection, WasmGlobalSectionPayload } from "./WasmSection";
 import { WasmSectionType, WasmType, WasmValueType, getWasmValueType, getExternalType, WasmExternalKind } from "./wasmTypes";
 import { FuncType, printSignature } from "./FuncType";
 import { FunctionBody, FunctionLocal, formatOpcodes } from "./FunctionBody";
@@ -23,6 +23,7 @@ export class WasmBinaryParser {
     this.sectionParsers.set(WasmSectionType.Code, this.parseCodeSection)
     this.sectionParsers.set(WasmSectionType.Import, this.parseImportSection)
     this.sectionParsers.set(WasmSectionType.Function, this.parseFunctionSection)
+    this.sectionParsers.set(WasmSectionType.Global, this.parseGlobalSection)
   }
 
   parse(binary: Buffer): WasmBinary {
@@ -53,12 +54,11 @@ export class WasmBinaryParser {
         payload
       })
     }
-
     const wasmBinary: WasmBinary = {
       sections
     };
     const wasmPostProcessed = this.postProcess(wasmBinary);
-    // console.log(JSON.stringify(wasmPostProcessed))
+    console.log(JSON.stringify(wasmPostProcessed))
     const cod: WasmCodeSectionPayload = findSection(wasmPostProcessed.sections, WasmSectionType.Code).payload as WasmCodeSectionPayload
     let i = 0
     let outp = ''
@@ -73,18 +73,21 @@ export class WasmBinaryParser {
   }
 
   postProcess(wasmBinary: WasmBinary): WasmBinary {
+
     const functionSection = findSection(wasmBinary.sections, WasmSectionType.Function)
     const functionSectionPayload: WasmFunctionSectionPayload = functionSection.payload as WasmFunctionSectionPayload
-
+    
     const typeSection = findSection(wasmBinary.sections, WasmSectionType.Type)
     const typeSectionPayload: WasmTypeSectionPayload = typeSection.payload as WasmTypeSectionPayload
+
     const codeSection = findSection(wasmBinary.sections, WasmSectionType.Code)
     const codeSectionPayload: WasmCodeSectionPayload = codeSection.payload as WasmCodeSectionPayload
+
     const exportSection = findSection(wasmBinary.sections, WasmSectionType.Export)
     const exportSectionPayload: WasmExportSectionPayload = exportSection.payload as WasmExportSectionPayload
     
     const importSection = findSection(wasmBinary.sections, WasmSectionType.Import)
-    const importSectionPayload: WasmImportSectionPayload = importSection.payload as WasmImportSectionPayload
+    const importSectionPayload: WasmImportSectionPayload = importSection ? importSection.payload as WasmImportSectionPayload : {imports: []} as WasmImportSectionPayload
 
     // adding function signatures & name
     for (let i = 0; i < functionSectionPayload.functionsTypes.length; i++) {
@@ -136,6 +139,20 @@ export class WasmBinaryParser {
       index++
     }
     return sectionPayload
+  }
+
+  parseGlobalSection(payload: Buffer, self: any) : WasmGlobalSectionPayload {
+    const reader = new BytesReader(payload)
+    const globalsSection: WasmGlobalSectionPayload = {
+
+    }
+    const numberOfElements = reader.readVarUint32()
+    let globalsCounter = 0
+    while(globalsCounter < numberOfElements) {
+      const globalType = reader.readBytesToNumber(1)
+      globalsCounter++
+    }
+    return
   }
 
   parseExportSection(payload: Buffer, self: any): WasmExportSectionPayload {
@@ -256,7 +273,6 @@ export class WasmBinaryParser {
   }
 
   parseFunctionCode(reader: BytesReader): FunctionBody {
-    
     const bodySize = reader.readVarUint32()
     const body = reader.readBytes(bodySize)
     return this.parseFunctionBody(body)
@@ -326,9 +342,6 @@ export class WasmBinaryParser {
             immediates.push(valueFormatted)
             vectorCounter++
           }
-          const defaultTarget = reader.readVarUint32()
-          const valueFormatted = defaultTarget < 0? `-0x${(defaultTarget * -1).toString(16)}`: `0x${defaultTarget.toString(16)}`
-          immediates.push(valueFormatted)
         }
       }
       const newOpcode = {

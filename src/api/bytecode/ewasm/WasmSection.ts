@@ -18,6 +18,10 @@ export interface WasmTypeSectionPayload extends WasmSectionPayload {
   functions: FuncType[]
 }
 
+export interface WasmGlobalSectionPayload extends WasmSectionPayload {
+
+}
+
 export interface WasmExportSectionPayload extends WasmSectionPayload {
   exports: ExportEntry[]
 }
@@ -36,6 +40,8 @@ export interface WasmFunctionSectionPayload extends WasmSectionPayload {
 
 export const findSection = (sections: WasmSection[], sectionType: WasmSectionType): WasmSection => {
   return sections.find(section =>  {
-    return section.sectionType.toString() == WasmSectionType[sectionType.toString()]
+    if(section && section.sectionType) {
+      return section.sectionType.toString() == WasmSectionType[sectionType.toString()]
+    }
   }); 
 }
