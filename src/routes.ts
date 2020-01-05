@@ -136,6 +136,12 @@ const models: TsoaRoute.Models = {
             "sections": { "dataType": "array", "array": { "ref": "WasmSection" }, "required": true },
         },
     },
+    "EWasmModule": {
+        "properties": {
+            "binary": { "ref": "WasmBinary", "required": true },
+            "dotCallGraph": { "dataType": "string", "required": true },
+        },
+    },
 };
 const validationService = new ValidationService(models);
 

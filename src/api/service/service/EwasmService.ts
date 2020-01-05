@@ -11,7 +11,7 @@ import { WasmCFGCreator } from "../../bytecode/ewasm/cfg/WasmCFGCreator";
 import { EWasmModule } from "../../bytecode/ewasm/EWasmModule";
 import { WasmCallgraphCreator } from "../../bytecode/ewasm/callgraph/WasmCallgraphCreator";
 import { WasmCallGraph } from "../../bytecode/ewasm/callgraph/WasmCallGraph";
-import { WasmGraphVizService } from "../../bytecode/ewasm/callgraph/WasmGraphVizService";
+import { WasmCallGraphVizService } from "../../bytecode/ewasm/callgraph/WasmCallGraphVizService";
 
 const wabt = require("wabt")()
 const commandExists = require('command-exists').sync
@@ -26,7 +26,7 @@ export class EwasmService {
     @inject(TYPES.WasmBinaryParser) private wasmParser: WasmBinaryParser,
     @inject(TYPES.WasmCFGCreator) private cfgCreator: WasmCFGCreator,
     @inject(TYPES.WasmCallgraphCreator) private callGraphCreator: WasmCallgraphCreator,
-    @inject(TYPES.WasmGraphVizService) private wasmGraphVizService: WasmGraphVizService
+    @inject(TYPES.WasmGraphVizService) private wasmGraphVizService: WasmCallGraphVizService
     ) {}
 
   analyze(codeInHex: string): EWasmModule {
@@ -39,13 +39,7 @@ export class EwasmService {
       const binary: WasmBinary = this.wasmParser.parse(wasm)
       const callGraph: WasmCallGraph = this.callGraphCreator.createCallgraph(binary)
       const dotCallGraph: string = this.wasmGraphVizService.convertToDot(callGraph)
-
-      // removeme
-      // const sec = findSection(binary.sections, WasmSectionType.Code)
-      // const pay: WasmCodeSectionPayload = sec.payload as WasmCodeSectionPayload
-      // const f2 = pay.functions[2]
-      // this.cfgCreator.createFunctionCfg(f2.opcodes)
-      // end removeme
+      this.cfgCreator.createWasmCFG(binary)
       return {
         binary,
         dotCallGraph
