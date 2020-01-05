@@ -4,6 +4,7 @@ import TransactionDebugger from '../TransactionDebugger/TransactionDebugger';
 import Disassembler from '../Disassembler/Disassembler';
 import ControlFlowGraph from '../ControlFlowGraph/ControlFlowGraph';
 import StorageViewer from '../StorageViewer/StorageViewer';
+import EwasmAnalyzer from '../EwasmAnalyzer/EwasmAnalyzer';
 
 import styles from './Panel.scss';
 
@@ -42,6 +43,10 @@ const Panel = ({ type, contractName, contractCode, contractPath, debuggerRespons
       }
       {type === 'Storage Viewer' &&
         <StorageViewer storageResponse={storageResponse} />
+      }
+      {
+        type === 'Ewasm Analyzer' &&
+        <EwasmAnalyzer />
       }
     </div>
   );
