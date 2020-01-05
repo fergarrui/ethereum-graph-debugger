@@ -58,7 +58,7 @@ export class WasmBinaryParser {
       sections
     };
     const wasmPostProcessed = this.postProcess(wasmBinary);
-    console.log(JSON.stringify(wasmPostProcessed))
+    // console.log(JSON.stringify(wasmPostProcessed))
     const cod: WasmCodeSectionPayload = findSection(wasmPostProcessed.sections, WasmSectionType.Code).payload as WasmCodeSectionPayload
     let i = 0
     let outp = ''
@@ -308,6 +308,7 @@ export class WasmBinaryParser {
     const opcodes: WasmOpcode[] = []
     let depth = 0
     let blockType: BlockType = BlockType.NONE
+    let index = 0
     while(!reader.finished()) {
       const opcodeByte = reader.readBytesToNumber(1)
       const immediates: string[] = []
@@ -344,7 +345,9 @@ export class WasmBinaryParser {
           }
         }
       }
+
       const newOpcode = {
+        index,
         opcode: opcodeDefinition,
         immediates,
         depth,
@@ -357,22 +360,7 @@ export class WasmBinaryParser {
       if(WasmOpcodes.isBlockStart(newOpcode)) {
         depth++
       }
-      // if(newOpcode.opcode.name === 'block') {
-      //   blockType = BlockType.BLOCK
-      // }
-      // if (newOpcode.opcode.name === 'loop') {
-      //   blockType = BlockType.LOOP
-      // }
-      // if(newOpcode.opcode.name === 'if') {
-      //   blockType = BlockType.IF
-      // }
-      // if(newOpcode.opcode.name === 'else') {
-      //   blockType = BlockType.ELSE
-      // }
-      // if(depth === 0) {
-      //   blockType = BlockType.NONE
-      // }
-      
+      index++      
     }
     return opcodes
   }

@@ -204,7 +204,7 @@ export class WasmOpcodes {
   static isBlockStart(opcode: WasmOpcode): boolean {
     return opcode.opcode.name === 'block' ||
       opcode.opcode.name === 'if' ||
-      opcode.opcode.name === 'else' ||
+      // opcode.opcode.name === 'else' ||
       opcode.opcode.name === 'loop'
   }
 
@@ -220,9 +220,23 @@ export class WasmOpcodes {
     return opcode.opcode.name === 'call_indirect'
   }
 
+  static isLoop(opcode: WasmOpcode): boolean {
+    return opcode.opcode.name === 'loop'
+  }
+
   static isDirectBranch(opcode: WasmOpcode): boolean {
     return opcode.opcode.name === 'br' ||
       opcode.opcode.name === 'br_if'
+  }
+
+  static isCfgBlockEnd(opcode: WasmOpcode) : boolean {
+    return opcode.opcode.name === 'br' ||
+      opcode.opcode.name === 'br_if' ||
+      opcode.opcode.name === 'br_table' ||
+      opcode.opcode.name === 'if' ||
+      opcode.opcode.name === 'else' ||
+      opcode.opcode.name === 'end' ||
+      opcode.opcode.name === 'return'
   }
 }
 
@@ -246,6 +260,7 @@ export enum BlockType {
 
 
 export interface WasmOpcode {
+  index: number
   opcode: WasmOpcodeDefinition
   immediates: string[]
   depth: number

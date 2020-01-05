@@ -7,3 +7,5 @@ coverage/*
 contracts/*
 *.txt
 *.json
+*.cfg
+*.viz

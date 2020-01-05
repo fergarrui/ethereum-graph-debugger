@@ -2,7 +2,7 @@ import { WasmCallGraph } from "./WasmCallGraph";
 import { injectable } from "inversify";
 
 @injectable()
-export class WasmGraphVizService {
+export class WasmCallGraphVizService {
 
   convertToDot(callGraph: WasmCallGraph): string {
     let graph = `digraph " " {
