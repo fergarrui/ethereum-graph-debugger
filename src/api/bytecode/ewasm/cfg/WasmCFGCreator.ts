@@ -4,6 +4,7 @@ import { WasmBinary } from "../WasmBinary";
 import { WasmSection, findSection, WasmCodeSectionPayload } from "../WasmSection";
 import { WasmSectionType } from "../wasmTypes";
 import { WasmCFGBlock } from "./WasmCFGBlock";
+import { WasmCFGGraphVizService } from "./WasmCFGGraphVizService";
 
 @injectable()
 export class WasmCFGCreator {
@@ -13,13 +14,13 @@ export class WasmCFGCreator {
     const funPayload: WasmCodeSectionPayload = functionSection.payload as WasmCodeSectionPayload
     funPayload.functions.forEach((fun, index) => {
       // removeme
-      if (index === 0) {
-        this.createFunctionCfg(fun.opcodes)
+      if (index === 1) {
+        this.createFunctionCfg(fun.opcodes, wasm)
       }
     })
   }
 
-  createFunctionCfg(opcodes: WasmOpcode[]) {
+  createFunctionCfg(opcodes: WasmOpcode[], wasm: WasmBinary) {
     // split in blocks first
     const cfgBlocks: Map<number, WasmCFGBlock> = new Map()
     let startIndex = 0
@@ -29,6 +30,10 @@ export class WasmCFGCreator {
         const subOpcodes = opcodes.slice(startIndex, index + 1)
         cfgBlocks.set(startIndex, {opcodes: subOpcodes, nextBlocks: []})
         startIndex = index+1
+      } else if (WasmOpcodes.isLoop(op)) {
+        const subOpcodes = opcodes.slice(startIndex, index)
+        cfgBlocks.set(startIndex, {opcodes: subOpcodes, nextBlocks: []})
+        startIndex = index
       }
       index++
     }
@@ -41,33 +46,42 @@ export class WasmCFGCreator {
       }
       if (lastOpcode.opcode.name === 'end') {
         value.nextBlocks.push(lastOpcode.index + 1)
+      } else if (lastOpcode.opcode.name === 'block') {
+        value.nextBlocks.push(lastOpcode.index + 1)
       } else if (lastOpcode.opcode.name === 'br_if') {
-        const brIfImmediate: number = parseInt(lastOpcode.immediates[0], 16)
-        const target = brIfImmediate - 1
-        const nextIndex = this.findNextOpcodeWithDepth(lastOpcode.index, opcodes, target)
+        const brIfImmediate: number = parseInt(lastOpcode.immediates[0], 16);
+        this.addBrNextBlocks(brIfImmediate, lastOpcode, opcodes, value, cfgBlocks);
         value.nextBlocks.push(lastOpcode.index + 1)
-        value.nextBlocks.push(nextIndex)
       } else if (lastOpcode.opcode.name === 'br') {
-        const brImmediate: number = parseInt(lastOpcode.immediates[0], 16)
-        const target = brImmediate - 1
-        const nextIndex = this.findNextOpcodeWithDepth(lastOpcode.index, opcodes, target)
-        value.nextBlocks.push(lastOpcode.index + 1)
-        value.nextBlocks.push(nextIndex)
+        const brImmediate: number = parseInt(lastOpcode.immediates[0], 16);
+        this.addBrNextBlocks(brImmediate, lastOpcode, opcodes, value, cfgBlocks)
       } else if (lastOpcode.opcode.name === 'br_table') {
         const brTableImmediates: string[] = lastOpcode.immediates
-        brTableImmediates.forEach((immediate, index) => {
+        brTableImmediates.forEach(immediate => {
           const immediateNum: number = parseInt(immediate, 16)
-          let target = immediateNum - 1
-          if (index === brTableImmediates.length - 1) {
-            target = immediateNum
-          }
-          const nextIndex = this.findNextOpcodeWithDepth(lastOpcode.index, opcodes, target)
-          value.nextBlocks.push(nextIndex)
+          this.addBrNextBlocks(immediateNum, lastOpcode, opcodes, value, cfgBlocks)
         })
       }
     })
 
-    console.log(JSON.stringify(Array.from(cfgBlocks.entries())))
+    // console.log(JSON.stringify(Array.from(cfgBlocks.entries())))
+    const a = new WasmCFGGraphVizService()
+    a.convertToDot({cfgBlocks}, wasm)
+  }
+
+  private addBrNextBlocks(immediate: number, lastOpcode: WasmOpcode, opcodes: WasmOpcode[], value: WasmCFGBlock, cfgBlocks: Map<number, WasmCFGBlock>) {
+    const target = lastOpcode.depth - immediate - 1;
+    const wasmBlockIndex = this.findPreviousOpcodeWithDepth(lastOpcode.index, opcodes, target)
+    const wasmBlock = opcodes[wasmBlockIndex]
+    if(WasmOpcodes.isLoop(wasmBlock)) {
+       const cfgKeys = Array.from(cfgBlocks.keys())
+       if(cfgKeys.includes(wasmBlockIndex)) {
+        value.nextBlocks.push(wasmBlockIndex);
+       }
+    } else {
+      const nextIndex = this.findNextOpcodeWithDepth(lastOpcode.index, opcodes, target);
+      value.nextBlocks.push(nextIndex);
+    }
   }
 
   findNextOpcodeWithDepth(start: number, opcodes: WasmOpcode[], depth: number): number {
@@ -77,6 +91,16 @@ export class WasmCFGCreator {
         return op.index
       }
     }
-    throw new Error(`No destination was found start=${start}, depth=${depth}`)
+    throw new Error(`[findNextOpcodeWithDepth] No destination was found start=${start}, depth=${depth}`)
+  }
+
+  findPreviousOpcodeWithDepth(start: number, opcodes: WasmOpcode[], depth: number): number {
+    for (let i = start; i >= 0; i--) {
+      const op = opcodes[i]
+      if (op.depth === depth) {
+        return op.index
+      }
+    }
+    throw new Error(`[findPreviousOpcodeWithDepth] No destination was found start=${start}, depth=${depth}`)
   }
 }

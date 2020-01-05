@@ -5,8 +5,6 @@ import { WasmBinary } from "../../bytecode/ewasm/WasmBinary";
 import { Web3Configuration } from "../../blockchain/Web3Configuration";
 import { IWeb3 } from "../../blockchain/IWeb3";
 import { Web3Instance } from "../../blockchain/Web3Instance";
-import { findSection, WasmCodeSectionPayload } from "../../bytecode/ewasm/WasmSection";
-import { WasmSectionType } from "../../bytecode/ewasm/wasmTypes";
 import { WasmCFGCreator } from "../../bytecode/ewasm/cfg/WasmCFGCreator";
 import { EWasmModule } from "../../bytecode/ewasm/EWasmModule";
 import { WasmCallgraphCreator } from "../../bytecode/ewasm/callgraph/WasmCallgraphCreator";

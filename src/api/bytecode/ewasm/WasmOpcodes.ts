@@ -220,6 +220,10 @@ export class WasmOpcodes {
     return opcode.opcode.name === 'call_indirect'
   }
 
+  static isLoop(opcode: WasmOpcode): boolean {
+    return opcode.opcode.name === 'loop'
+  }
+
   static isDirectBranch(opcode: WasmOpcode): boolean {
     return opcode.opcode.name === 'br' ||
       opcode.opcode.name === 'br_if'

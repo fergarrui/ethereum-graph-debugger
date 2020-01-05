@@ -8,3 +8,4 @@ contracts/*
 *.txt
 *.json
 *.cfg
+*.viz
