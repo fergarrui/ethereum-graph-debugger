@@ -61,6 +61,18 @@ export class WasmCFGCreator {
           const immediateNum: number = parseInt(immediate, 16)
           this.addBrNextBlocks(immediateNum, lastOpcode, opcodes, value, cfgBlocks)
         })
+      } else if (lastOpcode.opcode.name === 'else') {
+        value.nextBlocks.push(lastOpcode.index + 1)
+      } else if (lastOpcode.opcode.name === 'if') {
+        let nextOpcode = this.findNextOpcodeWithDepth(lastOpcode.index + 1, opcodes, lastOpcode.depth)
+        const nextElse = this.findNextOpcodeWithDepthAndName(lastOpcode.index, opcodes, lastOpcode.depth+1, 'else')
+        if (nextElse !== -1) {
+          if (nextOpcode > nextElse) {
+            nextOpcode = nextElse + 1
+          }
+        }
+        value.nextBlocks.push(lastOpcode.index + 1)
+        value.nextBlocks.push(nextOpcode)
       }
     })
 
@@ -92,6 +104,16 @@ export class WasmCFGCreator {
       }
     }
     throw new Error(`[findNextOpcodeWithDepth] No destination was found start=${start}, depth=${depth}`)
+  }
+
+  findNextOpcodeWithDepthAndName(start: number, opcodes: WasmOpcode[], depth: number, name: string): number {
+    for (let i = start; i < opcodes.length; i++) {
+      const op = opcodes[i]
+      if (op.depth === depth && op.opcode.name === name) {
+        return op.index
+      }
+    }
+    return -1
   }
 
   findPreviousOpcodeWithDepth(start: number, opcodes: WasmOpcode[], depth: number): number {
