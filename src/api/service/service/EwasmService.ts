@@ -6,10 +6,13 @@ import { Web3Configuration } from "../../blockchain/Web3Configuration";
 import { IWeb3 } from "../../blockchain/IWeb3";
 import { Web3Instance } from "../../blockchain/Web3Instance";
 import { WasmCFGCreator } from "../../bytecode/ewasm/cfg/WasmCFGCreator";
-import { EWasmModule } from "../../bytecode/ewasm/EWasmModule";
+import { EWasmModuleResponse } from "../../bytecode/ewasm/EWasmModuleResponse";
 import { WasmCallgraphCreator } from "../../bytecode/ewasm/callgraph/WasmCallgraphCreator";
 import { WasmCallGraph } from "../../bytecode/ewasm/callgraph/WasmCallGraph";
 import { WasmCallGraphVizService } from "../../bytecode/ewasm/callgraph/WasmCallGraphVizService";
+import { WasmCFG } from "../../bytecode/ewasm/cfg/WasmCFG";
+import { WasmCFGGraphVizService } from "../../bytecode/ewasm/cfg/WasmCFGGraphVizService";
+import { WasmFunctionCGF } from "../../bytecode/ewasm/cfg/WasmFunctionCGF";
 
 const wabt = require("wabt")()
 const commandExists = require('command-exists').sync
@@ -24,23 +27,31 @@ export class EwasmService {
     @inject(TYPES.WasmBinaryParser) private wasmParser: WasmBinaryParser,
     @inject(TYPES.WasmCFGCreator) private cfgCreator: WasmCFGCreator,
     @inject(TYPES.WasmCallgraphCreator) private callGraphCreator: WasmCallgraphCreator,
-    @inject(TYPES.WasmGraphVizService) private wasmGraphVizService: WasmCallGraphVizService
+    @inject(TYPES.WasmCallGraphVizService) private wasmGraphVizService: WasmCallGraphVizService,
+    @inject(TYPES.WasmCFGGraphVizService) private wasmCFGGraphVizService: WasmCFGGraphVizService
     ) {}
 
-  analyze(codeInHex: string): EWasmModule {
+  analyze(codeInHex: string): EWasmModuleResponse {
     const wasm: Buffer = this.hexToBuffer(codeInHex)
     return this.analyzeBuffer(wasm)
   }
 
-  analyzeBuffer(wasm: Buffer): EWasmModule {
+  analyzeBuffer(wasm: Buffer): EWasmModuleResponse {
     try {
       const binary: WasmBinary = this.wasmParser.parse(wasm)
+      const functionsCfg: string[] = []
       const callGraph: WasmCallGraph = this.callGraphCreator.createCallgraph(binary)
       const dotCallGraph: string = this.wasmGraphVizService.convertToDot(callGraph)
-      this.cfgCreator.createWasmCFG(binary)
+      const wasmCFG: WasmCFG = this.cfgCreator.createWasmCFG(binary)
+      wasmCFG.functions.forEach((value: WasmFunctionCGF, key: number) => {
+        const cfgString = this.wasmCFGGraphVizService.convertToDot(value, binary)
+        functionsCfg.push(cfgString)
+      })
+
       return {
         binary,
-        dotCallGraph
+        dotCallGraph,
+        functionsCfg
       }
     } catch (error) {
       console.log(error)
@@ -48,7 +59,7 @@ export class EwasmService {
     }
   }
 
-  async analyzeAddress(address: string, config: Web3Configuration): Promise<EWasmModule> {
+  async analyzeAddress(address: string, config: Web3Configuration): Promise<EWasmModuleResponse> {
     const iWeb3: IWeb3 = new Web3Instance(config)
     const web3 = iWeb3.getInstance()
     let contractCode = await web3.eth.getCode(address)

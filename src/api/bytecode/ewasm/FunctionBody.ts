@@ -17,8 +17,11 @@ export interface FunctionLocal {
   valueType: WasmValueType
 }
 
-export const formatOpcodes = (opcodes: WasmOpcode[], importsPayload: WasmImportSectionPayload, codePayload: WasmCodeSectionPayload): string => {
-  const newLine = '\n'
+export const formatOpcodes = (opcodes: WasmOpcode[], importsPayload: WasmImportSectionPayload, codePayload: WasmCodeSectionPayload, newLineChar?: string): string => {
+  let newLine = '\n'
+  if (newLineChar) {
+    newLine = newLineChar
+  }
   const tab = '  '
   let formattedCode = ''
   let indentation = 0

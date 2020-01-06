@@ -58,17 +58,6 @@ export class WasmBinaryParser {
       sections
     };
     const wasmPostProcessed = this.postProcess(wasmBinary);
-    // console.log(JSON.stringify(wasmPostProcessed))
-    const cod: WasmCodeSectionPayload = findSection(wasmPostProcessed.sections, WasmSectionType.Code).payload as WasmCodeSectionPayload
-    let i = 0
-    let outp = ''
-    for (const o of cod.functions) {
-      outp += `== ${i} == \n`
-      outp += o.formattedOpcodes
-      i++
-    }
-    const fs = require('fs')
-    fs.writeFileSync('./output.txt', outp)
     return wasmPostProcessed
   }
 

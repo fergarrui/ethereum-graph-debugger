@@ -1,6 +1,7 @@
 import { WasmBinary } from "./WasmBinary";
 
-export interface EWasmModule {
+export interface EWasmModuleResponse {
   binary: WasmBinary
   dotCallGraph: string
+  functionsCfg: string[]
 }

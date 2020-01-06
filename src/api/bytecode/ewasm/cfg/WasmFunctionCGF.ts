@@ -1,5 +1,5 @@
 import { WasmCFGBlock } from "./WasmCFGBlock";
 
-export interface WasmCGF {
+export interface WasmFunctionCGF {
   cfgBlocks: Map<number, WasmCFGBlock> 
 }
