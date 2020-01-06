@@ -7,7 +7,7 @@ import * as actions from '../../_redux/actions.js';
 import * as selectors from '../../_redux/selectors';
 import { baseUrl } from '../../utils/baseUrl';
 import Editor from '../Editor/Editor';
-import SideBar from '../SideBar/SideBar';
+import { SideBar, SideBarItem } from '../SideBar/SideBar';
 import Tab from '../Tab/Tab';
 import Modal from '../Modal/Modal';
 import Hamburger from '../Hamburger/Hamburger';
@@ -39,7 +39,8 @@ const mapDispatchToProps = {
   fetchTransactionDebugger: actions.fetchTransactionDebugger,
   fetchStorage: actions.fetchStorage,
   fetchControlFlowGraph: actions.fetchControlFlowGraph,
-  fetchDisassembler: actions.fetchDisassembler 
+  fetchDisassembler: actions.fetchDisassembler,
+  fetchAnalyzer: actions.fetchAnalyzer
 }
 
 class Main extends React.Component {
@@ -48,10 +49,12 @@ class Main extends React.Component {
 
     this.state = {
       isSideBarOpen: false,
+      hasUpdated: false,
       isModalOpen: {
         transactionDebugger: false,
-        viewStorage: false
-      },
+        viewStorage: false,
+        analyzer: false
+      }
     }
 
     this.handleMenuItemIconClick = this.handleMenuItemIconClick.bind(this);
@@ -82,7 +85,7 @@ class Main extends React.Component {
       blockchainBasicAuthPassword: localStorage.getItem('password')
     }
 
-    this.props.fetchTransactionDebugger(this.getUrl(`debug/${this.state.transactionHash}/`, params), 'Transaction Debugger', code);
+    this.props.fetchTransactionDebugger(name, this.getUrl(`debug/${this.state.transactionHash}/`, params), 'Transaction Debugger', code);
     this.setState({
       isModalOpen: { ...isModalOpen, transactionDebugger: false }
     });
@@ -97,12 +100,13 @@ class Main extends React.Component {
   }
 
   handleSubmitViewStorageForm() {
+    const { name } = this.props;
     const params = {
       startBlock: encodeURIComponent(this.state.startBlock),
       endBlock: encodeURIComponent(this.state.endBlock)
     }
 
-    this.props.fetchStorage(this.getUrl(`storage/${this.state.contractAddress}/`, params), 'Storage Viewer');
+    this.props.fetchStorage(name, this.getUrl(`storage/${this.state.contractAddress}/`, params), 'Storage Viewer');
     this.setState({
       isModalOpen: { ...this.state.isModalOpen, viewStorage: false }
     })
@@ -142,9 +146,15 @@ class Main extends React.Component {
       'constructor': `${isConstructor}`
     }
 
-    this.props.fetchControlFlowGraph(this.getUrl('cfg/source', params), `Control Flow Graph ${isConstructor ? 'Constructor' : 'Runtime'}`, code);
+    this.props.fetchControlFlowGraph(name, this.getUrl('cfg/source', params), `Control Flow Graph ${isConstructor ? 'Constructor' : 'Runtime'}`, code);
 
     document.removeEventListener('click', this.handleOutsideClick);
+  }
+
+  handleAnalyzerClick() {
+    this.setState({
+      isModalOpen: { ...this.state.isModalOpen, analyzer: true }
+    });
   }
 
   handleDisassemblerClick() {
@@ -155,7 +165,7 @@ class Main extends React.Component {
       path: encodeURIComponent(path)
     }
 
-    this.props.fetchDisassembler(this.getUrl('disassemble', params), 'Disassembler', code);
+    this.props.fetchDisassembler(name, this.getUrl('disassemble', params), 'Disassembler', code);
 
     document.removeEventListener('click', this.handleOutsideClick);
   }
@@ -195,9 +205,21 @@ class Main extends React.Component {
     });
   }
 
+  handleSubmitEwasmForm() {
+    const { name } = this.props;
+    const { contractAddress } = this.state;
+
+    this.props.fetchAnalyzer(name, `${baseUrl}analyze/${contractAddress}/`, 'Ewasm Analyzer');
+    this.setState({
+      isModalOpen: { ...this.state.isModalOpen, analyzer: false }
+    })
+  }
+
   render() {
-    const { code, name, path, index, evm, transactionDebugger, disassembler, storage, graph, tabs, hasFetched } = this.props;
-    const { isSideBarOpen, isModalOpen, } = this.state;
+    const { code, name, path, index, evm, transactionDebugger, disassembler, storage, graph, hasFetched, tabs } = this.props;
+    const { isSideBarOpen, isModalOpen } = this.state;
+
+    const displayedTabs = tabs.filter(tab => tab.name === name);
 
     const inputTypes = [
       {
@@ -230,14 +252,15 @@ class Main extends React.Component {
         <div 
           className={sideBarClasses}
           ref={node => { this.node = node; }}
-        > 
-          <SideBar 
-            onDisassemblerClick={() => this.handleDisassemblerClick()}
-            onTransactionDebuggerClick={() => this.handleTransactionDebuggerClick()}
-            onControlFlowGraphRuntimeClick={() => this.handleControlFlowGraphClick(false)}
-            onControlFlowGraphConstructorClick={() => this.handleControlFlowGraphClick(true)}
-            onViewStorageClick={() => this.handleViewStorageClick()}
-          />
+        >
+          <SideBar>
+            <SideBarItem label='Transaction Debugger' onClick={() => this.handleTransactionDebuggerClick()} />
+            <SideBarItem label='Disassembler' onClick={() => this.handleDisassemblerClick()} />
+            <SideBarItem label='Control Flow Graph Constructor' onClick={() => this.handleControlFlowGraphClick(false)} />
+            <SideBarItem label='Control FLow Graph Runtime' onClick={() => this.handleControlFlowGraphClick(true)} />
+            <SideBarItem label='View Storage' onClick={() => this.handleViewStorageClick()} />
+            <SideBarItem label='Ewasm Analyzer' onClick={() => this.handleAnalyzerClick()} />
+          </SideBar> 
         </div>
         <div className={styles['main-comp__left__data']}>
             <Editor code={code} index={index} />
@@ -266,8 +289,8 @@ class Main extends React.Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={300}
           >
-            <Tab onMenuItemIconClick={this.handleMenuItemIconClick}>
-            {!!hasFetched && !!tabs.length && tabs.map((item, i) => {
+            <Tab onMenuItemIconClick={this.handleMenuItemIconClick} onTabItemClick={this.onTabItemClick}>
+            {!!hasFetched && !!displayedTabs.length && displayedTabs.map((item, i) => {
               return (
                 <TabPanel
                   key={`id--${item.name}`}
@@ -308,6 +331,27 @@ class Main extends React.Component {
             </Modal>
         }
       </CSSTransitionGroup>
+      <CSSTransitionGroup
+        transitionName={fade}
+        transitionAppear={true}
+        transitionAppearTimeout={300}
+        transitionEnterTimeout={300}
+        transitionLeaveTimeout={300}
+        >
+          {
+            isModalOpen.analyzer &&
+            <Modal onIconClick={() => this.handleModalIconClick()}>          
+                <Form
+                  buttonValue='Submit'
+                  submitButton={true} 
+                  inputTypes={[{ name: 'contractAddress', placeholder: 'Contract address' }]}
+                  onInputChange={(e) => this.handleFormInputChange(e)} 
+                  onSubmitForm={() => this.handleSubmitEwasmForm()}
+                  onInputKeyUp={() => this.handleSubmitEwasmForm()}
+                  />
+              </Modal>
+          }
+        </CSSTransitionGroup>
       <CSSTransitionGroup
         transitionName={fade}
         transitionAppear={true}

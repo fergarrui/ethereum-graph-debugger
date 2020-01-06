@@ -1,37 +1,24 @@
 import React from 'react';
+import cx from 'classnames';
 
 import styles from './SideBar.scss';
 
-class SideBar extends React.Component {
-
-  handleClick(type) {
-    this.props.onClick(type);
+export const SideBarItem = ({ className, label, onClick }) => {
+  const onItemClick = type => {
+    onClick(type)
   }
 
-  render() {
+  return (
+    <div className={cx(styles['side-bar__item'], className)} onClick={onItemClick}>{label}</div>
+  )
+}
 
-    const { onTransactionDebuggerClick, onControlFlowGraphRuntimeClick, onControlFlowGraphConstructorClick, onDisassemblerClick, onViewStorageClick } = this.props;
-
-    return (
-      <div className={styles['side-bar']}>
-        <div className={styles['side-bar__item']} onClick={onTransactionDebuggerClick}>
-          <span>Debug Transaction</span>
-        </div>
-        <div className={styles['side-bar__item']} onClick={onDisassemblerClick}>
-          <span>Disassembler</span>
-        </div>
-        <div className={styles['side-bar__item']} onClick={onControlFlowGraphConstructorClick}>
-          <span>Control Flow Graph Constructor</span>
-        </div>
-        <div className={styles['side-bar__item']} onClick={onControlFlowGraphRuntimeClick}>
-          <span>Control Flow Graph Runtime</span>
-        </div>
-        <div className={styles['side-bar__item']} onClick={onViewStorageClick}>
-          <span>View Storage</span>
-        </div>
-      </div>
-    )
-  }
+export const SideBar = ({ className, children }) => {
+  return (
+    <div className={cx(styles['side-bar'], className)}>
+    {children}
+    </div>
+  )
 }
 
 SideBar.displayName = 'SideBar';

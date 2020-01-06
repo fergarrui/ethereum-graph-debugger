@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import * as selectros from '../../_redux/selectors';
 
 import Graph from '../Graph/Graph';
 
@@ -20,6 +23,10 @@ const TransactionDebugger = ({ contractName, contractPath, debuggerResponse }) =
   );
 }
 
+const mapStateToProps = state => ({
+  transactionDebugger: selectros.getTransactionDebugger(state)
+})
+
 TransactionDebugger.displayName = 'TransactionDebugger';
 
-export default TransactionDebugger;
+export default connect(mapStateToProps, null)(TransactionDebugger);

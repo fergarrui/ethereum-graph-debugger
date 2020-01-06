@@ -1,9 +1,10 @@
 import * as ActionTypes from './Constants.js';
 
-export const fetchTransactionDebugger = (url, type, body) => dispatch => {
+export const fetchTransactionDebugger = (name, url, type, body) => dispatch => {
   dispatch({
     type: ActionTypes.FETCH_TRANSACTION_DEBUGGER,
     payload: {
+      name,
       url,
       type,
       body,
@@ -11,20 +12,22 @@ export const fetchTransactionDebugger = (url, type, body) => dispatch => {
   });
 }
 
-export const fetchStorage = (url, type) => dispatch => {
+export const fetchStorage = (name, url, type) => dispatch => {
   dispatch({
     type: ActionTypes.FETCH_STORAGE,
     payload: {
+      name,
       url,
       type
     }
   });
 }
 
-export const fetchDisassembler = (url, type, body) => dispatch => {
+export const fetchDisassembler = (name, url, type, body) => dispatch => {
   dispatch({
     type: ActionTypes.FETCH_DISASSEMBLER,
     payload: {
+      name,
       url,
       type,
       body,
@@ -32,13 +35,25 @@ export const fetchDisassembler = (url, type, body) => dispatch => {
   });
 }
 
-export const fetchControlFlowGraph = (url, type, body) => dispatch => {
+export const fetchControlFlowGraph = (name, url, type, body) => dispatch => {
   dispatch({
     type: ActionTypes.FETCH_GRAPH,
     payload: {
+      name,
       url,
       type,
       body
+    }
+  });
+}
+
+export const fetchAnalyzer = (name, url, type) => dispatch => {
+  dispatch({
+    type: ActionTypes.FETCH_ANALYZER,
+    payload: {
+      name,
+      url,
+      type
     }
   });
 }
