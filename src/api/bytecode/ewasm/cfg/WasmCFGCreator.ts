@@ -4,23 +4,28 @@ import { WasmBinary } from "../WasmBinary";
 import { WasmSection, findSection, WasmCodeSectionPayload } from "../WasmSection";
 import { WasmSectionType } from "../wasmTypes";
 import { WasmCFGBlock } from "./WasmCFGBlock";
-import { WasmCFGGraphVizService } from "./WasmCFGGraphVizService";
+import { WasmFunctionCGF } from "./WasmFunctionCGF";
+import { WasmCFG } from "./WasmCFG";
 
 @injectable()
 export class WasmCFGCreator {
 
-  createWasmCFG(wasm: WasmBinary) {
+  createWasmCFG(wasm: WasmBinary): WasmCFG {
+    
+    const wasmCFG: WasmCFG = {
+      functions: new Map()
+    }
+
     const functionSection: WasmSection = findSection(wasm.sections, WasmSectionType.Code)
     const funPayload: WasmCodeSectionPayload = functionSection.payload as WasmCodeSectionPayload
     funPayload.functions.forEach((fun, index) => {
-      // removeme
-      if (index === 1) {
-        this.createFunctionCfg(fun.opcodes, wasm)
-      }
+        const functionCFG: WasmFunctionCGF = this.createFunctionCfg(fun.opcodes)
+        wasmCFG.functions.set(index, functionCFG)
     })
+    return wasmCFG
   }
 
-  createFunctionCfg(opcodes: WasmOpcode[], wasm: WasmBinary) {
+  createFunctionCfg(opcodes: WasmOpcode[]): WasmFunctionCGF {
     // split in blocks first
     const cfgBlocks: Map<number, WasmCFGBlock> = new Map()
     let startIndex = 0
@@ -75,10 +80,9 @@ export class WasmCFGCreator {
         value.nextBlocks.push(nextOpcode)
       }
     })
-
-    // console.log(JSON.stringify(Array.from(cfgBlocks.entries())))
-    const a = new WasmCFGGraphVizService()
-    a.convertToDot({cfgBlocks}, wasm)
+    return {
+      cfgBlocks
+    }
   }
 
   private addBrNextBlocks(immediate: number, lastOpcode: WasmOpcode, opcodes: WasmOpcode[], value: WasmCFGBlock, cfgBlocks: Map<number, WasmCFGBlock>) {

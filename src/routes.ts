@@ -136,10 +136,11 @@ const models: TsoaRoute.Models = {
             "sections": { "dataType": "array", "array": { "ref": "WasmSection" }, "required": true },
         },
     },
-    "EWasmModule": {
+    "EWasmModuleResponse": {
         "properties": {
             "binary": { "ref": "WasmBinary", "required": true },
             "dotCallGraph": { "dataType": "string", "required": true },
+            "functionsCfg": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
         },
     },
 };

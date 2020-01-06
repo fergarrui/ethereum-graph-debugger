@@ -6,7 +6,7 @@ import { EwasmService } from "../service/EwasmService";
 import { WasmBinary } from "../../bytecode/ewasm/WasmBinary";
 import { Web3Configuration } from "../../blockchain/Web3Configuration";
 import { logger } from '../../../Logger'
-import { EWasmModule } from "../../bytecode/ewasm/EWasmModule";
+import { EWasmModuleResponse } from "../../bytecode/ewasm/EWasmModuleResponse";
 
 @Route('ewasm')
 @provideSingleton(EwasmController)
@@ -37,7 +37,7 @@ export class EwasmController extends Controller {
   }
 
   @Post('analyze')
-  async analyze(@Body() source: StringBodyRequest ): Promise<EWasmModule> {
+  async analyze(@Body() source: StringBodyRequest ): Promise<EWasmModuleResponse> {
     try {
       return this.ewasmService.analyze(source.request)
     } catch(error) {
@@ -53,7 +53,7 @@ export class EwasmController extends Controller {
     @Query('blockchainProtocol') blockchainProtocol?: string,
     @Query('blockchainBasicAuthUsername') blockchainBasicAuthUsername?: string,
     @Query('blockchainBasicAuthPassword') blockchainBasicAuthPassword?: string
-  ): Promise<EWasmModule> {
+  ): Promise<EWasmModuleResponse> {
     try {
       const config = {
         blockchainHost,

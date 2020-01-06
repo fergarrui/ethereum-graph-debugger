@@ -1,13 +1,15 @@
-import { WasmCGF } from "./WasmCGF";
+import { WasmFunctionCGF } from "./WasmFunctionCGF";
 import { WasmCFGBlock } from "./WasmCFGBlock";
 import { WasmBinary } from "../WasmBinary";
 import { formatOpcodes } from "../FunctionBody";
 import { findSection, WasmImportSectionPayload, WasmCodeSectionPayload } from "../WasmSection";
 import { WasmSectionType } from "../wasmTypes";
+import { injectable } from "inversify";
 
+@injectable()
 export class WasmCFGGraphVizService {
 
-  convertToDot(cfg: WasmCGF, wasm: WasmBinary): string {
+  convertToDot(cfg: WasmFunctionCGF, wasm: WasmBinary): string {
     let graph = `digraph " " {
       graph [splines=ortho]
       node[shape=box style=filled fontname="Courier"]
@@ -19,7 +21,7 @@ export class WasmCFGGraphVizService {
     return graph
   }
 
-  private createBody(cfg: WasmCGF, wasm: WasmBinary): string {
+  private createBody(cfg: WasmFunctionCGF, wasm: WasmBinary): string {
     const importSection = findSection(wasm.sections, WasmSectionType.Import)
     const importSectionPayload: WasmImportSectionPayload = importSection ? importSection.payload as WasmImportSectionPayload : {imports: []} as WasmImportSectionPayload
  

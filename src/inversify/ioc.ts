@@ -25,6 +25,7 @@ import { WasmBinaryParser } from '../api/bytecode/ewasm/WasmBinaryParser';
 import { WasmCFGCreator } from '../api/bytecode/ewasm/cfg/WasmCFGCreator';
 import { WasmCallgraphCreator } from '../api/bytecode/ewasm/callgraph/WasmCallgraphCreator';
 import { WasmCallGraphVizService } from '../api/bytecode/ewasm/callgraph/WasmCallGraphVizService';
+import { WasmCFGGraphVizService } from '../api/bytecode/ewasm/cfg/WasmCFGGraphVizService';
 
 const iocContainer = new Container()
 const provide = makeProvideDecorator(iocContainer)
@@ -48,7 +49,8 @@ iocContainer.bind<Solc>(TYPES.Solc).to(Solc)
 iocContainer.bind<EwasmService>(TYPES.EwasmService).to(EwasmService)
 iocContainer.bind<WasmCFGCreator>(TYPES.WasmCFGCreator).to(WasmCFGCreator)
 iocContainer.bind<WasmCallgraphCreator>(TYPES.WasmCallgraphCreator).to(WasmCallgraphCreator)
-iocContainer.bind<WasmCallGraphVizService>(TYPES.WasmGraphVizService).to(WasmCallGraphVizService)
+iocContainer.bind<WasmCallGraphVizService>(TYPES.WasmCallGraphVizService).to(WasmCallGraphVizService)
+iocContainer.bind<WasmCFGGraphVizService>(TYPES.WasmCFGGraphVizService).to(WasmCFGGraphVizService)
 
 const provideNamed = (
   identifier: string | symbol | interfaces.Newable<any> | interfaces.Abstract<any>,

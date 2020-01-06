@@ -14,7 +14,8 @@ const TYPES = {
   WasmBinaryParser: Symbol.for('WasmBinaryParser'),
   WasmCFGCreator: Symbol.for('WasmCFGCreator'),
   WasmCallgraphCreator: Symbol.for('WasmCallgraphCreator'),
-  WasmGraphVizService: Symbol.for('WasmGraphVizService'),
+  WasmCallGraphVizService: Symbol.for('WasmCallGraphVizService'),
+  WasmCFGGraphVizService: Symbol.for('WasmCFGGraphVizService'),
   Solc: Symbol.for('Solc')
 }
 
