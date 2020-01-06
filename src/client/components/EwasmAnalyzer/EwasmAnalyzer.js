@@ -9,8 +9,9 @@ import * as selectors from '../../_redux/selectors';
 
 import styles from './EwasmAnalyzer.scss';
 
-const EwasmAnalyzer = ({ ewasmAnalyzer }) => {
-  const typeCode = ewasmAnalyzer.sections.find(section => section.sectionType === 'Code');
+const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
+  const data = ewasmAnalyzer.find(res => res.name === contractName).data;
+  const typeCode = data.sections.find(section => section.sectionType === 'Code');
   return (
     <div className={styles['analyzer']}>
       <Tab>

@@ -26,10 +26,6 @@ const cx = classnames.bind(styles);
 
 const mapStateToProps = state => ({
   evm: state.selectEVMState,
-  transactionDebugger: selectors.getTransactionDebugger(state),
-  disassembler: selectors.getDisassembler(state),
-  storage: selectors.getStorage(state),
-  graph: selectors.getGraph(state),
   tabs: selectors.getTabs(state),
   hasFetched: selectors.getHasToolFetched(state),
   isLoading: selectors.getToolIsLoading(state)
@@ -216,7 +212,7 @@ class Main extends React.Component {
   }
 
   render() {
-    const { code, name, path, index, evm, transactionDebugger, disassembler, storage, graph, hasFetched, tabs } = this.props;
+    const { code, name, path, index, evm, hasFetched, tabs } = this.props;
     const { isSideBarOpen, isModalOpen } = this.state;
 
     const displayedTabs = tabs.filter(tab => tab.name === name);
@@ -256,8 +252,8 @@ class Main extends React.Component {
           <SideBar>
             <SideBarItem label='Transaction Debugger' onClick={() => this.handleTransactionDebuggerClick()} />
             <SideBarItem label='Disassembler' onClick={() => this.handleDisassemblerClick()} />
-            <SideBarItem label='Control Flow Graph Constructor' onClick={() => this.handleControlFlowGraphClick(false)} />
-            <SideBarItem label='Control FLow Graph Runtime' onClick={() => this.handleControlFlowGraphClick(true)} />
+            <SideBarItem label='Control Flow Graph Constructor' onClick={() => this.handleControlFlowGraphClick(true)} />
+            <SideBarItem label='Control FLow Graph Runtime' onClick={() => this.handleControlFlowGraphClick(false)} />
             <SideBarItem label='View Storage' onClick={() => this.handleViewStorageClick()} />
             <SideBarItem label='Ewasm Analyzer' onClick={() => this.handleAnalyzerClick()} />
           </SideBar> 
@@ -300,10 +296,7 @@ class Main extends React.Component {
                     contractCode={code}
                     contractPath={path}
                     type={item.type}
-                    disassemblerResponse={disassembler}
-                    debuggerResponse={transactionDebugger}
-                    graphResponse={graph}
-                    storageResponse={storage} />
+                    />
                 </TabPanel>
               )
             })}

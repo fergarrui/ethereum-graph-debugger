@@ -56,7 +56,7 @@ export const contracts = (state = { contracts: [], parameter: '' }, action) => {
   }
 }
 
-export const tools = (state = { transactionDebugger: {}, storage: {}, disassembler: {}, graph: {}, ewasmAnalyzer: {}, hasFetched: false, isLoading: false,  tabs: [] }, action) => {
+export const tools = (state = { transactionDebugger: [], storage: [], disassembler: [], graph: [], ewasmAnalyzer: [], hasFetched: false, isLoading: false,  tabs: [] }, action) => {
   switch(action.type) {
     case ActionTypes.FETCH_DISASSEMBLER:
     case ActionTypes.FETCH_GRAPH:
@@ -65,15 +65,15 @@ export const tools = (state = { transactionDebugger: {}, storage: {}, disassembl
     case ActionTypes.FETCH_ANALYZER:
       return { ...state, isLoading: true }
     case ActionTypes.DEBUGGER_FETCH_SUCCESS: 
-      return { ...state, isLoading: false, transactionDebugger: action.payload.transactionDebugger, hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
+      return { ...state, isLoading: false, transactionDebugger: [ ...state.transactionDebugger, { name: action.payload.name, data: action.payload.transactionDebugger }], hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
     case ActionTypes.STORAGE_FETCH_SUCCESS: 
-      return { ...state, isLoading: false, storage: action.payload.storage, hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
+      return { ...state, isLoading: false, storage:[ ...state.storage, { name: action.payload.name, data: action.payload.storage }], hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
     case ActionTypes.GRAPH_FETCH_SUCCESS:
-      return { ...state, isLoading: false, graph: action.payload.graph, hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
+      return { ...state, isLoading: false, graph: [ ...state.graph, { name: action.payload.name, isConstructor: action.payload.graph.isConstructor, data: action.payload.graph }], hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
     case ActionTypes.DISASSEMBLER_FETCH_SUCCESS:
-      return { ...state, isLoading: false, disassembler: action.payload.disassembler, hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
+      return { ...state, isLoading: false, disassembler: [ ...state.disassembler, { name: action.payload.name, data: action.payload.disassembler }], hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
     case ActionTypes.ANALYZER_FETCH_SUCCESS:
-      return  { ...state, isLoading: false, hasFetched: true, ewasmAnalyzer: action.payload.ewasmAnalyzer, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
+      return  { ...state, isLoading: false, hasFetched: true, ewasmAnalyzer: [ ...state.ewasmAnalyzer, { name: action.payload.name, data: action.payload.ewasmAnalyzer }], tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
     default:
       return state;
   }

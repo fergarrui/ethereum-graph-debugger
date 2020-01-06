@@ -88,7 +88,8 @@ export class ControlFlowGraphController extends Controller {
     }
     return {
       cfg: cfg,
-      operations: opResponse
+      operations: opResponse,
+      isConstructor: constructor
     }
   }
 }
