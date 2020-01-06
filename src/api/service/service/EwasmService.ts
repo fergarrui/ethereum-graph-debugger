@@ -47,6 +47,7 @@ export class EwasmService {
         const cfgString = this.wasmCFGGraphVizService.convertToDot(value, binary)
         functionsCfg.push(cfgString)
       })
+
       return {
         binary,
         dotCallGraph,

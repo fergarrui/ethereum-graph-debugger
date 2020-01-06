@@ -7,20 +7,19 @@ export class WasmCallGraphVizService {
   convertToDot(callGraph: WasmCallGraph): string {
     let graph = `digraph " " {
       graph [splines=ortho]
-      node[shape=box style=filled fontname="Courier"]
+      node[shape=box style=filled fillcolor="#2A2A2A" fontname="Courier"]
       `
 
     graph+= `
     ${this.createBody(callGraph)}
     }`
-    // console.log(graph)
     return graph
   }
 
   private createBody(callGraph: WasmCallGraph): string {
     let body = ''
     callGraph.nodes.forEach((node, key) => {
-      body += `N${key} [label=${node.name}]
+      body += `N${key} [label=${node.name} fontcolor="#12cc12"]
         ${this.createRelations(key, node.callees)}
         `
     })

@@ -12,12 +12,11 @@ export class WasmCFGGraphVizService {
   convertToDot(cfg: WasmFunctionCGF, wasm: WasmBinary): string {
     let graph = `digraph " " {
       graph [splines=ortho]
-      node[shape=box style=filled fontname="Courier"]
+      node[shape=box fillcolor="#2A2A2A" style=filled fontname="Courier"]
 
       ${this.createBody(cfg, wasm)}
 
     }` 
-    console.log(graph)
     return graph
   }
 
@@ -30,9 +29,9 @@ export class WasmCFGGraphVizService {
 
     let body = ''
     cfg.cfgBlocks.forEach((value: WasmCFGBlock, key: number) => {
-      body += `${key} [label="\n`
-      body+= `${formatOpcodes(value.opcodes, importSectionPayload, codeSectionPayload)}`
-      body +=`"]
+      body += `${key} [label="`
+      body+= `${formatOpcodes(value.opcodes, importSectionPayload, codeSectionPayload, '\\l')}`
+      body +=`"  fontcolor="#12cc12"]
       ${this.createRelations(value, key)}
       `
     })
