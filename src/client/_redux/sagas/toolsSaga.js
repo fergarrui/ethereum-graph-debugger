@@ -1,6 +1,6 @@
 import { put, call, takeLatest, takeEvery } from 'redux-saga/effects';
 import { postData, fetchData } from './utils';
-import { data } from 'client/components/EwasmAnalyzer/data.js'
+// import { data } from 'client/components/EwasmAnalyzer/data.js'
 
 
 export function* toolsWatcher() {
@@ -16,9 +16,8 @@ export function* fetchEwasmAnalyzer(action) {
 
   try {
     yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: true, message: 'Loading...' } });
-    // temp use mock data
-    // const response = yield call(fetchData, url);
-    yield put({ type: 'ANALYZER_FETCH_SUCCESS', payload: { ewasmAnalyzer: data, type: type, name: name }});
+    const response = yield call(fetchData, url);
+    yield put({ type: 'ANALYZER_FETCH_SUCCESS', payload: { ewasmAnalyzer: response, type: type, name: name }});
     yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: false } });
   } catch(error) {
     yield put({ type: 'TOGGLE_ERROR_MESSAGE', payload: { isErrorMessageOn: true, message: error.message } });

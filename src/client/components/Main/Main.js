@@ -36,7 +36,9 @@ const mapDispatchToProps = {
   fetchStorage: actions.fetchStorage,
   fetchControlFlowGraph: actions.fetchControlFlowGraph,
   fetchDisassembler: actions.fetchDisassembler,
-  fetchAnalyzer: actions.fetchAnalyzer
+  fetchAnalyzer: actions.fetchAnalyzer,
+  toggleErrorMessage: actions.toggleErrorMessage,
+  filterTabs: actions.filterTabs
 }
 
 class Main extends React.Component {
@@ -50,11 +52,22 @@ class Main extends React.Component {
         transactionDebugger: false,
         viewStorage: false,
         analyzer: false
-      }
+      },
+      displayedTabs: []
     }
 
     this.handleMenuItemIconClick = this.handleMenuItemIconClick.bind(this);
     this.handleOutsideClick = this.handleOutsideClick.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { name, tabs } = this.props;
+
+    if(tabs !== prevProps.tabs) {
+      this.setState({
+        displayedTabs: tabs.filter(tab => tab.name === name)
+      })
+    }
   }
 
   getUrl(endPoint, parameters) {
@@ -176,11 +189,14 @@ class Main extends React.Component {
   }
 
   handleMenuItemIconClick(index) {
-    return this.props.tabs.filter((item, i) => i !== index);
+    this.props.filterTabs(index);
+    const newTabs = this.state.displayedTabs.filter((item, i) => i !== index)
+    this.setState({
+      displayedTabs: newTabs
+    });
   }
 
   handleModalIconClick() {
-
     this.setState({
       isModalOpen: { ...this.state.isModalOpen, transactionDebugger: false, viewStorage: false } 
     });
@@ -203,19 +219,22 @@ class Main extends React.Component {
 
   handleSubmitEwasmForm() {
     const { name } = this.props;
-    const { contractAddress } = this.state;
+    const { ewasmContractAddress } = this.state;
 
-    this.props.fetchAnalyzer(name, `${baseUrl}analyze/${contractAddress}/`, 'Ewasm Analyzer');
+    if(!!ewasmContractAddress) {
+      this.props.fetchAnalyzer(name, `${baseUrl}ewasm/analyze/${ewasmContractAddress}/`, 'Ewasm Analyzer');
+    } else {
+      actions.toggleErrorMessage(true, `Contract address must be defined`)
+    }
+
     this.setState({
       isModalOpen: { ...this.state.isModalOpen, analyzer: false }
     })
   }
 
   render() {
-    const { code, name, path, index, evm, hasFetched, tabs } = this.props;
-    const { isSideBarOpen, isModalOpen } = this.state;
-
-    const displayedTabs = tabs.filter(tab => tab.name === name);
+    const { code, name, path, index, evm, hasFetched } = this.props;
+    const { isSideBarOpen, isModalOpen, displayedTabs } = this.state;
 
     const inputTypes = [
       {
@@ -262,7 +281,7 @@ class Main extends React.Component {
             <Editor code={code} index={index} />
             {
               evm && 
-              <Tab>
+              <Tab hasCloseIcon={false}>
                 {
                   evm.map((item, i) => {
                     return (
@@ -285,7 +304,7 @@ class Main extends React.Component {
           transitionEnterTimeout={300}
           transitionLeaveTimeout={300}
           >
-            <Tab onMenuItemIconClick={this.handleMenuItemIconClick} onTabItemClick={this.onTabItemClick}>
+            <Tab hasCloseIcon={true} onMenuItemIconClick={this.handleMenuItemIconClick} onTabItemClick={this.onTabItemClick}>
             {!!hasFetched && !!displayedTabs.length && displayedTabs.map((item, i) => {
               return (
                 <TabPanel
@@ -337,7 +356,7 @@ class Main extends React.Component {
                 <Form
                   buttonValue='Submit'
                   submitButton={true} 
-                  inputTypes={[{ name: 'contractAddress', placeholder: 'Contract address' }]}
+                  inputTypes={[{ name: 'ewasmContractAddress', placeholder: 'Contract address' }]}
                   onInputChange={(e) => this.handleFormInputChange(e)} 
                   onSubmitForm={() => this.handleSubmitEwasmForm()}
                   onInputKeyUp={() => this.handleSubmitEwasmForm()}

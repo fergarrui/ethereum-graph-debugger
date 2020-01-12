@@ -1,5 +1,14 @@
 import * as ActionTypes from './Constants.js';
 
+export const filterTabs = index => dispatch => {
+  dispatch({
+    type: ActionTypes.FILTER_TABS,
+    payload: {
+      index
+    }
+  })
+}
+
 export const fetchTransactionDebugger = (name, url, type, body) => dispatch => {
   dispatch({
     type: ActionTypes.FETCH_TRANSACTION_DEBUGGER,

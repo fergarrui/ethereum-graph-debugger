@@ -29,10 +29,10 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
     // getGraphType(`functionsCfgType--${index}`);
     getSelectedIndex(index)
   }
-  
+
   return (
     <div className={styles['analyzer']}>
-      <Tab>
+      <Tab hasCloseIcon={false}>
         <TabPanel className={styles['analyzer__tab-panel']} name='Summary'></TabPanel>
         <TabPanel className={styles['analyzer__tab-panel']} name='Function'>
           <SideBar className={styles['analyzer__sidebar']}>
