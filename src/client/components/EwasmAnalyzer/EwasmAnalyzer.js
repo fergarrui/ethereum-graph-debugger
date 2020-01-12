@@ -15,6 +15,7 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
   const [opcodes, getFormattedOpcodes] = useState('');
   const data = ewasmAnalyzer.find(res => res.name === contractName).data;
   const typeCode = data.binary.sections.find(section => section.sectionType === 'Code');
+  const functionCfgs = data.functionsCfg
 
   const onClick = (name) => {
     toggleTabs(true);
@@ -40,7 +41,7 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
               <TabPanel name='Opcodes'>
                 {
                   !!opcodes &&
-                  <div>{opcodes}</div>
+                  <div><pre>{opcodes}</pre></div>
                 }
               </TabPanel>
               <TabPanel name='CFG'></TabPanel>

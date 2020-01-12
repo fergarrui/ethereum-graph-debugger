@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { WasmBinary } from "./WasmBinary";
 import { BytesReader } from "./BytesReader";
-import { WasmSection, WasmTypeSectionPayload, WasmSectionPayload, WasmExportSectionPayload, WasmCodeSectionPayload, WasmImportSectionPayload, WasmFunctionSectionPayload, findSection, WasmGlobalSectionPayload } from "./WasmSection";
+import { WasmSection, WasmTypeSectionPayload, WasmSectionPayload, WasmExportSectionPayload, WasmCodeSectionPayload, WasmImportSectionPayload, WasmFunctionSectionPayload, findSection, WasmGlobalSectionPayload, findSectionPayload } from "./WasmSection";
 import { WasmSectionType, WasmType, WasmValueType, getWasmValueType, getExternalType, WasmExternalKind } from "./wasmTypes";
 import { FuncType, printSignature } from "./FuncType";
 import { FunctionBody, FunctionLocal, formatOpcodes } from "./FunctionBody";
@@ -63,8 +63,7 @@ export class WasmBinaryParser {
 
   postProcess(wasmBinary: WasmBinary): WasmBinary {
 
-    const functionSection = findSection(wasmBinary.sections, WasmSectionType.Function)
-    const functionSectionPayload: WasmFunctionSectionPayload = functionSection.payload as WasmFunctionSectionPayload
+    const functionSectionPayload: WasmFunctionSectionPayload = findSectionPayload<WasmFunctionSectionPayload>(wasmBinary.sections, WasmSectionType.Function)
     
     const typeSection = findSection(wasmBinary.sections, WasmSectionType.Type)
     const typeSectionPayload: WasmTypeSectionPayload = typeSection.payload as WasmTypeSectionPayload
