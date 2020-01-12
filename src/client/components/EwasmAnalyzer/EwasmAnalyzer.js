@@ -13,18 +13,21 @@ import styles from './EwasmAnalyzer.scss';
 const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
   const [hasTabs, toggleTabs] = useState(false);
   const [opcodes, getFormattedOpcodes] = useState('');
-  const [functionsCfg, getFunctionsCfg] = useState('');
-  const [graphType, getGraphType] = useState('');
-  const [graphId, getGraphId] = useState('');
+  // const [functionsCfg, getFunctionsCfg] = useState('');
+  // const [graphType, getGraphType] = useState('');
+  // const [graphId, getGraphId] = useState('');
+  const [selectedIndex, getSelectedIndex] = useState('');
+  
   const data = ewasmAnalyzer.find(res => res.name === contractName).data;
   const typeCode = data.binary.sections.find(section => section.sectionType === 'Code');
 
   const onClick = (name, index) => {
     toggleTabs(true);
     getFormattedOpcodes(typeCode.payload.functions.find(item => item.name === name).formattedOpcodes);
-    getFunctionsCfg(data.functionsCfg[index]);
-    getGraphId(`functionsCfg--${index}`);
-    getGraphType(`functionsCfgType--${index}`);
+    // getFunctionsCfg(data.functionsCfg[index]);
+    // getGraphId(`functionsCfg--${index}`);
+    // getGraphType(`functionsCfgType--${index}`);
+    getSelectedIndex(index)
   }
   
   return (
@@ -49,13 +52,28 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
                   <div><pre>{opcodes}</pre></div>
                 }
               </TabPanel>
-              <TabPanel className={styles['analyzer__inner-tab-panel']} name='CFG'>
+              {typeCode.payload.functions.filter((item, index) => {
+                console.log(`filter. index=${index} selected=${selectedIndex}`)
+                return index === selectedIndex
+              }).map((item, index) => {
+                console.log(`index=${selectedIndex} , selectedIndex=${selectedIndex}`)
+                  return (
+                    <TabPanel className={styles['analyzer__inner-tab-panel']} name='CFG'>
+                      <Graph
+                        graphType={`functionsCfgType--${selectedIndex}`}
+                        graphId={`functionsCfg--${selectedIndex}`}
+                        cfg={data.functionsCfg[selectedIndex]}
+                      />
+                    </TabPanel>
+                  )
+              })}
+              {/* <TabPanel className={styles['analyzer__inner-tab-panel']} name='CFG'>
                 <Graph
                   graphType={graphType}
                   graphId={graphId}
                   cfg={functionsCfg}
                 /> 
-              </TabPanel>
+              </TabPanel> */}
             </Tab>
           }
         </TabPanel>
