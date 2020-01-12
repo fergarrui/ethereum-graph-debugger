@@ -16,17 +16,23 @@ const mapDispatchToProps = {
 const previousPolygons = []
 
 class ConnectedGraph extends React.Component {
-
-  constructor() {
-    super();
+  componentDidMount() {
+    this.initGraph();
   }
 
-  componentDidMount() {
+  componentDidUpdate(prevProps, prevState) {
+    const { cfg } = this.props;
+    if(cfg !== prevProps.cfg) {
+      this.initGraph();
+    }
+  }
+
+  initGraph() {
     const { cfg, graphId, graphType } = this.props;
     const graphclass = graphId.replace('.sol', '').replace('.evm', '');
     const graphviz = d3.select(`.graph--${graphclass}--${graphType}`).graphviz()
     graphviz.totalMemory(1074790400)
-    graphviz.renderDot(cfg);
+    graphviz.renderDot(cfg) ;
     // TODO make it configurable?
     graphviz._zoomBehavior.scaleExtent([1/10, 10000]);
     d3.selectAll("a").attr("href", null).attr("title", null);

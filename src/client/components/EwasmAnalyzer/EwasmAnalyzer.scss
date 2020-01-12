@@ -1,12 +1,29 @@
 .analyzer {
-  padding: 20px;
+  padding: 10px;
   
   &__sidebar {
     max-width: 150px;
+    background-color: $color-dark-grey;
+
+    &__item {
+      padding: 10px;
+    }
   }
 
   &__tab-panel {
-    background-color: $color-light-grey;
+    background-color: $color-dark-grey;
     padding: 20px;
+    min-height: 200px;
+  }
+
+  &__inner-tab {
+    margin-left: 20px;
+  }
+
+  &__inner-tab-panel {
+    background-color: $color-grey;
+    border-top: 1px solid $color-green;
+    padding: 10px;
+    min-height: 200px;
   }
 }

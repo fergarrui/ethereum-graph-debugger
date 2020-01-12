@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import Tab from '../Tab/Tab';
@@ -13,12 +13,23 @@ import styles from './EwasmAnalyzer.scss';
 const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
   const [hasTabs, toggleTabs] = useState(false);
   const [opcodes, getFormattedOpcodes] = useState('');
+  const [functionsCfg, getFunctionsCfg] = useState('');
+  const [graphType, getGraphType] = useState('');
+  const [graphId, getGraphId] = useState('');
   const data = ewasmAnalyzer.find(res => res.name === contractName).data;
   const typeCode = data.binary.sections.find(section => section.sectionType === 'Code');
 
-  const onClick = (name) => {
+  useEffect(() => {
+    getFunctionsCfg(functionsCfg)
+    getGraphId(graphId);
+  }, [graphId, functionsCfg])
+
+  const onClick = (name, index) => {
     toggleTabs(true);
-    getFormattedOpcodes(typeCode.payload.functions.find(item => item.name === name).formattedOpcodes)
+    getFormattedOpcodes(typeCode.payload.functions.find(item => item.name === name).formattedOpcodes);
+    getFunctionsCfg(data.functionsCfg[index]);
+    getGraphId(`functionsCfg--${index}`);
+    getGraphType(`functionsCfgType--${index}`);
   }
   
   return (
@@ -28,22 +39,28 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
         <TabPanel className={styles['analyzer__tab-panel']} name='Function'>
           <SideBar className={styles['analyzer__sidebar']}>
           {!!typeCode &&
-          typeCode.payload.functions.map(item => {
+          typeCode.payload.functions.map((item, index) => {
             return (
-              <SideBarItem className={styles['analyzer__sidebar__item']} label={item.name} onClick={() => onClick(item.name)} />
+              <SideBarItem key={item.name} className={styles['analyzer__sidebar__item']} label={item.name} onClick={() => onClick(item.name, index)} />
              )
           })}
           </SideBar>
           {
             hasTabs &&
-            <Tab>
-              <TabPanel name='Opcodes'>
+            <Tab className={styles['analyzer__inner-tab']}>
+              <TabPanel className={styles['analyzer__inner-tab-panel']} name='Opcodes'>
                 {
                   !!opcodes &&
                   <div>{opcodes}</div>
                 }
               </TabPanel>
-              <TabPanel name='CFG'></TabPanel>
+              <TabPanel className={styles['analyzer__inner-tab-panel']} name='CFG'>
+                <Graph
+                  graphType={graphType}
+                  graphId={graphId}
+                  cfg={functionsCfg}
+                /> 
+              </TabPanel>
             </Tab>
           }
         </TabPanel>
