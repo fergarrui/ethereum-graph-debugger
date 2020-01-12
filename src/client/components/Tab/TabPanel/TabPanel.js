@@ -1,18 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import classnames from 'classnames/bind';
 
 import styles from './TabPanel.scss';
 
-import classnames from 'classnames/bind';
-
 const cx = classnames.bind(styles);
 
-const TabPanel = ({ children, active }) => {
+const TabPanel = ({ children, active, className }) => {
   const tabPanelClasses = cx({
     'tab-panel': true,
-    'tab-panel--active': !!active,
+    'tab-panel--active': !!active
   });
   return (
-    <div className={tabPanelClasses}>
+    <div className={cx(tabPanelClasses, className)}>
       {children}
     </div>
   )

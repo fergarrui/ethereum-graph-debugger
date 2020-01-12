@@ -78,6 +78,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "cfg": { "dataType": "string", "required": true },
             "operations": { "dataType": "array", "array": { "ref": "OperationResponse" }, "required": true },
+            "isConstructor": { "dataType": "boolean", "required": true },
         },
     },
     "Storage": {

@@ -4,4 +4,9 @@
   &__sidebar {
     max-width: 150px;
   }
+
+  &__tab-panel {
+    background-color: $color-light-grey;
+    padding: 20px;
+  }
 }
