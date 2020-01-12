@@ -74,6 +74,8 @@ export const tools = (state = { transactionDebugger: [], storage: [], disassembl
       return { ...state, isLoading: false, disassembler: [ ...state.disassembler, { name: action.payload.name, data: action.payload.disassembler }], hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
     case ActionTypes.ANALYZER_FETCH_SUCCESS:
       return  { ...state, isLoading: false, hasFetched: true, ewasmAnalyzer: [ ...state.ewasmAnalyzer, { name: action.payload.name, data: action.payload.ewasmAnalyzer }], tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
+    case ActionTypes.FILTER_TABS:
+      return { ...state, tabs: state.tabs.filter((tab, i) => i !== action.payload.index)}
     default:
       return state;
   }

@@ -37,7 +37,7 @@ class Tab extends React.Component {
 
   render() {
     const { currentTabIndex } = this.state;
-    const { className } = this.props;
+    const { className, hasCloseIcon } = this.props;
 
     const children = React.Children.map(this.props.children, (child, index) => {
       if(!!child) {
@@ -59,6 +59,7 @@ class Tab extends React.Component {
                 active={currentTabIndex === i}
                 onMenuItemClick={() => this.setActiveTab(i)}
                 onIconClick={(e) => this.handleIconClick(e, i)}
+                hasCloseIcon={hasCloseIcon}
               />
             )
           })}        
