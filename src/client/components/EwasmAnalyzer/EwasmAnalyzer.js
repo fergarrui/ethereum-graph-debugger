@@ -19,11 +19,6 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
   const data = ewasmAnalyzer.find(res => res.name === contractName).data;
   const typeCode = data.binary.sections.find(section => section.sectionType === 'Code');
 
-  useEffect(() => {
-    getFunctionsCfg(functionsCfg)
-    getGraphId(graphId);
-  }, [graphId, functionsCfg])
-
   const onClick = (name, index) => {
     toggleTabs(true);
     getFormattedOpcodes(typeCode.payload.functions.find(item => item.name === name).formattedOpcodes);
@@ -51,7 +46,7 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
               <TabPanel className={styles['analyzer__inner-tab-panel']} name='Opcodes'>
                 {
                   !!opcodes &&
-                  <div>{opcodes}</div>
+                  <div><pre>{opcodes}</pre></div>
                 }
               </TabPanel>
               <TabPanel className={styles['analyzer__inner-tab-panel']} name='CFG'>
