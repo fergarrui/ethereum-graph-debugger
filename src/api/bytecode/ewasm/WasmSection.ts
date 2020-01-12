@@ -45,3 +45,7 @@ export const findSection = (sections: WasmSection[], sectionType: WasmSectionTyp
     }
   }); 
 }
+
+export const findSectionPayload = <T>(sections: WasmSection[], sectionType: WasmSectionType): T => {
+  return findSection(sections, sectionType).payload as T
+}

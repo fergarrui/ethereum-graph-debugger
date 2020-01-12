@@ -3,7 +3,6 @@ import { provideSingleton, inject } from "../../../inversify/ioc";
 import { StringBodyRequest } from "../request/StringBodyRequest";
 import { TYPES } from "../../../inversify/types";
 import { EwasmService } from "../service/EwasmService";
-import { WasmBinary } from "../../bytecode/ewasm/WasmBinary";
 import { Web3Configuration } from "../../blockchain/Web3Configuration";
 import { logger } from '../../../Logger'
 import { EWasmModuleResponse } from "../../bytecode/ewasm/EWasmModuleResponse";
