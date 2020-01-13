@@ -9,7 +9,12 @@ The analysis will:
 * Functions call graph
 * Functions are detected, bytecode is disassembled
 * Functions control flow graph
+* Some symbols are resolved with exported names if possible to make graphs/bytecode more readable
 
+TODO:
+
+* Analyze a (e)WASM contract address (API ready, FE in progress)
+* Show more details about the binary (preloaded memory, elements, etc)
 
 ### Function call graph
 
