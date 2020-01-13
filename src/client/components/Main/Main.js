@@ -37,6 +37,7 @@ const mapDispatchToProps = {
   fetchControlFlowGraph: actions.fetchControlFlowGraph,
   fetchDisassembler: actions.fetchDisassembler,
   fetchAnalyzer: actions.fetchAnalyzer,
+  fetchEwasmFileAnalyzer: actions.fetchEwasmFileAnalyzer,
   toggleErrorMessage: actions.toggleErrorMessage,
   filterTabs: actions.filterTabs
 }
@@ -166,6 +167,16 @@ class Main extends React.Component {
     });
   }
 
+  handleFileAnalyzerClick() {
+    const { name, code, path } = this.props;
+    const params = {
+      name: name.replace('.wasm', ''),
+      path: encodeURIComponent(path)
+    }
+    this.props.fetchEwasmFileAnalyzer(name, this.getUrl(`ewasm/analyze`, params),'Ewasm Analyze file')
+    document.removeEventListener('click', this.handleOutsideClick);
+  }
+
   handleDisassemblerClick() {
     const { name, code, path } = this.props;
 
@@ -222,7 +233,7 @@ class Main extends React.Component {
     const { ewasmContractAddress } = this.state;
 
     if(!!ewasmContractAddress) {
-      this.props.fetchAnalyzer(name, `${baseUrl}ewasm/analyze/${ewasmContractAddress}/`, 'Ewasm Analyzer');
+      this.props.fetchAnalyzer(name, `${baseUrl}ewasm/analyze/${ewasmContractAddress}/`, 'Ewasm Analyzer by address');
     } else {
       actions.toggleErrorMessage(true, `Contract address must be defined`)
     }
@@ -274,7 +285,8 @@ class Main extends React.Component {
             <SideBarItem label='Control Flow Graph Constructor' onClick={() => this.handleControlFlowGraphClick(true)} />
             <SideBarItem label='Control FLow Graph Runtime' onClick={() => this.handleControlFlowGraphClick(false)} />
             <SideBarItem label='View Storage' onClick={() => this.handleViewStorageClick()} />
-            <SideBarItem label='Ewasm Analyzer' onClick={() => this.handleAnalyzerClick()} />
+            {/* <SideBarItem label='Ewasm Analyzer by address' onClick={() => this.handleAnalyzerClick()} /> */}
+            <SideBarItem label='Ewasm Analyze file' onClick={() => this.handleFileAnalyzerClick()} />
           </SideBar> 
         </div>
         <div className={styles['main-comp__left__data']}>

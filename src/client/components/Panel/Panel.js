@@ -47,7 +47,11 @@ const Panel = ({ type, contractName, contractCode, contractPath, graph }) => {
         <StorageViewer contractName={contractName} />
       }
       {
-        type === 'Ewasm Analyzer' &&
+        type === 'Ewasm Analyzer by address' &&
+        <EwasmAnalyzer  contractName={contractName} />
+      }
+      {
+        type === 'Ewasm Analyze file' &&
         <EwasmAnalyzer  contractName={contractName} />
       }
     </div>

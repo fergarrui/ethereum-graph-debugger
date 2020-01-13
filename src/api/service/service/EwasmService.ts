@@ -31,8 +31,13 @@ export class EwasmService {
     @inject(TYPES.WasmCFGGraphVizService) private wasmCFGGraphVizService: WasmCFGGraphVizService
     ) {}
 
-  analyze(codeInHex: string): EWasmModuleResponse {
-    const wasm: Buffer = this.hexToBuffer(codeInHex)
+  async analyze(name: string, path: string): Promise<EWasmModuleResponse> {
+    const file = await fs.readFileSync(`${decodeURIComponent(path)}/${name}.wasm`)
+    return this.analyzeBuffer(file)
+  }
+
+  analyzeHex(codeInHex: string): EWasmModuleResponse {
+    const wasm = this.hexToBuffer(codeInHex)
     return this.analyzeBuffer(wasm)
   }
 
@@ -66,7 +71,7 @@ export class EwasmService {
     if(contractCode.startsWith('0x')) {
       contractCode = contractCode.substring(2, contractCode.length)
     }
-    return this.analyze(contractCode)
+    return this.analyzeHex(contractCode)
   }
 
   wasmToWat(codeInHex: string): string {

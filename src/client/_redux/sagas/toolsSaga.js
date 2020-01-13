@@ -9,6 +9,7 @@ export function* toolsWatcher() {
   yield takeLatest('FETCH_STORAGE', fetchStorage);
   yield takeLatest('FETCH_GRAPH', fetchGraph);
   yield takeLatest('FETCH_ANALYZER', fetchEwasmAnalyzer);
+  yield takeLatest('FETCH_FILE_ANALYZER', fetchEwasmFileAnalyzer);
 }
 
 export function* fetchEwasmAnalyzer(action) {
@@ -18,6 +19,20 @@ export function* fetchEwasmAnalyzer(action) {
     yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: true, message: 'Loading...' } });
     const response = yield call(fetchData, url);
     yield put({ type: 'ANALYZER_FETCH_SUCCESS', payload: { ewasmAnalyzer: response, type: type, name: name }});
+    yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: false } });
+  } catch(error) {
+    yield put({ type: 'TOGGLE_ERROR_MESSAGE', payload: { isErrorMessageOn: true, message: error.message } });
+    yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: false } });
+  }
+}
+
+export function* fetchEwasmFileAnalyzer(action) {
+  const { url, body, type, name } = action.payload;
+  
+  try {
+    yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: true, message: 'Loading...' } });
+    const response = yield call(fetchData, url);
+    yield put({ type: 'FILE_ANALYZER_FETCH_SUCCESS', payload: { ewasmAnalyzer: response, type: type, name: name }});
     yield put({ type: 'TOGGLE_LOADING_MESSAGE', payload: { isLoadingMessageOn: false } });
   } catch(error) {
     yield put({ type: 'TOGGLE_ERROR_MESSAGE', payload: { isErrorMessageOn: true, message: error.message } });

@@ -63,6 +63,7 @@ export const tools = (state = { transactionDebugger: [], storage: [], disassembl
     case ActionTypes.FETCH_STORAGE:
     case ActionTypes.FETCH_TRANSACTION_DEBUGGER:
     case ActionTypes.FETCH_ANALYZER:
+    case ActionTypes.FETCH_FILE_ANALYZER:
       return { ...state, isLoading: true }
     case ActionTypes.DEBUGGER_FETCH_SUCCESS: 
       return { ...state, isLoading: false, transactionDebugger: [ ...state.transactionDebugger, { name: action.payload.name, data: action.payload.transactionDebugger }], hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
@@ -73,6 +74,8 @@ export const tools = (state = { transactionDebugger: [], storage: [], disassembl
     case ActionTypes.DISASSEMBLER_FETCH_SUCCESS:
       return { ...state, isLoading: false, disassembler: [ ...state.disassembler, { name: action.payload.name, data: action.payload.disassembler }], hasFetched: true, tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
     case ActionTypes.ANALYZER_FETCH_SUCCESS:
+      return  { ...state, isLoading: false, hasFetched: true, ewasmAnalyzer: [ ...state.ewasmAnalyzer, { name: action.payload.name, data: action.payload.ewasmAnalyzer }], tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
+    case ActionTypes.FILE_ANALYZER_FETCH_SUCCESS:
       return  { ...state, isLoading: false, hasFetched: true, ewasmAnalyzer: [ ...state.ewasmAnalyzer, { name: action.payload.name, data: action.payload.ewasmAnalyzer }], tabs: [ ...state.tabs, { name: action.payload.name, title: action.payload.type, type: action.payload.type }] }
     case ActionTypes.FILTER_TABS:
       return { ...state, tabs: state.tabs.filter((tab, i) => i !== action.payload.index)}

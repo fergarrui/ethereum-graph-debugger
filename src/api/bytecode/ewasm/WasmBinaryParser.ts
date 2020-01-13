@@ -30,7 +30,6 @@ export class WasmBinaryParser {
     const reader: BytesReader = new BytesReader(binary)
 
     const magicNumberRead: string = reader.readBytesToHex(4)
-    
     if(magicNumberRead !== this.WASM_MAGIC_NUMBER) {
       throw new Error(`WASM Magic number not found: ${magicNumberRead}`)
     }
@@ -62,15 +61,15 @@ export class WasmBinaryParser {
   }
 
   postProcess(wasmBinary: WasmBinary): WasmBinary {
-
-    const functionSectionPayload: WasmFunctionSectionPayload = findSectionPayload<WasmFunctionSectionPayload>(wasmBinary.sections, WasmSectionType.Function)
+    const functionSection = findSection(wasmBinary.sections, WasmSectionType.Function)
+    const functionSectionPayload: WasmFunctionSectionPayload = functionSection.payload as WasmFunctionSectionPayload
     
     const typeSection = findSection(wasmBinary.sections, WasmSectionType.Type)
     const typeSectionPayload: WasmTypeSectionPayload = typeSection.payload as WasmTypeSectionPayload
-
+    
     const codeSection = findSection(wasmBinary.sections, WasmSectionType.Code)
     const codeSectionPayload: WasmCodeSectionPayload = codeSection.payload as WasmCodeSectionPayload
-
+    
     const exportSection = findSection(wasmBinary.sections, WasmSectionType.Export)
     const exportSectionPayload: WasmExportSectionPayload = exportSection.payload as WasmExportSectionPayload
     

@@ -56,6 +56,18 @@ export const fetchControlFlowGraph = (name, url, type, body) => dispatch => {
   });
 }
 
+export const fetchEwasmFileAnalyzer = (name, url, type, body) => dispatch => {
+  dispatch({
+    type: ActionTypes.FETCH_FILE_ANALYZER,
+    payload: {
+      name,
+      url,
+      type,
+      body
+    }
+  })
+}
+
 export const fetchAnalyzer = (name, url, type) => dispatch => {
   dispatch({
     type: ActionTypes.FETCH_ANALYZER,

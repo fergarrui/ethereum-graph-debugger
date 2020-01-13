@@ -550,10 +550,11 @@ export function RegisterRoutes(app: express.Express) {
             const promise = controller.decompile.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
-    app.post('/ewasm/analyze',
+    app.get('/ewasm/analyze',
         function(request: any, response: any, next: any) {
             const args = {
-                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
+                name: { "in": "query", "name": "name", "required": true, "dataType": "string" },
+                path: { "in": "query", "name": "path", "required": true, "dataType": "string" },
             };
 
             let validatedArgs: any[] = [];

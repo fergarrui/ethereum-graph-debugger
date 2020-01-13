@@ -35,10 +35,13 @@ export class EwasmController extends Controller {
     }
   }
 
-  @Post('analyze')
-  async analyze(@Body() source: StringBodyRequest ): Promise<EWasmModuleResponse> {
+  @Get('analyze')
+  async analyze(
+    @Query('name') name: string,
+    @Query('path') path: string
+  ): Promise<EWasmModuleResponse> {
     try {
-      return this.ewasmService.analyze(source.request)
+      return this.ewasmService.analyze(name, path)
     } catch(error) {
       logger.error(error)
       throw new Error(error.message)

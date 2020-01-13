@@ -13,9 +13,6 @@ import styles from './EwasmAnalyzer.scss';
 const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
   const [hasTabs, toggleTabs] = useState(false);
   const [opcodes, getFormattedOpcodes] = useState('');
-  // const [functionsCfg, getFunctionsCfg] = useState('');
-  // const [graphType, getGraphType] = useState('');
-  // const [graphId, getGraphId] = useState('');
   const [selectedIndex, getSelectedIndex] = useState('');
   
   const data = ewasmAnalyzer.find(res => res.name === contractName).data;
@@ -24,16 +21,13 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
   const onClick = (name, index) => {
     toggleTabs(true);
     getFormattedOpcodes(typeCode.payload.functions.find(item => item.name === name).formattedOpcodes);
-    // getFunctionsCfg(data.functionsCfg[index]);
-    // getGraphId(`functionsCfg--${index}`);
-    // getGraphType(`functionsCfgType--${index}`);
     getSelectedIndex(index)
   }
 
   return (
     <div className={styles['analyzer']}>
       <Tab hasCloseIcon={false}>
-        <TabPanel className={styles['analyzer__tab-panel']} name='Summary'></TabPanel>
+        {/* <TabPanel className={styles['analyzer__tab-panel']} name='Summary'></TabPanel> */}
         <TabPanel className={styles['analyzer__tab-panel']} name='Function'>
           <SideBar className={styles['analyzer__sidebar']}>
           {!!typeCode &&
@@ -77,7 +71,7 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
         </TabPanel>
         <TabPanel className={styles['analyzer__tab-panel']} name='Call Graph'>
           <Graph
-            graphId={`callGraph--${contractName}`}
+            graphId={`callGraph--${contractName.replace('.wasm', '')}`}
             graphType='CallGraph'
             cfg={data.dotCallGraph}
            />

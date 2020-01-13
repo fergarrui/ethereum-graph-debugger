@@ -29,7 +29,7 @@ class ConnectedGraph extends React.Component {
 
   initGraph() {
     const { cfg, graphId, graphType } = this.props;
-    const graphclass = graphId.replace('.sol', '').replace('.evm', '');
+    const graphclass = graphId.replace('.sol', '').replace('.evm', '').replace('.wasm', '');
     const selectText = `.graph--C${graphclass}--T${graphType}`;
     const graphviz = d3.select(selectText).graphviz()
     graphviz.totalMemory(1074790400)
