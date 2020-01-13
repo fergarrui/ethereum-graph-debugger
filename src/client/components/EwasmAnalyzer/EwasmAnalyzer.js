@@ -52,20 +52,18 @@ const EwasmAnalyzer = ({ ewasmAnalyzer, contractName }) => {
                   <div><pre>{opcodes}</pre></div>
                 }
               </TabPanel>
-              {typeCode.payload.functions.filter((item, index) => {
-                console.log(`filter. index=${index} selected=${selectedIndex}`)
-                return index === selectedIndex
-              }).map((item, index) => {
-                console.log(`index=${selectedIndex} , selectedIndex=${selectedIndex}`)
-                  return (
-                    <TabPanel className={styles['analyzer__inner-tab-panel']} name='CFG'>
-                      <Graph
-                        graphType={`functionsCfgType--${selectedIndex}`}
-                        graphId={`functionsCfg--${selectedIndex}`}
-                        cfg={data.functionsCfg[selectedIndex]}
-                      />
-                    </TabPanel>
-                  )
+              {typeCode.payload.functions
+              .filter((f, index) => index === selectedIndex)
+              .map((item, index) => {
+                    return (
+                      <TabPanel key={selectedIndex} className={styles['analyzer__inner-tab-panel']} name='CFG'>
+                        <Graph
+                          graphType={`functionsCfgType--${selectedIndex}`}
+                          graphId={`functionsCfg--${selectedIndex}`}
+                          cfg={data.functionsCfg[selectedIndex]}
+                        />
+                      </TabPanel>
+                    )
               })}
               {/* <TabPanel className={styles['analyzer__inner-tab-panel']} name='CFG'>
                 <Graph
