@@ -13,6 +13,7 @@ There are already tools that allow you to debug Ethereum transactions (Solidity)
 
 * [Remix](https://remix.ethereum.org)
 * [Truffle](http://truffleframework.com)
+* [Tenderly](https://tenderly.dev)
 
 # Usage
 
