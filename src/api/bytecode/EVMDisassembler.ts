@@ -1,6 +1,6 @@
 import { Disassembler } from './Disassembler'
 import { Operation } from './Operation'
-import { Opcodes } from './Opcodes'
+import { EVMOpcodes } from './EVMOpcodes'
 import { injectable, inject } from 'inversify'
 import { Opcode } from './Opcode'
 import { DisassembledContract } from './DisassembledContract'
@@ -106,7 +106,7 @@ export class EVMDisassembler implements Disassembler {
 
     for (let i = 0; i < operations.length; i++) {
       const code = operations[i]
-      const opcode: Opcode = Opcodes.opcodes[parseInt(code, 16)] || Opcodes.opcodes[-1]
+      const opcode: Opcode = EVMOpcodes.opcodes[parseInt(code, 16)] || EVMOpcodes.opcodes[-1]
       if (this.isPush(opcode)) {
         const parameters = opcode.parameters
         const argument = `${operations.slice(i + 1, i + parameters + 1).join('')}`

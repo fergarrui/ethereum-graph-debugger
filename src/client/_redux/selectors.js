@@ -41,3 +41,7 @@ export const getHasToolFetched = state => {
 export const getToolIsLoading = state => {
   return state.tools.isLoading
 }
+
+export const getEwasmAnalyzer = state => {
+  return state.tools.ewasmAnalyzer
+}

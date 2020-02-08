@@ -1,4 +1,5 @@
 import React from 'react';
+import cx from 'classnames';
 
 import TabMenuItem from './TabMenuItem/TabMenuItem';
 
@@ -36,6 +37,7 @@ class Tab extends React.Component {
 
   render() {
     const { currentTabIndex } = this.state;
+    const { className, hasCloseIcon } = this.props;
 
     const children = React.Children.map(this.props.children, (child, index) => {
       if(!!child) {
@@ -47,7 +49,7 @@ class Tab extends React.Component {
     });
 
     return (
-      <div className={styles['tab']}>
+      <div className={cx(styles['tab'], className)}ß>
         <div className={styles['tab__navigation']}>
           {React.Children.map(children, (child, i) => {
             return (
@@ -57,6 +59,7 @@ class Tab extends React.Component {
                 active={currentTabIndex === i}
                 onMenuItemClick={() => this.setActiveTab(i)}
                 onIconClick={(e) => this.handleIconClick(e, i)}
+                hasCloseIcon={hasCloseIcon}
               />
             )
           })}        

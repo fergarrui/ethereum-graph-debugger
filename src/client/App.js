@@ -23,8 +23,8 @@ class App extends React.Component {
     this.state = {
       inputValue: '',
       parameter: '',
-      fetchRequestStatus: undefined,
-      contracts: [],
+      isNewPanel: false,
+      tabs: []
     }
 
     this.handleMenuItemIconClick = this.handleMenuItemIconClick.bind(this);
@@ -34,12 +34,20 @@ class App extends React.Component {
     this.props.fetchSolcVersions();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.contracts.length !== prevProps.contracts.length) {
+      this.setState({
+        tabs: this.props.contracts
+      })
+    }
+  }
+
   handleMenuItemIconClick(index) {
-    const { contracts } = this.state;
-    const newTabs = contracts.filter((item, i) => i !== index);
+    const { tabs } = this.state;
+    const newTabs = tabs.filter((item, i) => i !== index);
 
     this.setState({
-      contracts: newTabs,
+      tabs: newTabs,
     });
   }
 
@@ -58,7 +66,6 @@ class App extends React.Component {
 
     this.setState({
       parameter: inputValue,
-      settingsVisible: false,
     });
 
     this.props.getParameter(parameter);
@@ -66,8 +73,9 @@ class App extends React.Component {
   }
 
   render() {
-    const { isLoadingMessageOn, isErrorMessageOn, errorMessage, loadingMessage, versions, contracts } = this.props;
-
+    const { isLoadingMessageOn, isErrorMessageOn, errorMessage, loadingMessage, versions } = this.props;
+    const { tabs } = this.state;
+    
     return (
       <div className={styles['app']}>
         <TopNavBar versions={versions}>
@@ -113,15 +121,16 @@ class App extends React.Component {
             transitionEnterTimeout={300}
             transitionLeaveTimeout={300}
             >
-          {!!contracts.length &&
-          <Tab onMenuItemIconClick={this.handleMenuItemIconClick}>
-            {contracts.map((item, i) => {
+          {!!tabs.length &&
+          <Tab hasCloseIcon={true} onMenuItemIconClick={this.handleMenuItemIconClick} onTabItemClick={this.onTabItemClick}>
+            {tabs.map((item, i) => {
               return (
                 <TabPanel
                   key={`id--${item.name}--${i}`}
                   name={item.name}
                   >
-                  <Main 
+                  <Main
+                    id={`id--${item.name}--${i}`}
                     name={item.name}
                     code={item.code}
                     path={item.path}
@@ -146,9 +155,8 @@ const mapStateToProps = state => ({
   loadingMessage: state.loadingMessage.message,
   isErrorMessageOn: state.errorMessage.hasError,
   errorMessage: state.errorMessage.message,
-  datafromsaga: state.contracts.contracts,
   versions: selectors.getVersions(state),
-  contracts: selectors.getContracts(state)
+  contracts: selectors.getContracts(state),
 })
 
 const mapDispatchToProps = {
@@ -156,7 +164,7 @@ const mapDispatchToProps = {
   toggleErrorMessage: actions.toggleErrorMessage,
   getParameter: actions.getParameter,
   fetchContracts: actions.fetchContracts,
-  fetchSolcVersions: actions.fetchSolcVersions
+  fetchSolcVersions: actions.fetchSolcVersions,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);;

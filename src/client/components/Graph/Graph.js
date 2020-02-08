@@ -16,19 +16,27 @@ const mapDispatchToProps = {
 const previousPolygons = []
 
 class ConnectedGraph extends React.Component {
-
-  constructor() {
-    super();
+  componentDidMount() {
+    this.initGraph();
   }
 
-  componentDidMount() {
+  componentDidUpdate(prevProps, prevState) {
+    const { cfg } = this.props;
+    if(cfg !== prevProps.cfg) {
+      this.initGraph();
+    }
+  }
+
+  initGraph() {
     const { cfg, graphId, graphType } = this.props;
-    const graphclass = graphId.replace('.sol', '').replace('.evm', '');
-    const graphviz = d3.select(`.graph--${graphclass}--${graphType}`).graphviz()
+    const graphclass = graphId.replace('.sol', '').replace('.evm', '').replace('.wasm', '');
+    const selectText = `.graph--C${graphclass}--T${graphType}`;
+    const graphviz = d3.select(selectText).graphviz()
     graphviz.totalMemory(1074790400)
     graphviz.renderDot(cfg);
-    // TODO make it configurable?
+    graphviz.resetZoom()
     graphviz._zoomBehavior.scaleExtent([1/10, 10000]);
+
     d3.selectAll("a").attr("href", null).attr("title", null);
   }
 
@@ -67,7 +75,7 @@ class ConnectedGraph extends React.Component {
   render() {
     const { cfg, graphId, graphType } = this.props;
 
-    const graphclass = `${graphId.replace('.sol', '').replace('.evm', '')}--${graphType}`;
+    const graphclass = `C${graphId.replace('.sol', '').replace('.evm', '')}--T${graphType}`;
 
     return (
       <div className={styles['graph-container']}>

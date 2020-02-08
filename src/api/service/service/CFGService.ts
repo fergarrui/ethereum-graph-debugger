@@ -10,7 +10,7 @@ import { OpcodeExecutor } from '../../symbolic/evm/exec/OpcodeExecutor'
 import { CFGBlocks } from '../../cfg/CFGBlocks'
 import { logger } from '../../../Logger';
 import { DebugTrace } from '../../symbolic/evm/DebugTrace';
-import { Opcodes } from '../../bytecode/Opcodes';
+import { EVMOpcodes } from '../../bytecode/EVMOpcodes';
 import { OperationBlock } from '../../cfg/OperationBlock';
 let BN = require('bn.js')
 
@@ -78,7 +78,7 @@ export class CFGService {
   }
 
   private jumpHasBothChildren(opcode: string, offset: number, blocks: CFGBlocks): boolean {
-    if (!Opcodes.isJumpOp(opcode)) {
+    if (!EVMOpcodes.isJumpOp(opcode)) {
       return true
     }
     const block = blocks.get(offset)

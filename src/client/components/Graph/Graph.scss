@@ -1,6 +1,10 @@
 .graph-container {
   max-height: 1000px;
-  overflow: hidden;
+  min-width: 100%;
+
+  svg {
+    width: 100%;
+  }
 }
 
 .graph-container a:hover {

@@ -8,7 +8,7 @@ import styles from './TabMenuItem.scss';
 
 const cx = classnames.bind(styles);
 
-const TabMenuItem = ({ name, onMenuItemClick, active, onIconClick, evm }) => {
+const TabMenuItem = ({ name, onMenuItemClick, active, onIconClick, hasCloseIcon }) => {
 
   const classes = cx({
     'tab-menu-item': true,
@@ -18,7 +18,7 @@ const TabMenuItem = ({ name, onMenuItemClick, active, onIconClick, evm }) => {
   return (
     <div className={classes} onClick={onMenuItemClick}>
       {
-        !evm && 
+        !!hasCloseIcon && 
         <div onClick={onIconClick} className={styles['tab-menu-item__icon']}>
           <Icon iconName='Cross' />
         </div>

@@ -9,6 +9,7 @@ import './api/service/controller/ControlFlowGraphController'
 import './api/service/controller/StorageRecoverController'
 import './api/service/controller/ContractController'
 import './api/service/controller/SolcController'
+import './api/service/controller/EwasmController'
 
 const server = new Server()
 // make it configurable

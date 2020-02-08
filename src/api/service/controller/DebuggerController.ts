@@ -15,6 +15,7 @@ import { StringBodyRequest } from '../request/StringBodyRequest';
 @Route('debug')
 @provideSingleton(DebuggerController)
 export class DebuggerController extends Controller {
+
   constructor(
     @inject(TYPES.CFGService) private cfgService: CFGService,
     @inject(TYPES.GraphVizService) private graphVizService: GraphVizService,

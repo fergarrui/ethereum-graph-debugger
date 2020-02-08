@@ -1,9 +1,8 @@
 import 'reflect-metadata'
 import { EthereumCFGCreator } from './EthereumCFGCreator'
-import { EVMDisassembler } from '../bytecode/EVMDisassembler'
 import { Disassembler } from '../bytecode/Disassembler'
 import { Operation } from '../bytecode/Operation'
-import { Opcodes } from '../bytecode/Opcodes'
+import { EVMOpcodes } from '../bytecode/EVMOpcodes'
 import { CFGBlocks } from './CFGBlocks'
 import { createEVMDisassembler } from '../symbolic/evm/exec/TestUtils';
 let BN = require('bn.js')
@@ -208,6 +207,6 @@ function createOperation(offset: number, argument: string, opcodeName: string): 
   return {
     offset: offset,
     argument: new BN(argument, 16),
-    opcode: Opcodes.opcodes[opcodeName]
+    opcode: EVMOpcodes.opcodes[opcodeName]
   }
 }

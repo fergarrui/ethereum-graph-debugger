@@ -62,9 +62,14 @@ Add contracts to `./contracts` (you will need to create the directory) and empty
   * Scan the directory as described above
   * You won't get source code mappings when clicking in operations of the CFG
 
+### eWASM /  WASM analysis
+
+A `.wasm` file can be analyzed. Check [(e)Wasm Readme](./WASM.md) for more details
+
 # Features
 
   * **Now interactive** :star2:: it has a sepparate frontend and API instead of building a static HTML file like in earlier versions
+  * Initial **eWASM/WASM** support added
   * **Control flow graph**: the CFG can be built without debugging a transaction.
   * **Disassembler**: just disassembled opcodes can be seen, from runtime and constructor
   * **Source mapping**: snippet of code related to the selected instruction is highlighted in the editor left panel
@@ -84,3 +89,4 @@ Add contracts to `./contracts` (you will need to create the directory) and empty
   * ~~Only runtime debugging is supported for now (no constructor)~~
   * You must run it against a node that supports `debug_traceTransaction`, like Geth or Ganache, therefore, Infura is not supported
   * It was rewritten, so new bugs may appear
+  * eWASM/WASM cannot be debugged yet

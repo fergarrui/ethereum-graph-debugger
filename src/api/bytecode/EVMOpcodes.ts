@@ -1,6 +1,6 @@
 import { Opcode } from './Opcode'
 
-export class Opcodes {
+export class EVMOpcodes {
   static opcodes = {}
 
   static populate() {
@@ -161,4 +161,4 @@ export class Opcodes {
   }
 }
 
-Opcodes.populate()
+EVMOpcodes.populate()

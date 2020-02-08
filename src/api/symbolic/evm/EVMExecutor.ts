@@ -1,7 +1,7 @@
 import { EVM } from './EVM'
 import { CFGBlocks } from '../../cfg/CFGBlocks'
 import { OperationBlock } from '../../cfg/OperationBlock'
-import { Opcodes } from '../../bytecode/Opcodes'
+import { EVMOpcodes } from '../../bytecode/EVMOpcodes'
 import { Operation } from '../../bytecode/Operation'
 import { OpcodeExecutor } from './exec/OpcodeExecutor'
 import { Executor } from './exec/Executor'
@@ -78,7 +78,7 @@ export class EVMExecutor {
     const nextBlocks: OperationBlock[] = []
     const ops = block.operations
     const lastOp: Operation = ops[ops.length - 1]
-    if (Opcodes.isJump(lastOp.opcode)) {
+    if (EVMOpcodes.isJump(lastOp.opcode)) {
       let jumpLocation = this.evm.nextJumpLocation
       this.evm.nextJumpLocation = undefined
       if (!jumpLocation) {
