@@ -119,7 +119,7 @@
     "classnames": "^2.2.6",
     "css-loader": "^1.0.1",
     "jest": "^24.9.0",
-    "node-sass": "^4.10.0",
+    "node-sass": "^7.0.0",
     "nodemon": "^1.18.3",
     "npm-run-all": "^4.1.3",
     "onchange": "^4.1.0",
