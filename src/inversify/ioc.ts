@@ -20,6 +20,12 @@ import { BlockServiceImpl } from '../api/service/service/BlockServiceImpl';
 import { StorageRecover } from '../api/service/service/StorageRecover';
 import { ContractService } from '../api/service/service/ContractService';
 import { Solc } from '../api/service/service/Solc';
+import { EwasmService } from '../api/service/service/EwasmService';
+import { WasmBinaryParser } from '../api/bytecode/ewasm/WasmBinaryParser';
+import { WasmCFGCreator } from '../api/bytecode/ewasm/cfg/WasmCFGCreator';
+import { WasmCallgraphCreator } from '../api/bytecode/ewasm/callgraph/WasmCallgraphCreator';
+import { WasmCallGraphVizService } from '../api/bytecode/ewasm/callgraph/WasmCallGraphVizService';
+import { WasmCFGGraphVizService } from '../api/bytecode/ewasm/cfg/WasmCFGGraphVizService';
 
 const iocContainer = new Container()
 const provide = makeProvideDecorator(iocContainer)
@@ -38,7 +44,13 @@ iocContainer.bind<BlockService>(TYPES.BlockService).to(BlockServiceImpl)
 iocContainer.bind<OpcodeExecutor>(TYPES.OpcodeExecutor).to(OpcodeExecutor)
 iocContainer.bind<StorageRecover>(TYPES.StorageRecover).to(StorageRecover)
 iocContainer.bind<ContractService>(TYPES.ContractService).to(ContractService)
+iocContainer.bind<WasmBinaryParser>(TYPES.WasmBinaryParser).to(WasmBinaryParser)
 iocContainer.bind<Solc>(TYPES.Solc).to(Solc)
+iocContainer.bind<EwasmService>(TYPES.EwasmService).to(EwasmService)
+iocContainer.bind<WasmCFGCreator>(TYPES.WasmCFGCreator).to(WasmCFGCreator)
+iocContainer.bind<WasmCallgraphCreator>(TYPES.WasmCallgraphCreator).to(WasmCallgraphCreator)
+iocContainer.bind<WasmCallGraphVizService>(TYPES.WasmCallGraphVizService).to(WasmCallGraphVizService)
+iocContainer.bind<WasmCFGGraphVizService>(TYPES.WasmCFGGraphVizService).to(WasmCFGGraphVizService)
 
 const provideNamed = (
   identifier: string | symbol | interfaces.Newable<any> | interfaces.Abstract<any>,

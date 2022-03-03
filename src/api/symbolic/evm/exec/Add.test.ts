@@ -3,7 +3,6 @@ import { EVMExecutor } from '../EVMExecutor'
 import { EthereumCFGCreator } from '../../../cfg/EthereumCFGCreator'
 import { Disassembler } from '../../../bytecode/Disassembler'
 import { OpcodeExecutor } from './OpcodeExecutor'
-import { EVMDisassembler } from '../../../bytecode/EVMDisassembler'
 import { Word } from '../Word'
 import { Symbols } from '../Symbols'
 

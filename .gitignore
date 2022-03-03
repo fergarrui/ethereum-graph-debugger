@@ -5,3 +5,7 @@ dist/*
 coverage/*
 .vscode/*
 contracts/*
+*.txt
+*.json
+*.cfg
+*.viz

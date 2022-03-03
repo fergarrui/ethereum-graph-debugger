@@ -8,7 +8,7 @@ var fs = require('fs')
 @injectable()
 export class FileServiceDefault implements FileService {
   async findContractssWithExtension(dir: string, extension: string): Promise<ContractFile[]> {
-    const files = await recursive(dir, [`!*.{${extension},evm}`])
+    const files = await recursive(dir, [`!*.{${extension},evm,wasm}`])
 
     return await files
       .map(file => {

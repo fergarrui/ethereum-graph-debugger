@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import * as selectors from '../../_redux/selectors';
 
 import styles from './StorageViewer.scss';
 
-const StorageViewer = ({ storageResponse }) => {
-
+const StorageViewer = ({ storage }) => {
+  const data = storage.find(res => res.name === contractName).data;
   return (
     <div className={styles['storage']}>
       <div className={styles['storage__header']}>
@@ -30,7 +33,7 @@ const StorageViewer = ({ storageResponse }) => {
       </div>
       <div className={styles['storage__body']}>
         {
-          Object.entries(storageResponse.storage).map(([key, val]) => {
+          Object.entries(data.storage).map(([key, val]) => {
             return (
               <div className={styles['storage__body__item']} key={key}>
                 <div className={styles['storage__body__item__col']}>
@@ -55,4 +58,10 @@ const StorageViewer = ({ storageResponse }) => {
   )
 }
 
-export default StorageViewer;
+StorageViewer.displayName = 'StorageViewer';
+
+const mapStateToProps = state => ({
+  storage: selectors.getStorage(state)
+})
+
+export default connect(mapStateToProps, null)(StorageViewer);

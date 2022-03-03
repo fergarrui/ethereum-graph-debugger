@@ -4,20 +4,20 @@ import Graph from '../Graph/Graph';
 
 import styles from './ControlFlowGraph.scss';
 
-const ControlFlowGraphRuntime = ({ contractName, contractPath, graphResponse, type }) => {
+const ControlFlowGraph = ({ contractName, contractPath, graph, type }) => {
   return (
     <div className={styles['control-flow-graph']}>
-        <Graph 
-          graphType={type}
-          graphId={contractName} 
-          contractPath={contractPath} 
-          cfg={graphResponse.cfg} 
-          operations={graphResponse.operations}
-        />
+      <Graph 
+        graphType={type}
+        graphId={contractName} 
+        contractPath={contractPath} 
+        cfg={graph.cfg} 
+        operations={graph.operations}
+      />
     </div>
   );
 }
 
-ControlFlowGraphRuntime.displayName = 'ControlFlowGraphRuntime';
+ControlFlowGraph.displayName = 'ControlFlowGraph';
 
-export default ControlFlowGraphRuntime;
+export default ControlFlowGraph;

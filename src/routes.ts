@@ -9,6 +9,7 @@ import { ControlFlowGraphController } from './api/service/controller/ControlFlow
 import { StorageRecoverController } from './api/service/controller/StorageRecoverController';
 import { ContractController } from './api/service/controller/ContractController';
 import { SolcController } from './api/service/controller/SolcController';
+import { EwasmController } from './api/service/controller/EwasmController';
 import * as express from 'express';
 
 const models: TsoaRoute.Models = {
@@ -77,6 +78,7 @@ const models: TsoaRoute.Models = {
         "properties": {
             "cfg": { "dataType": "string", "required": true },
             "operations": { "dataType": "array", "array": { "ref": "OperationResponse" }, "required": true },
+            "isConstructor": { "dataType": "boolean", "required": true },
         },
     },
     "Storage": {
@@ -116,6 +118,30 @@ const models: TsoaRoute.Models = {
     "SolcChangeVersionRequest": {
         "properties": {
             "version": { "dataType": "string", "required": true },
+        },
+    },
+    "WasmSectionType": {
+        "enums": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+    },
+    "WasmSectionPayload": {
+    },
+    "WasmSection": {
+        "properties": {
+            "sectionType": { "ref": "WasmSectionType", "required": true },
+            "payloadHex": { "dataType": "string", "required": true },
+            "payload": { "ref": "WasmSectionPayload", "required": true },
+        },
+    },
+    "WasmBinary": {
+        "properties": {
+            "sections": { "dataType": "array", "array": { "ref": "WasmSection" }, "required": true },
+        },
+    },
+    "EWasmModuleResponse": {
+        "properties": {
+            "binary": { "ref": "WasmBinary", "required": true },
+            "dotCallGraph": { "dataType": "string", "required": true },
+            "functionsCfg": { "dataType": "array", "array": { "dataType": "string" }, "required": true },
         },
     },
 };
@@ -478,6 +504,99 @@ export function RegisterRoutes(app: express.Express) {
 
 
             const promise = controller.changeVersion.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/ewasm/toWat',
+        function(request: any, response: any, next: any) {
+            const args = {
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<EwasmController>(EwasmController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.wasmToWat.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.post('/ewasm/decompile',
+        function(request: any, response: any, next: any) {
+            const args = {
+                source: { "in": "body", "name": "source", "required": true, "ref": "StringBodyRequest" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<EwasmController>(EwasmController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.decompile.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/ewasm/analyze',
+        function(request: any, response: any, next: any) {
+            const args = {
+                name: { "in": "query", "name": "name", "required": true, "dataType": "string" },
+                path: { "in": "query", "name": "path", "required": true, "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<EwasmController>(EwasmController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.analyze.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, next);
+        });
+    app.get('/ewasm/analyze/:address',
+        function(request: any, response: any, next: any) {
+            const args = {
+                address: { "in": "path", "name": "address", "required": true, "dataType": "string" },
+                blockchainHost: { "in": "query", "name": "blockchainHost", "dataType": "string" },
+                blockchainProtocol: { "in": "query", "name": "blockchainProtocol", "dataType": "string" },
+                blockchainBasicAuthUsername: { "in": "query", "name": "blockchainBasicAuthUsername", "dataType": "string" },
+                blockchainBasicAuthPassword: { "in": "query", "name": "blockchainBasicAuthPassword", "dataType": "string" },
+            };
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = iocContainer.get<EwasmController>(EwasmController);
+            if (typeof controller['setStatus'] === 'function') {
+                (<any>controller).setStatus(undefined);
+            }
+
+
+            const promise = controller.analyzeAddress.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, next);
         });
 
