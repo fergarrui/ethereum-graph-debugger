@@ -83,7 +83,7 @@
     "d3": "^5.7.0",
     "d3-graphviz": "^2.6.0",
     "ethereumjs-util": "^6.0.0",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-winston": "^1.4.2",
     "inversify": "^4.13.0",
     "inversify-binding-decorators": "^3.2.0",
